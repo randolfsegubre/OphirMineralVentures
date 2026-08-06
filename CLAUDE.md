@@ -13,6 +13,21 @@ A close third, load-bearing constraint: **the owner (non-technical) must be able
 
 This is not a high-traffic site and never needs to be engineered like one. It's a low-traffic, high-trust B2B brochure site. Don't over-architect it.
 
+## Start here — first-session checklist
+
+If this is the first coding session on this project, do these in order before writing any Umbraco-specific code:
+
+1. Confirm the environment: `dotnet --version` should report a .NET 10.x SDK — 10.0.301 was verified installed and working on this machine as of 2026-08-07. If it's missing on whatever machine you're on now, install it first.
+2. Scaffold the solution per §4 into `src/`.
+3. `dotnet run` and confirm the default Umbraco install wizard loads in the browser before customizing anything — working baseline first, customization second.
+4. Complete the install wizard using SQLite (§3) — no separate database server to stand up.
+5. Create the Document Types in §5, applying both compositions (`seoComposition`, `siteSettings`) rather than duplicating their properties per type.
+6. Build templates/views page by page against the sitemap in §5, using placeholder content per the §10 policy. Don't wait on real client content to build structure.
+7. Implement the contact form (§6) and the security middleware (§7) before considering any page done — they're small, and retrofitting security headers after the fact is exactly the kind of thing that gets skipped.
+8. Only check off the §12 go-live list once every placeholder has been replaced with real client-provided content (§11).
+
+If anything below conflicts with what you actually observe in the code, a newer Umbraco/.NET release, or something the client says — trust what you observe now, not this file. It was accurate as of 2026-08-07; the ecosystem moves.
+
 ## 2. Repository layout
 
 ```
@@ -35,8 +50,8 @@ OphirMineralVentures/
 
 | Layer | Choice | Notes |
 |---|---|---|
-| CMS | **Umbraco CMS**, latest LTS at scaffold time (13.x or newer) | Open source, MIT license, free regardless of scale |
-| Framework | **ASP.NET Core**, current .NET LTS | Pin the exact version in `global.json` once scaffolded |
+| CMS | **Umbraco 17 LTS** | Open source, MIT license, free regardless of scale. Runs on .NET 10 |
+| Framework | **ASP.NET Core on .NET 10 LTS** | SDK 10.0.301 already installed on this machine (verified 2026-08-07). Pin the exact version in `global.json` once scaffolded |
 | Database | **SQLite** for dev and for Tier A production | Zero-ops, file-based, avoids a separate DB service cost. Move to Azure SQL only if Tier B is adopted |
 | Hosting (default) | **Tier A — budget ASP.NET host** (e.g. SmarterASP.NET-class) | ~$104/yr all-in. See §8 for the full tier comparison |
 | CDN/WAF/DNS | **Cloudflare Free** | MX records stay pointed at Google Workspace — email is completely untouched by this project |
@@ -60,6 +75,8 @@ dotnet new umbraco -n OphirMineralVentures.Web --friendly-name "Admin" --friendl
 - Nullable reference types: enabled.
 - File-scoped namespaces.
 - `dotnet user-secrets` for local connection strings/API keys. Never committed. Production secrets live in host-level environment variables/app settings.
+- **Testing**: no dedicated test project needed at this site's scope. If one becomes warranted later (sitemap.xml generation logic, contact-form validation rules), xUnit is the .NET-ecosystem default — don't reach for anything more elaborate for a content-driven brochure site.
+- Running `dotnet new gitignore` inside `src/` after scaffolding is expected and fine — it'll sit alongside the root `.gitignore` in this repo, not replace it.
 
 ## 5. Content model — Umbraco Document Types
 
@@ -153,15 +170,21 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with: { dotnet-version: '8.0.x' }
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v6
+        with: { dotnet-version: '10.0.x' }
       - run: dotnet publish -c Release -o ./publish
       - uses: azure/webapps-deploy@v3
         with: { app-name: ophirmineralventures, package: ./publish }
 ```
 
+Action versions above (`@v6`, `@v3`) were current as of 2026-08-07 — check the Marketplace for newer major versions before reusing this verbatim; GitHub Action tags move faster than this file gets updated.
+
 Secrets (deploy credentials, SendGrid API key) live in GitHub Actions secrets. Never in `appsettings.json`, never committed.
+
+## General rule: use current stable versions, not the ones written above
+
+Every specific version pinned in this file (.NET 10, Umbraco 17, the Action tags above) was the latest stable release as of 2026-08-07. The instruction from the project owner is to build on **current stable versions across the whole stack**, not to freeze on whatever's written here — treat every version number in this document as "verify this is still latest stable, bump if not" rather than as a hard requirement to match exactly. The one exception: don't jump to a *preview/RC* release for the sake of being newest — "latest stable," not "latest, period."
 
 ## 9. Explicitly out of scope — do not build unless asked
 
