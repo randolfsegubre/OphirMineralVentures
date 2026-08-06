@@ -1,0 +1,325 @@
+<title>Ophir Mineral Ventures — Website Cost Proposal</title>
+<style>
+  :root{
+    --paper:#F5F1E7; --paper-raised:#FFFFFF; --ink:#201C16; --ink-soft:#4B453B;
+    --slate:#33474A; --ore:#A85A2A; --ore-soft:#F0DFCC; --seam:#4F6B57; --seam-soft:#E1E9E2;
+    --line:rgba(32,28,22,0.15); --line-strong:rgba(32,28,22,0.32); --danger:#a13f2e;
+    --font-display:Georgia,"Noto Serif","Iowan Old Style",serif;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:ui-monospace,"Cascadia Code","SF Mono",Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#16181A; --paper-raised:#1D2022; --ink:#EAE5D8; --ink-soft:#B8B2A2;
+      --slate:#9FB8B4; --ore:#E39257; --ore-soft:#3A2A1E; --seam:#8CBB9B; --seam-soft:#20302A;
+      --line:rgba(234,229,216,0.16); --line-strong:rgba(234,229,216,0.34); --danger:#e2836f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#16181A; --paper-raised:#1D2022; --ink:#EAE5D8; --ink-soft:#B8B2A2;
+    --slate:#9FB8B4; --ore:#E39257; --ore-soft:#3A2A1E; --seam:#8CBB9B; --seam-soft:#20302A;
+    --line:rgba(234,229,216,0.16); --line-strong:rgba(234,229,216,0.34); --danger:#e2836f;
+  }
+  :root[data-theme="light"]{
+    --paper:#F5F1E7; --paper-raised:#FFFFFF; --ink:#201C16; --ink-soft:#4B453B;
+    --slate:#33474A; --ore:#A85A2A; --ore-soft:#F0DFCC; --seam:#4F6B57; --seam-soft:#E1E9E2;
+    --line:rgba(32,28,22,0.15); --line-strong:rgba(32,28,22,0.32); --danger:#a13f2e;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body); line-height:1.6; font-size:16px; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--ore-soft); }
+  .wrap{ max-width:920px; margin:0 auto; padding:0 24px 120px; }
+  a{ color:var(--ore); }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--ore); outline-offset:2px; }
+
+  .cover{ padding:72px 24px 40px; border-bottom:1px solid var(--line); max-width:920px; margin:0 auto; }
+  .eyebrow{ font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--seam); margin:0 0 18px; }
+  h1.title{ font-family:var(--font-display); font-weight:700; font-size:clamp(30px,4.6vw,44px); line-height:1.1; margin:0 0 14px; text-wrap:balance; }
+  .subtitle{ font-size:18px; color:var(--ink-soft); max-width:640px; margin:0 0 28px; text-wrap:balance;}
+  .cover-meta{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px; border-top:1px solid var(--line); padding-top:20px; font-family:var(--font-mono); font-size:12.5px; }
+  .cover-meta dt{ text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin-bottom:4px;}
+  .cover-meta dd{ margin:0; color:var(--ink); font-size:14px;}
+
+  .execsum{ max-width:920px; margin:0 auto; padding:40px 24px 48px; border-bottom:1px solid var(--line); }
+  .execsum-box{ background:var(--paper-raised); border:1px solid var(--line-strong); border-radius:8px; padding:28px 30px; }
+  .execsum-box h2{ font-family:var(--font-display); font-size:22px; margin:0 0 14px; }
+  .execsum-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
+  @media (max-width:680px){ .execsum-grid{ grid-template-columns:1fr; } }
+  .execsum-stat b{ display:block; font-family:var(--font-mono); font-variant-numeric:tabular-nums; font-size:22px; }
+  .execsum-stat span{ font-size:12.5px; color:var(--ink-soft); }
+
+  section{ padding:52px 0; border-bottom:1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:8px; }
+  .sec-num{ font-family:var(--font-mono); color:var(--ore); font-size:14px; }
+  h2{ font-family:var(--font-display); font-size:27px; margin:0; text-wrap:balance; }
+  .sec-dek{ color:var(--ink-soft); font-size:16px; max-width:640px; margin:6px 0 26px; }
+  h3{ font-family:var(--font-display); font-size:18.5px; margin:30px 0 10px; color:var(--slate); }
+  p{ margin:0 0 14px; max-width:70ch; }
+  ul, ol{ margin:0 0 16px; padding-left:22px; }
+  li{ margin-bottom:8px; max-width:66ch; }
+  strong{ color:var(--ink); }
+
+  .callout{ background:var(--ore-soft); border:1px solid var(--line); border-left:3px solid var(--ore); border-radius:4px; padding:16px 18px; margin:18px 0; font-size:14.5px; }
+  .callout .label{ font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.08em; font-size:11.5px; color:var(--ore); display:block; margin-bottom:6px;}
+  .callout.seam{ background:var(--seam-soft); border-left-color:var(--seam); }
+  .callout.seam .label{ color:var(--seam); }
+  .callout.danger{ background:color-mix(in srgb, var(--danger) 12%, var(--paper)); border-left-color:var(--danger); }
+  .callout.danger .label{ color:var(--danger); }
+  .callout.muted{ background:var(--paper-raised); border-left-color:var(--line-strong); }
+  .callout.muted .label{ color:var(--ink-soft); }
+
+  table{ width:100%; border-collapse:collapse; font-size:14.5px; background:var(--paper-raised); }
+  .tbl-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; margin:18px 0; }
+  th, td{ text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); background:var(--paper); white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td.num, th.num{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
+  tfoot td{ font-family:var(--font-mono); font-weight:700; border-top:2px solid var(--line-strong); }
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:680px){ .grid2, .grid3{ grid-template-columns:1fr; } }
+  .card{ border:1px solid var(--line); border-radius:6px; padding:18px 20px; background:var(--paper-raised); }
+  .card h4{ font-family:var(--font-display); margin:0 0 8px; font-size:16px; }
+  .card p{ font-size:13.5px; margin-bottom:0; color:var(--ink-soft); }
+  .card.tierhead{ background:var(--ore-soft); border-color:var(--line-strong); }
+  .card.tierhead h4{ color:var(--ink); }
+  .card.tierhead.b{ background:var(--seam-soft); }
+  .card.tierhead.c{ background:var(--paper); }
+
+  .chiprow{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+  .chip{ font-family:var(--font-mono); font-size:12px; padding:4px 10px; border:1px solid var(--line-strong); border-radius:100px; color:var(--ink-soft); }
+  .chip.free{ color:var(--seam); border-color:var(--seam); }
+  .chip.paid{ color:var(--ore); border-color:var(--ore); }
+
+  .tag{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; padding:2px 8px; border-radius:3px; }
+  .tag.deferred{ background:var(--seam-soft); color:var(--seam); }
+
+  .approval{ border:1px dashed var(--line-strong); border-radius:6px; padding:22px 24px; margin-top:10px; }
+  .approval-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px 32px; margin-top:16px; }
+  @media (max-width:600px){ .approval-grid{ grid-template-columns:1fr; } }
+  .approval-line{ border-bottom:1px solid var(--line-strong); padding-bottom:6px; margin-bottom:4px; min-height:22px; }
+  .approval-cap{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); }
+
+  footer{ padding:40px 0 0; color:var(--ink-soft); font-size:13px; font-family:var(--font-mono); }
+</style>
+
+<div class="cover">
+  <p class="eyebrow">Companion to the Website Plan &amp; Architecture — Draft v1.1</p>
+  <h1 class="title">Website Cost Proposal</h1>
+  <p class="subtitle">The full cost picture for the recommended Umbraco/ASP.NET Core platform: infrastructure, the CMS platform itself, security, ongoing maintenance, and what's intentionally left out of this phase. Prepared for review and sign-off.</p>
+  <dl class="cover-meta">
+    <div><dt>Prepared for</dt><dd>John David Montilla &amp; Associates</dd></div>
+    <div><dt>Stack</dt><dd>Umbraco CMS on ASP.NET Core</dd></div>
+    <div><dt>Status</dt><dd>Draft — for review</dd></div>
+    <div><dt>Date</dt><dd>2026-08-07</dd></div>
+  </dl>
+</div>
+
+<div class="execsum">
+  <div class="execsum-box">
+    <h2>Executive summary</h2>
+    <p style="margin-bottom:10px;">Recommendation: build on <strong>Umbraco</strong>, a free, open-source content management system, self-hosted on a budget ASP.NET Core plan. The CMS itself has no license fee — the money goes entirely to hosting, not software. This keeps the site inexpensive to run indefinitely while meeting the compliance and security bar the business needs.</p>
+    <p style="margin-bottom:0;">Advertising as a way to offset costs was evaluated and is <strong>deferred to a future phase</strong> — not part of this proposal (§08). It doesn't change the recommendation below either way: infrastructure cost is already low enough that self-funding isn't the deciding factor.</p>
+    <div class="execsum-grid">
+      <div class="execsum-stat"><b>~$104 / ~₱6,313</b><span>Year 1, recommended tier (domain + hosting)</span></div>
+      <div class="execsum-stat"><b>$0</b><span>Umbraco CMS license — free, open source, no cap</span></div>
+      <div class="execsum-stat"><b>~$104/yr / ~₱6,313/yr</b><span>Ongoing run-rate after year 1, before any maintenance retainer</span></div>
+    </div>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin:16px 0 0;">All peso figures in this document use the mid-market USD→PHP rate <strong>as of August 6, 2026 (≈₱60.70 = US$1)</strong> — exchange rates move daily; treat these as a same-day guide, not a locked-in quote.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section id="framing">
+  <div class="sec-head"><span class="sec-num">01</span><h2>Framing: this is a cost center, and that's fine</h2></div>
+  <p class="sec-dek">Keep the north star from the main plan in view before looking at any number below.</p>
+  <p>The site's job is compliance credibility and marketing support for a business whose real revenue comes from ore shipments worth six to seven figures. It is not expected to pay for itself. That reframes every decision in this document: the goal isn't the cheapest possible setup at any cost to security — it's <strong>spending as little as responsibly possible while never being the reason a deal falls through or a compliance review goes badly</strong>.</p>
+  <div class="callout seam">
+    <span class="label">Keep this number in your head</span>
+    Every recurring budget figure in this document is under $250/year in its self-hosted form. Compare that to the ~$39.86M single shipment referenced in the main plan's research section — this is not where the business should be cost-sensitive in absolute terms, even though it's still worth doing properly and cheaply.
+  </div>
+</section>
+
+<section id="costbuckets">
+  <div class="sec-head"><span class="sec-num">02</span><h2>What actually costs money</h2></div>
+  <p class="sec-dek">Five buckets. Only one of them has a hard floor that must be paid in cash.</p>
+  <div class="grid2">
+    <div class="card"><h4>1 · Infrastructure</h4><p>Domain, hosting, database, CDN. The only bucket with a hard minimum floor — someone has to run a server somewhere. Covered in §03.</p></div>
+    <div class="card"><h4>2 · Platform &amp; licensing</h4><p>The CMS software itself. Covered separately in §04, because it deserves its own answer: is Umbraco really free, and what are the optional paid layers around it?</p></div>
+    <div class="card"><h4>3 · Security &amp; reliability</h4><p>Backups, monitoring, patching, SSL. Mostly free or built into the hosting choice — covered in §05, where "secure" and "cheap" turn out not to conflict much.</p></div>
+    <div class="card"><h4>4 · People time</h4><p>Whoever applies updates, checks backups, and makes content-model changes. Free if Randolf does it as-is; a real budget line if it's ever outsourced. Covered in §06.</p></div>
+    <div class="card"><h4>5 · Content upkeep</h4><p>Fresh photos, updated certificates, a translated page if the bilingual roadmap item happens. Irregular, client-driven, not a recurring bill.</p></div>
+  </div>
+</section>
+
+<section id="tiers">
+  <div class="sec-head"><span class="sec-num">03</span><h2>Infrastructure — two self-hosted options</h2></div>
+  <p class="sec-dek">The difference between these tiers is operational convenience, not security posture. Neither one is "the insecure option." (A third, fully-managed option is covered in §04 alongside the rest of the Umbraco-specific costs.)</p>
+
+  <div class="grid2">
+    <div class="card tierhead"><h4>Tier A — Minimum Secure</h4><p>Budget ASP.NET host + SQLite. Deploy via FTP or a simple CI push. Good default for year one.</p></div>
+    <div class="card tierhead b"><h4>Tier B — Managed (Azure)</h4><p>Azure App Service + Azure SQL. Staging slots, built-in monitoring, easier to scale if traffic or team grows.</p></div>
+  </div>
+
+  <h3>Tier A — Minimum Secure</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>Item</th><th class="num">USD/yr</th><th class="num">≈ PHP/yr</th><th>Notes</th></tr>
+    <tr><td>Domain (.com)</td><td class="num">$20</td><td class="num">₱1,214</td><td>Annual renewal</td></tr>
+    <tr><td>ASP.NET hosting (SmarterASP.NET-class)</td><td class="num">$84</td><td class="num">₱5,099</td><td>~$7/mo, custom domain + free SSL included</td></tr>
+    <tr><td>Database — SQLite</td><td class="num">$0</td><td class="num">₱0</td><td>Embedded file, no separate DB service</td></tr>
+    <tr><td>Cloudflare (DNS/CDN/WAF)</td><td class="num">$0</td><td class="num">₱0</td><td>Free plan</td></tr>
+    <tr><td>Backups</td><td class="num">$0</td><td class="num">₱0</td><td>Scripted export to John's existing Google Drive (Workspace storage he already pays for)</td></tr>
+    <tr><td>Uptime monitoring</td><td class="num">$0</td><td class="num">₱0</td><td>UptimeRobot free tier — email/SMS alert if the site goes down</td></tr>
+    <tr><td>Contact-form email delivery</td><td class="num">$0</td><td class="num">₱0</td><td>SendGrid free tier, 100 emails/day</td></tr>
+    <tr><td><strong>Total — infrastructure only</strong></td><td class="num"><strong>~$104</strong></td><td class="num"><strong>~₱6,313</strong></td><td>This is the number to prepare if the site stays self-maintained</td></tr>
+  </table></div>
+
+  <h3>Tier B — Managed (Azure)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>Item</th><th class="num">USD/yr</th><th class="num">≈ PHP/yr</th><th>Notes</th></tr>
+    <tr><td>Domain (.com)</td><td class="num">$20</td><td class="num">₱1,214</td><td>Same as Tier A</td></tr>
+    <tr><td>Azure App Service (B1, Linux)</td><td class="num">$156</td><td class="num">₱9,469</td><td>~$13/mo, includes a staging slot for safe updates</td></tr>
+    <tr><td>Azure SQL Database (Basic)</td><td class="num">$60</td><td class="num">₱3,642</td><td>~$5/mo, managed backups included</td></tr>
+    <tr><td>Cloudflare (DNS/CDN/WAF)</td><td class="num">$0</td><td class="num">₱0</td><td>Free plan</td></tr>
+    <tr><td>Application Insights (monitoring)</td><td class="num">$0</td><td class="num">₱0</td><td>Free monthly quota covers this traffic volume</td></tr>
+    <tr><td>Contact-form email delivery</td><td class="num">$0</td><td class="num">₱0</td><td>SendGrid free tier</td></tr>
+    <tr><td><strong>Total — infrastructure only</strong></td><td class="num"><strong>~$236</strong></td><td class="num"><strong>~₱14,325</strong></td><td>Buys managed backups, staging, and easier scaling</td></tr>
+  </table></div>
+  <div class="callout">
+    <span class="label">Exchange rate — as of today</span>
+    All PHP figures on this page use the mid-market rate <strong>as of August 6, 2026: ≈₱60.70 = US$1.</strong> This moves daily — re-check the live rate before treating any peso figure as final, especially for Tier B's Azure costs, which are billed and fluctuate in USD regardless.
+  </div>
+
+  <div class="callout">
+    <span class="label">Recommendation</span>
+    Start on <strong>Tier A</strong>. Nothing about Tier B is more secure — it's more convenient to operate at scale. Move to it only if the site starts needing staging environments for frequent changes, or if the maintainer wants to be less hands-on with server-level upkeep.
+  </div>
+</section>
+
+<section id="umbraco-platform">
+  <div class="sec-head"><span class="sec-num">04</span><h2>The Umbraco platform itself</h2></div>
+  <p class="sec-dek">Answering directly: yes, the CMS software has its own cost structure, separate from where it's hosted. Here's every layer of it.</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Layer</th><th>What it is</th><th class="num">Cost</th><th>In this proposal?</th></tr>
+    <tr><td><strong>Umbraco CMS (core)</strong></td><td>The content management system itself — content tree, backoffice editor, templating engine</td><td class="num">$0</td><td>Yes — this is what Tier A/B run</td></tr>
+    <tr><td>Umbraco Cloud</td><td>Umbraco's own fully-managed hosting: infrastructure + deployment pipeline + support bundled together</td><td class="num">$660–$10,800/yr (₱40,062–₱655,560)</td><td>No — see below</td></tr>
+    <tr><td>Umbraco Forms</td><td>Official add-on for building forms visually in the backoffice, no code</td><td class="num">Paid, quote-based</td><td>No — hand-built instead</td></tr>
+    <tr><td>Umbraco commercial support</td><td>A paid contract with Umbraco HQ for guaranteed support response times on a self-hosted install</td><td class="num">Quote-based</td><td>No — see §06</td></tr>
+  </table></div>
+
+  <h3>The core is genuinely free</h3>
+  <p>Umbraco CMS is licensed under MIT — free to use, modify, and run commercially, with no user limit, no revenue threshold, and no expiry. This is not a "free trial" or a "community edition" with restrictions; it's the same software Umbraco's largest enterprise customers run. There is no license cost anywhere in Tier A or Tier B above.</p>
+
+  <h3>Umbraco Cloud — the official all-in-one option (not recommended here)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>Plan</th><th class="num">Per month</th><th class="num">Per year</th><th>Fit for this site</th></tr>
+    <tr><td>Starter</td><td class="num">$55 (₱3,339)</td><td class="num">$660 (₱40,062)</td><td>Aimed at low-traffic, low-complexity sites with no support needs — closest match, but still ~6x Tier A's entire infrastructure cost for what Cloudflare + a budget host already provide</td></tr>
+    <tr><td>Standard</td><td class="num">$330 (₱20,031)</td><td class="num">$3,960 (₱240,372)</td><td>Built for teams needing multiple environments and faster support — well beyond this site's scale</td></tr>
+    <tr><td>Professional</td><td class="num">$900 (₱54,630)</td><td class="num">$10,800 (₱655,560)</td><td>Large, high-traffic, support-critical sites — not this one</td></tr>
+  </table></div>
+  <p style="font-size:12.5px;color:var(--ink-soft)">Peso figures throughout this document use ≈₱60.70 = US$1, the mid-market rate as of August 6, 2026 — check the live rate for anything time-sensitive.</p>
+  <p>Umbraco Cloud is a legitimate product — it removes almost all server-management work by bundling hosting, backups, and a deployment pipeline with a support contract. It's not recommended here because that convenience is priced for teams without an in-house .NET developer, which this project isn't. Worth revisiting only if the site outgrows self-hosting or the maintenance arrangement in §06 changes materially.</p>
+
+  <h3>Umbraco Forms — why it's being skipped</h3>
+  <p>Umbraco Forms lets a non-technical editor build new forms from the backoffice without a developer. It's a real feature with a real (quote-based, not publicly fixed) price. This proposal skips it because the site only needs one form for the foreseeable future — the contact/inquiry form — and a developer hand-building one form in Razor is a few hours of work, once, for free, versus an ongoing license for a form-builder tool that would mostly sit idle. If the site later needs many different forms edited frequently without developer involvement, this is worth re-pricing.</p>
+
+  <h3>Umbraco commercial support — why it's being skipped</h3>
+  <p>Umbraco HQ sells direct support contracts for self-hosted installs, priced case-by-case (roughly comparable in scale to the Cloud support tiers — from around $40/month up to four figures for enterprise-grade SLAs). This is a substitute for having a developer on hand, which the site already has. Revisit only under Scenario 3 in §06, if there's ever a period with no developer relationship in place at all.</p>
+</section>
+
+<section id="security-free">
+  <div class="sec-head"><span class="sec-num">05</span><h2>Secure without spending more</h2></div>
+  <p class="sec-dek">The honest answer to "can we save money without cutting security corners": yes — almost everything that actually matters here is free. What costs money is convenience, not safety.</p>
+
+  <h3>Free and non-negotiable — do these regardless of tier</h3>
+  <div class="chiprow">
+    <span class="chip free">HTTPS via free host/Let's Encrypt cert</span>
+    <span class="chip free">Security headers (CSP, HSTS, X-Frame-Options) in ASP.NET Core middleware</span>
+    <span class="chip free">2FA on the Umbraco backoffice</span>
+    <span class="chip free">Cloudflare Free WAF + DDoS protection</span>
+    <span class="chip free">Scripted offsite backups</span>
+    <span class="chip free">NuGet dependency updates on a monthly cadence</span>
+    <span class="chip free">Least-privilege editor role for the owner</span>
+  </div>
+
+  <h3>Paid — nice to have, skip for v1</h3>
+  <div class="chiprow">
+    <span class="chip paid">Cloudflare Pro ($20/mo) — faster WAF rule tuning, image optimization</span>
+    <span class="chip paid">Managed uptime/status page (Pingdom, Better Uptime paid tiers)</span>
+    <span class="chip paid">Umbraco Cloud (§04) — bundles hosting, deploy pipeline and support</span>
+    <span class="chip paid">Third-party security audit / penetration test</span>
+  </div>
+  <p style="font-size:14px;">None of the paid items above address a gap the free list leaves open for a site of this size and traffic. Revisit them only if the site starts handling something more sensitive than a contact form — e.g. a buyer login portal down the line.</p>
+</section>
+
+<section id="people">
+  <div class="sec-head"><span class="sec-num">06</span><h2>The real variable: people time</h2></div>
+  <p class="sec-dek">Infrastructure and licensing are the easy numbers. This is the one the owner and the developer actually need to agree on — this document intentionally doesn't assume an answer.</p>
+
+  <div class="grid3">
+    <div class="card"><h4>Scenario 1 — Developer maintains it, no charge</h4><p><strong>$0/mo.</strong> Fine as long as it's genuinely sustainable long-term. The risk is informal: no SLA, best-effort turnaround, dependent on one person's availability.</p></div>
+    <div class="card"><h4>Scenario 2 — Light paid retainer</h4><p><strong>₱2,000–6,000/mo (~$33–99)</strong>, in line with the Philippine market rate for a "basic" plan (updates, backups, a few support hours). Turns an informal favor into a predictable line item.</p></div>
+    <div class="card"><h4>Scenario 3 — Outside help takes over</h4><p><strong>₱6,000–25,000/mo (~$99–412)</strong> depending on scope, if the original developer is ever unavailable. Umbraco's talent pool is smaller than WordPress's but real.</p></div>
+  </div>
+  <p style="font-size:14px;color:var(--ink-soft);margin-top:14px;">Whichever scenario is chosen, put it in writing once — even a one-paragraph email between the owner and the developer — so "who fixes it if it breaks" isn't ambiguous later.</p>
+</section>
+
+<section id="summary">
+  <div class="sec-head"><span class="sec-num">07</span><h2>What to prepare — for the owner and associates</h2></div>
+  <p class="sec-dek">The number to approve. No speculative income netted against it — see §08 for why.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Line item</th><th class="num">Year 1</th><th class="num">Year 2+</th></tr>
+    <tr><td>Infrastructure (Tier A, recommended start)</td><td class="num">~$104 (₱6,313)</td><td class="num">~$104 (₱6,313)</td></tr>
+    <tr><td>Umbraco CMS license</td><td class="num">$0</td><td class="num">$0</td></tr>
+    <tr><td>One-time: real photos/branding polish (optional)</td><td class="num">$0–150 (₱0–9,105)</td><td class="num">—</td></tr>
+    <tr><td>Maintenance (Scenario 1 default — see §06)</td><td class="num">$0</td><td class="num">$0</td></tr>
+    <tr><td><strong>Total to approve</strong></td><td class="num"><strong>~$104–254 (₱6,313–15,418)</strong></td><td class="num"><strong>~$104 (₱6,313)</strong></td></tr>
+  </table></div>
+  <p style="font-size:13.5px;color:var(--ink-soft)">If a paid maintenance retainer is agreed instead of Scenario 1, add that figure from §06 on top — it will be the largest line by far, and it's the one number in this whole proposal that's a conversation, not a calculation. Peso figures use the ≈₱60.70 = US$1 rate as of August 6, 2026 — re-check before finalizing.</p>
+</section>
+
+<section id="ads">
+  <div class="sec-head"><span class="sec-num">08</span><h2>Deferred to a future phase <span class="tag deferred">Not in this proposal</span></h2></div>
+  <p class="sec-dek">Advertising was explored as a way to help offset hosting/maintenance cost. It's set aside for now — kept here only as a reference for later, not as something being asked for approval today.</p>
+
+  <div class="callout muted">
+    <span class="label">Why it's parked, not pursued</span>
+    Infrastructure cost is already low enough (§03, §07) that offsetting it isn't the deciding factor for this project. Ad income would also be minor at this site's realistic traffic and would arrive slowly (Google withholds AdSense payouts until $100 accumulates). It's better evaluated later, once the site has real traffic data, than built into launch planning now.
+  </div>
+
+  <h3>If revisited later</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>Scenario</th><th>Monthly visits</th><th class="num">Est. monthly ad income</th></tr>
+    <tr><td>Conservative — likely year one</td><td>~300–600 (mostly direct/referral)</td><td class="num">$0–5</td></tr>
+    <tr><td>Base — after a year of news/blog content</td><td>~1,500–3,000</td><td class="num">$5–25</td></tr>
+    <tr><td>Optimistic — active SEO content investment</td><td>~5,000+</td><td class="num">$25–75</td></tr>
+  </table></div>
+  <ul>
+    <li>Keep any ads confined to a News/Industry-Updates section — never on Home, About, Compliance, Products, or Contact, which exist to build trust with buyers and banks doing due diligence.</li>
+    <li>Prefer direct sponsored placements (logistics partners, assay labs, equipment suppliers) over generic display ads if pursued — better fit for a B2B trust site, higher value per placement.</li>
+    <li>Ad scripts require a relaxed Content-Security-Policy and a cookie-consent banner; scope that relaxation to only the ad-bearing pages, and disclose it in the Privacy Policy per the Data Privacy Act.</li>
+  </ul>
+</section>
+
+<section id="approval">
+  <div class="sec-head"><h2>Sign-off</h2></div>
+  <p class="sec-dek">For the owner and any associates reviewing this proposal.</p>
+  <div class="approval">
+    <div class="approval-grid">
+      <div><div class="approval-line">&nbsp;</div><span class="approval-cap">Name / Role</span></div>
+      <div><div class="approval-line">&nbsp;</div><span class="approval-cap">Date</span></div>
+      <div><div class="approval-line">&nbsp;</div><span class="approval-cap">Tier approved (A / B)</span></div>
+      <div><div class="approval-line">&nbsp;</div><span class="approval-cap">Maintenance scenario agreed (1 / 2 / 3)</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Ophir Mineral Ventures — Website Cost Proposal · Draft v1 · Companion to the Website Plan &amp; Architecture (v1.1) · Prepared 2026-08-07.
+</footer>
+
+</div>

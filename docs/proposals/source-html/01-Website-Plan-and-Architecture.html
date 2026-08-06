@@ -1,0 +1,532 @@
+<title>Ophir Mineral Ventures — Website Plan &amp; Architecture</title>
+<style>
+  :root{
+    --paper:#F5F1E7;
+    --paper-raised:#FFFFFF;
+    --ink:#201C16;
+    --ink-soft:#4B453B;
+    --slate:#33474A;
+    --ore:#A85A2A;
+    --ore-soft:#F0DFCC;
+    --seam:#4F6B57;
+    --seam-soft:#E1E9E2;
+    --line:rgba(32,28,22,0.15);
+    --line-strong:rgba(32,28,22,0.32);
+    --danger:#a13f2e;
+    --font-display:Georgia,"Noto Serif","Iowan Old Style",serif;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:ui-monospace,"Cascadia Code","SF Mono",Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#16181A;
+      --paper-raised:#1D2022;
+      --ink:#EAE5D8;
+      --ink-soft:#B8B2A2;
+      --slate:#9FB8B4;
+      --ore:#E39257;
+      --ore-soft:#3A2A1E;
+      --seam:#8CBB9B;
+      --seam-soft:#20302A;
+      --line:rgba(234,229,216,0.16);
+      --line-strong:rgba(234,229,216,0.34);
+      --danger:#e2836f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#16181A; --paper-raised:#1D2022; --ink:#EAE5D8; --ink-soft:#B8B2A2;
+    --slate:#9FB8B4; --ore:#E39257; --ore-soft:#3A2A1E; --seam:#8CBB9B; --seam-soft:#20302A;
+    --line:rgba(234,229,216,0.16); --line-strong:rgba(234,229,216,0.34); --danger:#e2836f;
+  }
+  :root[data-theme="light"]{
+    --paper:#F5F1E7; --paper-raised:#FFFFFF; --ink:#201C16; --ink-soft:#4B453B;
+    --slate:#33474A; --ore:#A85A2A; --ore-soft:#F0DFCC; --seam:#4F6B57; --seam-soft:#E1E9E2;
+    --line:rgba(32,28,22,0.15); --line-strong:rgba(32,28,22,0.32); --danger:#a13f2e;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font-body); line-height:1.6; font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--ore-soft); }
+  .wrap{ max-width:920px; margin:0 auto; padding:0 24px 120px; }
+  a{ color:var(--ore); }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--ore); outline-offset:2px; }
+
+  /* Cover */
+  .cover{
+    padding:72px 24px 48px; border-bottom:1px solid var(--line);
+    max-width:920px; margin:0 auto;
+  }
+  .eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--seam); margin:0 0 18px;
+  }
+  h1.title{
+    font-family:var(--font-display); font-weight:700; font-size:clamp(32px,5vw,48px);
+    line-height:1.08; margin:0 0 14px; text-wrap:balance; color:var(--ink);
+  }
+  .subtitle{ font-size:19px; color:var(--ink-soft); max-width:640px; margin:0 0 28px; text-wrap:balance;}
+  .cover-meta{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px;
+    border-top:1px solid var(--line); padding-top:20px; font-family:var(--font-mono); font-size:12.5px;
+  }
+  .cover-meta dt{ text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin-bottom:4px;}
+  .cover-meta dd{ margin:0; color:var(--ink); font-size:14px;}
+
+  section{ padding:56px 0; border-bottom:1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:8px; }
+  .sec-num{ font-family:var(--font-mono); color:var(--ore); font-size:14px; letter-spacing:.04em; }
+  h2{
+    font-family:var(--font-display); font-size:28px; margin:0; color:var(--ink); text-wrap:balance;
+  }
+  .sec-dek{ color:var(--ink-soft); font-size:16px; max-width:640px; margin:6px 0 28px; }
+  h3{ font-family:var(--font-display); font-size:19px; margin:32px 0 10px; color:var(--slate); }
+  p{ margin:0 0 14px; max-width:70ch; }
+  ul, ol{ margin:0 0 16px; padding-left:22px; }
+  li{ margin-bottom:8px; max-width:66ch; }
+  strong{ color:var(--ink); }
+
+  .callout{
+    background:var(--ore-soft); border:1px solid var(--line); border-left:3px solid var(--ore);
+    border-radius:4px; padding:16px 18px; margin:18px 0; font-size:14.5px;
+  }
+  .callout .label{ font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.08em; font-size:11.5px; color:var(--ore); display:block; margin-bottom:6px;}
+  .callout.seam{ background:var(--seam-soft); border-left-color:var(--seam); }
+  .callout.seam .label{ color:var(--seam); }
+
+  table{ width:100%; border-collapse:collapse; font-size:14.5px; background:var(--paper-raised); }
+  .tbl-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; margin:18px 0; }
+  th, td{ text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ font-family:var(--font-mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); background:var(--paper); white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td.num, th.num{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
+  td.mono{ font-family:var(--font-mono); font-size:13.5px; }
+  tfoot td{ font-family:var(--font-mono); font-weight:700; border-top:2px solid var(--line-strong); }
+
+  .chiprow{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0; }
+  .chip{
+    font-family:var(--font-mono); font-size:12px; padding:4px 10px; border:1px solid var(--line-strong);
+    border-radius:100px; color:var(--ink-soft);
+  }
+
+  figure{ margin:26px 0; }
+  figure svg{ max-width:100%; height:auto; display:block; }
+  figcaption{ font-size:13px; color:var(--ink-soft); margin-top:10px; max-width:70ch; }
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width:680px){ .grid2{ grid-template-columns:1fr; } }
+  .card{ border:1px solid var(--line); border-radius:6px; padding:18px 20px; background:var(--paper-raised); }
+  .card h4{ font-family:var(--font-display); margin:0 0 8px; font-size:16.5px; }
+  .card p{ font-size:14px; margin-bottom:0; }
+
+  .checklist{ list-style:none; padding-left:0; }
+  .checklist li{ padding-left:28px; position:relative; }
+  .checklist li::before{
+    content:""; position:absolute; left:0; top:3px; width:16px; height:16px;
+    border:1.5px solid var(--line-strong); border-radius:3px;
+  }
+
+  .tag-priority{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; padding:2px 8px; border-radius:3px; letter-spacing:.05em; }
+  .tag-priority.high{ background:var(--ore-soft); color:var(--ore); }
+  .tag-priority.med{ background:var(--seam-soft); color:var(--seam); }
+
+  footer{ padding:48px 0 0; color:var(--ink-soft); font-size:13px; font-family:var(--font-mono); }
+</style>
+
+<div class="cover">
+  <p class="eyebrow">Website Strategy &amp; Technical Architecture — Draft v1.1 (revised architecture)</p>
+  <h1 class="title">Ophir Mineral Ventures, Inc.</h1>
+  <p class="subtitle">A compliance-forward, owner-manageable corporate website for a Philippine nickel &amp; chromite ore exporter — plan, architecture, security, deployment and cost, prepared for internal review before presenting to the owner.</p>
+  <dl class="cover-meta">
+    <div><dt>Prepared for</dt><dd>Internal review (pre-client)</dd></div>
+    <div><dt>Subject</dt><dd>John David Montilla, Owner</dd></div>
+    <div><dt>Status</dt><dd>Draft — pending client input</dd></div>
+    <div><dt>Date</dt><dd>2026-08-06</dd></div>
+  </dl>
+</div>
+
+<div class="wrap">
+
+<section id="research">
+  <div class="sec-head"><span class="sec-num">01</span><h2>Research findings</h2></div>
+  <p class="sec-dek">What's publicly verifiable about the company today, and what that implies for the site.</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Signal</th><td>Finding</td></tr>
+    <tr><td>Existing website</td><td>None found. No domain, no indexed site. Confirms the greenfield build.</td></tr>
+    <tr><td>Sector</td><td>Mineral ore mining/trading — <strong>nickel ore</strong> and <strong>chromite ore</strong> exports, sourced in the Philippines.</td></tr>
+    <tr><td>Trade activity (2025)</td><td>6 recorded export shipments, ~58.3 million kg total, single shipments valued from ~$146K to ~$39.86M.</td></tr>
+    <tr><td>Buyers</td><td><strong>100% of recorded trading partners are China-based</strong> (incl. Beijing Jiuda Hantang Trading, Tianjin Impaliva, Value Gain Development HK).</td></tr>
+    <tr><td>Registration / permits</td><td>Not publicly discoverable (SEC-PH, DENR-MGB permit databases returned no indexed record). Not unusual — these registries are not fully searchable by the public. Must be sourced directly from the client.</td></tr>
+    <tr><td>John David Montilla</td><td>No verifiable public profile matched with confidence. We deliberately did not try to cross-reference personal records — that's a conversation to have directly with him, not a research task.</td></tr>
+  </table></div>
+
+  <div class="callout">
+    <span class="label">Why this matters for the brief</span>
+    Because every buyer we can see is China-based, and single shipments run into the tens of millions of dollars, this site has a second, quieter job beyond "compliance": it's <strong>due-diligence collateral</strong>. Overseas buyers and their banks routinely vet counterparties online before wiring large sums. A thin, generic, or template-obvious site is itself a red flag in that process. A credible one accelerates deals.
+  </div>
+
+  <div class="callout seam">
+    <span class="label">Non-obvious recommendation</span>
+    Given the 100%-China buyer concentration, a <strong>bilingual English / Simplified Chinese (中文)</strong> toggle on the key commercial pages (About, Products, Certifications, Contact) is a stronger marketing lever here than almost anything else on this list — it directly serves the audience actually closing deals. Flagged in the roadmap (§11) rather than v1 scope, since it depends on John's appetite and translation budget.
+  </div>
+</section>
+
+<section id="googlehost">
+  <div class="sec-head"><span class="sec-num">02</span><h2>What John means by "Google host"</h2></div>
+  <p class="sec-dek">Untangling three different Google products that get mentally lumped together — plus what's actually true in 2026.</p>
+
+  <p>John almost certainly means <strong>Google Workspace</strong> — the paid product that gives him professional email like <code>john@ophirmineralventures.com</code> running on Gmail's infrastructure, plus Drive, Calendar and Docs. It is <em>not</em> a website product, even though Google bundles a very basic one inside it. Here's the full picture:</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Product</th><th>What it actually is</th><th>Relevant here?</th></tr>
+    <tr><td class="mono">Google Workspace</td><td>Paid subscription ($7–$22/user/month, annual) for business email on your own domain via Gmail, plus Drive/Calendar/Meet/Docs. This is what John pays for.</td><td><span class="tag-priority med">Keep as-is</span></td></tr>
+    <tr><td class="mono">Google Sites</td><td>A free, very basic drag-and-drop website builder bundled inside Workspace. Produces the generic-looking "template" sites John is reacting against. Not a CMS in any real sense — no plugins, no real SEO control, no custom design.</td><td><span class="tag-priority high">Do not use</span></td></tr>
+    <tr><td class="mono">Google Domains</td><td>Google's old domain registrar. <strong>Shut down and fully migrated to Squarespace Domains</strong> in 2024 — if John registered his domain through Google before that, it now lives in a Squarespace account, not a Google one.</td><td>Check where the domain actually lives now</td></tr>
+    <tr><td class="mono">Google Business Profile</td><td>Free listing that makes the company show up on Google Maps/local search. Separate from all of the above, and something we want regardless.</td><td><span class="tag-priority high">Set up in launch phase</span></td></tr>
+  </table></div>
+
+  <h3>How the email part technically works</h3>
+  <p>A domain's DNS zone is just a set of routing rules. Two record types matter here, and they can point to two completely different services without conflict:</p>
+  <ul>
+    <li><strong>MX records</strong> — tell the internet "mail for this domain goes to Google's mail servers." This is what makes Workspace email work, and it is completely independent of what the website runs on.</li>
+    <li><strong>A / CNAME records</strong> — tell browsers "the website for this domain lives at this server." This is what we control when we build the new site.</li>
+  </ul>
+  <p>Practical upshot: <strong>we can build a fully custom website and deploy it without touching John's email at all.</strong> The MX records stay exactly as they are; only the website-facing records change. Diagram in §04 makes this concrete.</p>
+
+  <div class="callout">
+    <span class="label">Action for the discovery call</span>
+    Ask John: (1) which domain registrar he logs into today — Google, Squarespace, or something else, (2) whether he wants to keep paying for Workspace email (recommended: yes, don't touch it), and (3) whether anyone ever built a Google Site for the business that's quietly live somewhere.
+  </div>
+</section>
+
+<section id="goals">
+  <div class="sec-head"><span class="sec-num">03</span><h2>Goals, audiences &amp; requirements</h2></div>
+  <p class="sec-dek">Product framing before any design or stack decision.</p>
+
+  <h3>Primary goals, in priority order</h3>
+  <ol>
+    <li><strong>Compliance &amp; credibility</strong> — a legitimate, verifiable public presence for regulators, banks, and counterparties running due diligence.</li>
+    <li><strong>Marketing &amp; deal-closing</strong> — professional collateral John can point buyers to instead of a WhatsApp number and a trade-directory listing.</li>
+    <li><strong>Owner independence</strong> — John edits text, swaps photos, and adds a news update himself; a developer is only needed for structural changes.</li>
+  </ol>
+
+  <h3>Audiences</h3>
+  <div class="grid2">
+    <div class="card"><h4>Overseas buyers &amp; their compliance teams</h4><p>Chinese trading houses and smelters vetting a new or existing supplier before wire transfer. Want: proof of legitimacy, product specs, contact clarity.</p></div>
+    <div class="card"><h4>Philippine regulators &amp; banks</h4><p>SEC, DENR-MGB, AMLA-covered banks handling large USD/RMB transfers. Want: registered name, permits, transparent ownership.</p></div>
+    <div class="card"><h4>Local stakeholders &amp; partners</h4><p>LGUs, community, logistics/shipping partners, potential JV partners. Want: legitimacy, operations overview, contact.</p></div>
+    <div class="card"><h4>John (the owner)</h4><p>Non-developer, needs to self-serve content changes. Want: a CMS he can actually drive without calling anyone.</p></div>
+  </div>
+
+  <h3>Non-negotiable requirements</h3>
+  <ul class="checklist">
+    <li>Owner can edit text/images/PDFs without writing code or calling a developer</li>
+    <li>Loads fast and reads credibly on mobile — most Chinese buyer-side contacts will open a WhatsApp-shared link on a phone</li>
+    <li>HTTPS, hardened admin access, offsite backups from day one</li>
+    <li>Doesn't touch or risk the existing Workspace email</li>
+    <li>Indexable by Google/Bing (and therefore Yahoo — see §07)</li>
+    <li>Data Privacy Act (RA 10173) compliant contact form and privacy policy</li>
+  </ul>
+</section>
+
+<section id="sitemap">
+  <div class="sec-head"><span class="sec-num">04</span><h2>Sitemap &amp; content plan</h2></div>
+  <p class="sec-dek">v1 scope — every row below is something the owner edits without a developer once the templates exist.</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Page</th><th>Purpose</th><th>Owner-editable content</th></tr>
+    <tr><td>Home</td><td>First impression, credibility signal, routes traffic</td><td>Hero text/photo, headline stats, featured news</td></tr>
+    <tr><td>About / Company Profile</td><td>Who Ophir Mineral Ventures is; owner bio</td><td>History, mission, leadership bios &amp; photos</td></tr>
+    <tr><td>Products (Nickel Ore, Chromite Ore)</td><td>B2B spec sheet for buyers</td><td>Grade/spec tables, photos, downloadable spec PDF</td></tr>
+    <tr><td>Compliance &amp; Certifications</td><td>The core "compliance" ask — SEC, DTI, BIR, DENR-MGB permits</td><td>Certificate images/PDFs, registration numbers, renewal dates</td></tr>
+    <tr><td>Sustainability / ESG</td><td>Environmental &amp; community practices — increasingly expected by buyers' compliance teams</td><td>Short narrative, photos, initiatives list</td></tr>
+    <tr><td>News / Updates</td><td>Freshness signal for SEO; shipment/award milestones</td><td>Blog-style posts, unlimited</td></tr>
+    <tr><td>Contact</td><td>Lead capture, routes inquiries by type</td><td>Form fields, address, map, WhatsApp/phone</td></tr>
+    <tr><td>Privacy Policy / Terms</td><td>Legal — Data Privacy Act compliance</td><td>Rarely changes; still owner-editable</td></tr>
+  </table></div>
+  <p style="font-size:14px;color:var(--ink-soft)">Careers, an investor-relations section, and a buyer RFQ portal are deliberately deferred — see the roadmap (§11).</p>
+</section>
+
+<section id="architecture">
+  <div class="sec-head"><span class="sec-num">05</span><h2>Technical architecture</h2></div>
+  <p class="sec-dek">Optimized for one constraint above all others: John must be able to run this without a developer on speed-dial.</p>
+
+  <div class="callout">
+    <span class="label">Revision — v1.1</span>
+    v1 of this plan recommended WordPress, weighted mainly toward "anyone could pick this up later." That's the wrong primary criterion — the brief was a stack <em>you</em> already know and can run without leaning on AI or learning a new language. Revised below: <strong>Umbraco</strong>, a self-hosted, open-source CMS built on ASP.NET Core/C#. Same non-technical editing experience for John, zero new language for you.
+  </div>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Option</th><th>Owner can self-edit?</th><th>Fits your existing skills?</th><th>Security surface</th><th>Cost/yr</th><th>Verdict</th></tr>
+    <tr><td><strong>Umbraco CMS</strong> (ASP.NET Core / C#, self-hosted)</td><td>Yes — polished, purpose-built non-technical backoffice</td><td><strong>Yes</strong> — pure C# and Razor, the same Visual Studio/.NET tooling you already use daily; SQLite or SQL Server, your call</td><td>Moderate-low — .NET's default output encoding and anti-forgery protections, a small dependency surface, and you wire the CSP/security headers yourself in middleware</td><td class="num">~$90–450</td><td><strong>Recommended</strong></td></tr>
+    <tr><td>WordPress + page-builder theme, managed hosting</td><td>Yes, mature, huge tutorial base</td><td>No — PHP/MySQL ecosystem, a different debugging mental model, plugin updates you'd be trusting rather than reading</td><td>Moderate — mitigated by managed host + WAF, but plugin sprawl is WordPress's classic weak point</td><td class="num">~$150–450</td><td>Only makes sense if you plan to eventually hand this off to someone else entirely</td></tr>
+    <tr><td>All-in-one builder (Webflow / Wix / Squarespace)</td><td>Yes, easiest onboarding</td><td>No — proprietary visual builder, no code at all to "maintain"</td><td>Low (vendor-managed)</td><td class="num">~$200–470</td><td>Fastest to launch, but reinforces the "generic template" feel John is trying to avoid, and it's not something you build or own</td></tr>
+  </table></div>
+
+  <p><strong>Recommendation: self-hosted Umbraco</strong> on ASP.NET Core, deployed the way you'd deploy any of your own .NET projects — Git repo, GitHub Actions, push to a host. John gets a content tree and a block-based page editor comparable to WordPress's; you get a codebase in a language you can read, extend, and secure yourself, with no PHP and no need to loop in AI to make sense of someone else's plugin. It's also genuinely custom — no theme-marketplace look to fight against.</p>
+
+  <h3>Why Umbraco, not a hand-rolled ASP.NET Core app</h3>
+  <p>You could build the whole thing yourself in plain ASP.NET Core MVC/Razor Pages with a hand-rolled admin panel — for a single-page brochure site that's a legitimate shortcut. Umbraco earns its place the moment John needs to add pages, reorder sections, or publish a news post <em>without you</em>: it gives him that editing surface for free, while every template, content type, and block is still C#/Razor you write and fully understand — not a black box.</p>
+
+  <figure>
+    <svg viewBox="0 0 920 460" role="img" aria-label="Diagram showing one domain's DNS zone splitting into two independent paths: an A/CNAME record routed through Cloudflare to the Umbraco web host for website traffic, and an MX record routed directly to Google Workspace for email — proving the new website can be deployed without touching existing email.">
+      <defs>
+        <marker id="arrowhead" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 7 3, 0 6" fill="currentColor"/>
+        </marker>
+      </defs>
+      <style>
+        text{ font-family:Georgia,serif; fill:currentColor; }
+        .lbl{ font-family:ui-monospace,Consolas,monospace; font-size:11.5px; }
+        .box{ fill:none; stroke:currentColor; stroke-width:1.4; }
+        .boxfill{ fill:currentColor; opacity:0.06; stroke:currentColor; stroke-width:1.4; }
+        line, path.arrow{ stroke:currentColor; stroke-width:1.4; fill:none; }
+      </style>
+
+      <!-- domain zone hub -->
+      <rect class="boxfill" x="345" y="20" width="230" height="56" rx="6"/>
+      <text x="460" y="43" font-size="14" text-anchor="middle" font-weight="700">ophirmineralventures.com</text>
+      <text x="460" y="60" text-anchor="middle" class="lbl">DNS zone (one domain)</text>
+
+      <!-- left branch: website -->
+      <path class="arrow" d="M400,76 C360,120 300,140 260,168" marker-end="url(#arrowhead)"/>
+      <text x="290" y="122" class="lbl" text-anchor="middle">A / CNAME record</text>
+
+      <rect class="box" x="150" y="170" width="220" height="46" rx="6"/>
+      <text x="260" y="198" font-size="13" text-anchor="middle">Cloudflare</text>
+      <text x="260" y="211" class="lbl" text-anchor="middle">DNS · CDN · WAF (proxied)</text>
+
+      <path class="arrow" d="M260,216 L260,258" marker-end="url(#arrowhead)"/>
+
+      <rect class="boxfill" x="140" y="260" width="240" height="56" rx="6"/>
+      <text x="260" y="284" font-size="13" text-anchor="middle" font-weight="700">Web host</text>
+      <text x="260" y="300" class="lbl" text-anchor="middle">Umbraco · ASP.NET Core · SQLite</text>
+
+      <path class="arrow" d="M260,316 L260,352" marker-end="url(#arrowhead)"/>
+      <text x="260" y="380" font-size="13" text-anchor="middle">Website visitor</text>
+      <text x="260" y="396" class="lbl" text-anchor="middle">www.ophirmineralventures.com</text>
+
+      <!-- right branch: email -->
+      <path class="arrow" d="M520,76 C560,120 620,140 660,168" marker-end="url(#arrowhead)"/>
+      <text x="630" y="122" class="lbl" text-anchor="middle">MX record</text>
+
+      <rect class="box" x="550" y="170" width="220" height="46" rx="6"/>
+      <text x="660" y="198" font-size="13" text-anchor="middle">DNS only</text>
+      <text x="660" y="211" class="lbl" text-anchor="middle">(not proxied — mail bypasses Cloudflare)</text>
+
+      <path class="arrow" d="M660,216 L660,258" marker-end="url(#arrowhead)"/>
+
+      <rect class="boxfill" x="540" y="260" width="240" height="56" rx="6"/>
+      <text x="660" y="284" font-size="13" text-anchor="middle" font-weight="700">Google Workspace</text>
+      <text x="660" y="300" class="lbl" text-anchor="middle">Gmail — unchanged</text>
+
+      <path class="arrow" d="M660,316 L660,352" marker-end="url(#arrowhead)"/>
+      <text x="660" y="380" font-size="13" text-anchor="middle">Email sender/recipient</text>
+      <text x="660" y="396" class="lbl" text-anchor="middle">john@ophirmineralventures.com</text>
+
+      <text x="460" y="440" class="lbl" text-anchor="middle" opacity="0.75">One domain, two independent services — deploying the new site never touches John's existing email.</text>
+    </svg>
+    <figcaption>Fig. 1 — The DNS zone is the only thing the website and the email have in common. Website traffic and mail traffic are routed by different record types to different providers, so the two projects can't interfere with each other.</figcaption>
+  </figure>
+
+  <h3>Component list</h3>
+  <div class="chiprow">
+    <span class="chip">Umbraco CMS (open source, self-hosted)</span>
+    <span class="chip">ASP.NET Core 8/9 runtime</span>
+    <span class="chip">SQLite (or Azure SQL if you want managed backups)</span>
+    <span class="chip">Azure App Service or a budget ASP.NET host (e.g. SmarterASP.NET)</span>
+    <span class="chip">Cloudflare Free — DNS, CDN, WAF</span>
+    <span class="chip">Hand-rolled contact form (Razor + SMTP/SendGrid) — no paid forms plugin</span>
+    <span class="chip">Custom SEO fields + sitemap.xml — built by you, not a plugin</span>
+    <span class="chip">GitHub Actions → deploy — same CI/CD workflow as your other projects</span>
+    <span class="chip">Google Analytics 4 + Search Console</span>
+    <span class="chip">Google Workspace — email (untouched)</span>
+  </div>
+</section>
+
+<section id="security">
+  <div class="sec-head"><span class="sec-num">06</span><h2>Security &amp; compliance posture</h2></div>
+  <p class="sec-dek">Proportionate to what this site actually is: a public marketing/compliance surface, not a system of record. No customer accounts, no payments, no sensitive data at rest beyond contact-form submissions.</p>
+
+  <div class="grid2">
+    <div class="card"><h4>Transport &amp; headers</h4><p>Forced HTTPS + HSTS; Content-Security-Policy, X-Frame-Options, Referrer-Policy and Permissions-Policy headers set directly in ASP.NET Core middleware — code you write and own, not a plugin default.</p></div>
+    <div class="card"><h4>Admin hardening</h4><p>2FA on the Umbraco backoffice, unique strong passwords, login-attempt limiting, no default admin username.</p></div>
+    <div class="card"><h4>Patching &amp; surface area</h4><p>Security patches applied via NuGet package updates on your own schedule, not silently auto-applied; minimal dependency count; a staging slot for testing updates before they hit production.</p></div>
+    <div class="card"><h4>Backups</h4><p>3-2-1 pattern: host-level daily backup + a scheduled export of the database/media to offsite storage (Azure Blob or Google Drive), restore-tested periodically.</p></div>
+    <div class="card"><h4>Data Privacy Act (RA 10173)</h4><p>Published privacy policy, explicit consent checkbox on the contact form, minimal PII retention, no third-party trackers beyond GA4 without disclosure.</p></div>
+    <div class="card"><h4>Role separation</h4><p>John gets an "Editor" role — full content control, no ability to break plugins/theme/settings. An "Administrator" role stays with whoever maintains the site.</p></div>
+  </div>
+</section>
+
+<section id="seo">
+  <div class="sec-head"><span class="sec-num">07</span><h2>Getting found: Google, Bing &amp; Yahoo</h2></div>
+  <p class="sec-dek">The useful shortcut: Yahoo Search has run on Bing's index since 2015. Covering Google and Bing covers effectively the whole market, including Yahoo and DuckDuckGo.</p>
+
+  <ol>
+    <li><strong>Technical baseline</strong> — HTTPS, one canonical domain (www vs non-www decided once), XML sitemap, clean robots.txt, mobile-first responsive layout, fast load times (Core Web Vitals is a ranking factor).</li>
+    <li><strong>Submit to both consoles</strong> — Google Search Console and Bing Webmaster Tools, each pointed at the sitemap. Free, takes under an hour, and Bing Webmaster Tools covers Yahoo automatically.</li>
+    <li><strong>Google Business Profile</strong> — free local listing; puts the company on Google Maps and the local pack for searches like "nickel ore exporter Philippines."</li>
+    <li><strong>On-page SEO</strong> — unique title/meta description per page, real header hierarchy, descriptive image alt text, Organization + LocalBusiness JSON-LD schema markup.</li>
+    <li><strong>Off-page signals</strong> — get the existing trade-directory listings (Trademo, 52wmb) and any Philippine Chamber of Mines / export-association directories linking back to the new official domain.</li>
+    <li><strong>Freshness</strong> — the News/Updates page (§04) exists specifically to give search engines a reason to recrawl regularly.</li>
+  </ol>
+  <p style="font-size:14px;color:var(--ink-soft)">Paid Google/Bing Ads are optional and out of v1 scope — worth a separate, small budget later if John wants inbound lead volume rather than relying on referral/direct.</p>
+</section>
+
+<section id="deployment">
+  <div class="sec-head"><span class="sec-num">08</span><h2>Deployment plan</h2></div>
+  <p class="sec-dek">Six phases, roughly six weeks end-to-end assuming timely content/approvals from the client — the usual bottleneck on projects like this is waiting on logos, photos and certificate copies, not the build itself.</p>
+
+  <figure>
+    <svg viewBox="0 0 980 200" role="img" aria-label="Timeline diagram of six deployment phases: Discovery, Foundation, Build, Content and SEO setup, QA and hardening, and Launch, connected left to right by a single arrowed line, with an ongoing monitoring phase after launch.">
+      <defs>
+        <marker id="arrow2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 7 3, 0 6" fill="currentColor"/>
+        </marker>
+      </defs>
+      <style>
+        text{ font-family:Georgia,serif; fill:currentColor; }
+        .lbl{ font-family:ui-monospace,Consolas,monospace; font-size:10.5px; }
+        .node{ fill:currentColor; }
+        .nodeline{ stroke:currentColor; stroke-width:1.4; }
+      </style>
+      <line x1="40" y1="100" x2="900" y2="100" class="nodeline" marker-end="url(#arrow2)"/>
+      <!-- 6 nodes evenly spaced -->
+      <g>
+        <circle cx="70" cy="100" r="5" class="node"/>
+        <text x="70" y="70" font-size="13" text-anchor="middle" font-weight="700">Discovery</text>
+        <text x="70" y="86" class="lbl" text-anchor="middle">content &amp; brand</text>
+        <text x="70" y="122" class="lbl" text-anchor="middle">Week 1</text>
+      </g>
+      <g>
+        <circle cx="240" cy="100" r="5" class="node"/>
+        <text x="240" y="132" font-size="13" text-anchor="middle" font-weight="700">Foundation</text>
+        <text x="240" y="148" class="lbl" text-anchor="middle">domain · hosting · DNS</text>
+        <text x="240" y="82" class="lbl" text-anchor="middle">Week 2</text>
+      </g>
+      <g>
+        <circle cx="410" cy="100" r="5" class="node"/>
+        <text x="410" y="70" font-size="13" text-anchor="middle" font-weight="700">Build</text>
+        <text x="410" y="86" class="lbl" text-anchor="middle">theme, pages, forms</text>
+        <text x="410" y="122" class="lbl" text-anchor="middle">Week 3–4</text>
+      </g>
+      <g>
+        <circle cx="580" cy="100" r="5" class="node"/>
+        <text x="580" y="132" font-size="13" text-anchor="middle" font-weight="700">Content + SEO</text>
+        <text x="580" y="148" class="lbl" text-anchor="middle">copy, certs, metadata</text>
+        <text x="580" y="82" class="lbl" text-anchor="middle">Week 4–5</text>
+      </g>
+      <g>
+        <circle cx="740" cy="100" r="5" class="node"/>
+        <text x="740" y="70" font-size="13" text-anchor="middle" font-weight="700">QA + Hardening</text>
+        <text x="740" y="86" class="lbl" text-anchor="middle">security, client review</text>
+        <text x="740" y="122" class="lbl" text-anchor="middle">Week 5</text>
+      </g>
+      <g>
+        <circle cx="900" cy="100" r="5" class="node"/>
+        <text x="900" y="132" font-size="13" text-anchor="middle" font-weight="700">Launch</text>
+        <text x="900" y="148" class="lbl" text-anchor="middle">DNS cutover · submit to search</text>
+        <text x="900" y="82" class="lbl" text-anchor="middle">Week 6</text>
+      </g>
+    </svg>
+    <figcaption>Fig. 2 — Deployment phases. Content/approval turnaround from the client is the typical schedule risk, not the technical build.</figcaption>
+  </figure>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Phase</th><th>Key steps</th></tr>
+    <tr><td>0 · Discovery</td><td>Confirm domain/registrar situation, gather logo, brand colors, real operation photos, permit/certificate copies, finalize sitemap with John</td></tr>
+    <tr><td>1 · Foundation</td><td>Register/redirect domain, provision hosting (Azure App Service or a budget ASP.NET host), configure Cloudflare, scaffold the Umbraco solution + baseline security headers</td></tr>
+    <tr><td>2 · Build</td><td>Build Umbraco document types + Razor templates for every row in §04, build the contact form and its routing, set up the content tree for John</td></tr>
+    <tr><td>3 · Content &amp; SEO</td><td>Populate real copy/images, write meta titles/descriptions, add schema markup, generate sitemap.xml</td></tr>
+    <tr><td>4 · QA &amp; hardening</td><td>Cross-browser/mobile QA, run a security header + backup check, client walkthrough and sign-off, brief John using the editor guide (§09)</td></tr>
+    <tr><td>5 · Launch</td><td>Point A/CNAME record live, verify email untouched, submit sitemap to Google Search Console + Bing Webmaster Tools, create Google Business Profile</td></tr>
+    <tr><td>6 · Post-launch (ongoing)</td><td>Monthly plugin/core updates, quarterly backup-restore test, review analytics, add news posts</td></tr>
+  </table></div>
+</section>
+
+<section id="cost">
+  <div class="sec-head"><span class="sec-num">09</span><h2>Cost plan</h2></div>
+  <p class="sec-dek">USD, two tiers. Development labor is excluded (assumed self-built) — this is purely the recurring infrastructure/licensing bill John should expect.</p>
+
+  <h3>Year 1 — one-time + first year</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>Item</th><th>Lean MVP</th><th>Recommended</th><th>Notes</th></tr>
+    <tr><td>Domain (.com)</td><td class="num">$20</td><td class="num">$20</td><td>Or ~$40–60 for a .com.ph if local trust signaling matters</td></tr>
+    <tr><td>ASP.NET hosting</td><td class="num">$84</td><td class="num">$200</td><td>Lean: budget host like SmarterASP.NET (~$7/mo). Recommended: Azure App Service B1, with a staging slot</td></tr>
+    <tr><td>Database</td><td class="num">$0</td><td class="num">$60</td><td>Lean: SQLite, embedded, no server to manage. Recommended: Azure SQL Basic for managed backups/scale</td></tr>
+    <tr><td>Cloudflare (DNS/CDN/WAF)</td><td class="num">$0</td><td class="num">$0</td><td>Free plan is sufficient at this traffic scale</td></tr>
+    <tr><td>Contact form + email delivery</td><td class="num">$0</td><td class="num">$0</td><td>Hand-built in Razor + SendGrid free tier (100 emails/day) — no paid forms plugin needed</td></tr>
+    <tr><td>SEO tooling</td><td class="num">$0</td><td class="num">$0</td><td>Meta fields, schema markup and sitemap.xml are hand-built, not a paid plugin</td></tr>
+    <tr><td>Monitoring</td><td class="num">$0</td><td class="num">$0</td><td>Azure Application Insights free tier covers this traffic volume</td></tr>
+    <tr><td>Stock photos / branding polish</td><td class="num">$0</td><td class="num">$150</td><td>Real operations photos from John are strongly preferred over stock either way</td></tr>
+    <tr><td>Google Workspace email</td><td class="num">$84</td><td class="num">$84</td><td>Already paid by John — Business Starter, 1 user, annual. Unaffected by this project.</td></tr>
+    <tr><td><strong>Year 1 total (excl. existing email)</strong></td><td class="num"><strong>~$104</strong></td><td class="num"><strong>~$430</strong></td><td></td></tr>
+  </table></div>
+
+  <h3>Year 2+ recurring</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>Item</th><th>Lean MVP</th><th>Recommended</th></tr>
+    <tr><td>Domain renewal</td><td class="num">$20</td><td class="num">$20</td></tr>
+    <tr><td>Hosting renewal</td><td class="num">$84</td><td class="num">$200</td></tr>
+    <tr><td>Database</td><td class="num">$0</td><td class="num">$60</td></tr>
+    <tr><td><strong>Annual total</strong></td><td class="num"><strong>~$104</strong></td><td class="num"><strong>~$280</strong></td></tr>
+  </table></div>
+
+  <div class="callout seam">
+    <span class="label">Why this is cheaper than the WordPress path</span>
+    No recurring plugin licenses. Forms, SEO fields, and security headers are small enough that you'll write and own them directly in C#/Razor rather than paying an annual fee to a plugin author for something WordPress can't do out of the box. That's a direct, ongoing cost benefit of building this on a stack you actually control.
+  </div>
+
+  <div class="callout seam">
+    <span class="label">Reading this table</span>
+    Either tier is inexpensive relative to the shipment values in §01 — this is not where John should be cost-sensitive. The Recommended tier buys real staging/backup safety nets and design flexibility; the Lean tier is a legitimate way to launch fast and upgrade later without rebuilding anything.
+  </div>
+</section>
+
+<section id="maintain">
+  <div class="sec-head"><span class="sec-num">10</span><h2>Maintainability &amp; governance</h2></div>
+  <ul>
+    <li><strong>Editor guide</strong> — a short, plain-language one-pager for John: how to edit a page, swap a photo, publish a news post, and who to call if something looks broken. This is the single highest-leverage deliverable for "less developer intervention."</li>
+    <li><strong>Roles</strong> — John: Editor role (content only). Developer/maintainer: Administrator (structure, plugins, security).</li>
+    <li><strong>Staging site</strong> — every plugin/theme update tested on staging before production, so a bad update never takes the live site down mid-negotiation with a buyer.</li>
+    <li><strong>Update cadence</strong> — monthly core/plugin updates, quarterly full review (broken links, outdated certs, stale stats), yearly domain/hosting renewal check.</li>
+    <li><strong>Why this stack, restated</strong> — Umbraco was chosen so you can maintain, extend, and secure this site with skills you already have: no PHP, no plugin roulette, no need to loop in AI to understand someone else's code. As a secondary benefit, Umbraco has the largest .NET CMS talent pool of any option evaluated, so handing off maintenance later is still realistic — it just isn't the reason for the pick.</li>
+  </ul>
+</section>
+
+<section id="roadmap">
+  <div class="sec-head"><span class="sec-num">11</span><h2>Roadmap — deferred, not forgotten</h2></div>
+  <div class="grid2">
+    <div class="card"><h4>Bilingual EN / 中文</h4><p>Highest-leverage addition given the buyer base (§01). WPML or Polylang once core content is stable.</p></div>
+    <div class="card"><h4>Careers page</h4><p>Add once hiring becomes a recurring need.</p></div>
+    <div class="card"><h4>Investor-relations section</h4><p>If John ever seeks outside capital or a JV partner.</p></div>
+    <div class="card"><h4>Buyer RFQ portal</h4><p>Structured quote-request flow instead of a generic contact form, once inbound volume justifies it.</p></div>
+    <div class="card"><h4>CRM integration</h4><p>Route contact-form leads into a free-tier CRM (HubSpot Free) once John wants pipeline tracking.</p></div>
+    <div class="card"><h4>Headless mode</h4><p>Revisit if traffic/complexity ever outgrows a monolithic CMS — Umbraco can run headless behind a separate front-end without leaving the .NET ecosystem.</p></div>
+  </div>
+</section>
+
+<section id="questions">
+  <div class="sec-head"><span class="sec-num">12</span><h2>Open questions for John</h2></div>
+  <p class="sec-dek">Needed before or during Discovery (§08, Phase 0) — nothing here should be guessed or scraped.</p>
+  <ul class="checklist">
+    <li>Preferred domain name, and where the current one (if any) is registered</li>
+    <li>Legal company details to publish: SEC registration number, business address, TIN/BIR details as he wants them shown</li>
+    <li>Which permits/certifications he wants public (DENR-MGB, ECC, others) and current copies of each</li>
+    <li>Logo and brand assets — or confirmation that we're designing a wordmark from scratch</li>
+    <li>Real photos: operations, ore samples, leadership — stock photography undercuts the credibility goal</li>
+    <li>How he wants his own bio/role presented on the About page</li>
+    <li>Appetite for a bilingual Chinese version (§11) and translation budget</li>
+    <li>Confirmation on keeping existing Google Workspace email as-is (§02)</li>
+  </ul>
+</section>
+
+<footer>
+  Ophir Mineral Ventures — Website Plan &amp; Architecture · Draft v1.1 · Revised 2026-08-06 · Pair with the homepage design draft before presenting to the client.
+</footer>
+
+</div>

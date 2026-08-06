@@ -1,0 +1,21 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Umbraco runtime
+src/**/umbraco/Data/
+src/**/App_Data/
+src/**/wwwroot/media/
+src/**/App_Plugins/*/package.json.bak
+
+# Secrets — never commit these
+appsettings.*.local.json
+*.pfx
+*.env
+
+# OS
+.DS_Store
+Thumbs.db
