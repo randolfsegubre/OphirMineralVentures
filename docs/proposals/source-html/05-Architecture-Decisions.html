@@ -1,0 +1,258 @@
+<title>Ophir Website — Architecture Decisions</title>
+<style>
+  :root{
+    --paper:#F5F1E7; --paper-raised:#FFFFFF; --ink:#201C16; --ink-soft:#4B453B;
+    --slate:#33474A; --ore:#A85A2A; --ore-soft:#F0DFCC; --seam:#4F6B57; --seam-soft:#E1E9E2;
+    --line:rgba(32,28,22,0.15); --line-strong:rgba(32,28,22,0.32); --danger:#a13f2e;
+    --font-display:Georgia,"Noto Serif","Iowan Old Style",serif;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:ui-monospace,"Cascadia Code","SF Mono",Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#16181A; --paper-raised:#1D2022; --ink:#EAE5D8; --ink-soft:#B8B2A2;
+      --slate:#9FB8B4; --ore:#E39257; --ore-soft:#3A2A1E; --seam:#8CBB9B; --seam-soft:#20302A;
+      --line:rgba(234,229,216,0.16); --line-strong:rgba(234,229,216,0.34); --danger:#e2836f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#16181A; --paper-raised:#1D2022; --ink:#EAE5D8; --ink-soft:#B8B2A2;
+    --slate:#9FB8B4; --ore:#E39257; --ore-soft:#3A2A1E; --seam:#8CBB9B; --seam-soft:#20302A;
+    --line:rgba(234,229,216,0.16); --line-strong:rgba(234,229,216,0.34); --danger:#e2836f;
+  }
+  :root[data-theme="light"]{
+    --paper:#F5F1E7; --paper-raised:#FFFFFF; --ink:#201C16; --ink-soft:#4B453B;
+    --slate:#33474A; --ore:#A85A2A; --ore-soft:#F0DFCC; --seam:#4F6B57; --seam-soft:#E1E9E2;
+    --line:rgba(32,28,22,0.15); --line-strong:rgba(32,28,22,0.32); --danger:#a13f2e;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body); line-height:1.6; font-size:16px; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--ore-soft); }
+  .wrap{ max-width:900px; margin:0 auto; padding:0 24px 110px; }
+  a{ color:var(--ore); }
+
+  .cover{ padding:64px 24px 40px; border-bottom:1px solid var(--line); max-width:900px; margin:0 auto; }
+  .eyebrow{ font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--seam); margin:0 0 16px; }
+  h1.title{ font-family:var(--font-display); font-weight:700; font-size:clamp(28px,4.4vw,42px); line-height:1.1; margin:0 0 14px; text-wrap:balance; }
+  .subtitle{ font-size:17px; color:var(--ink-soft); max-width:640px; margin:0; }
+
+  section{ padding:46px 0; border-bottom:1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:8px; }
+  .sec-num{ font-family:var(--font-mono); color:var(--ore); font-size:14px; }
+  h2{ font-family:var(--font-display); font-size:25px; margin:0; text-wrap:balance; }
+  .sec-dek{ color:var(--ink-soft); font-size:15.5px; max-width:640px; margin:6px 0 22px; }
+  h3{ font-family:var(--font-display); font-size:17.5px; margin:26px 0 8px; color:var(--slate); }
+  p{ margin:0 0 14px; max-width:70ch; }
+  ul,ol{ margin:0 0 16px; padding-left:22px; }
+  li{ margin-bottom:7px; max-width:66ch; }
+  strong{ color:var(--ink); }
+  code{ font-family:var(--font-mono); background:var(--paper-raised); border:1px solid var(--line); border-radius:3px; padding:1px 6px; font-size:13px; }
+
+  .callout{ background:var(--ore-soft); border:1px solid var(--line); border-left:3px solid var(--ore); border-radius:4px; padding:16px 18px; margin:16px 0; font-size:14.5px; }
+  .callout .label{ font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.08em; font-size:11px; color:var(--ore); display:block; margin-bottom:6px;}
+  .callout.seam{ background:var(--seam-soft); border-left-color:var(--seam); }
+  .callout.seam .label{ color:var(--seam); }
+
+  table{ width:100%; border-collapse:collapse; font-size:14px; background:var(--paper-raised); }
+  .tbl-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; margin:16px 0; }
+  th,td{ text-align:left; padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); background:var(--paper); white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td.mono{ font-family:var(--font-mono); font-size:12.5px; }
+
+  figure{ margin:26px 0; }
+  figure svg{ max-width:100%; height:auto; display:block; }
+  figcaption{ font-size:13px; color:var(--ink-soft); margin-top:10px; max-width:70ch; }
+
+  .decision{ border:1px solid var(--line-strong); border-radius:8px; padding:20px 22px; margin:18px 0; background:var(--paper-raised); }
+  .decision h4{ font-family:var(--font-display); font-size:17px; margin:0 0 4px; }
+  .decision .verdict{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--seam); margin-bottom:10px; }
+  .decision p{ font-size:14.5px; margin-bottom:0; }
+  .decision.flag{ border-color:var(--ore); }
+  .decision.flag .verdict{ color:var(--ore); }
+
+  footer{ padding:36px 0 0; color:var(--ink-soft); font-size:12.5px; font-family:var(--font-mono); }
+</style>
+
+<div class="cover">
+  <p class="eyebrow">Architecture Decisions — companion to the Website Plan &amp; Implementation Guide</p>
+  <h1 class="title">Architecture for a low-traffic, high-trust B2B site</h1>
+  <p class="subtitle">The macro shape is forced by the project's constraints. These are the internal decisions that remain — and the one that's genuinely expensive to defer.</p>
+</div>
+
+<div class="wrap">
+
+<section>
+  <div class="sec-head"><span class="sec-num">01</span><h2>Why the alternatives lose</h2></div>
+  <p class="sec-dek">Stated once so it isn't re-litigated later. Each is rejected on a specific requirement, not on preference.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Alternative</th><th>Why it's rejected here</th></tr>
+    <tr><td>Headless (Umbraco + Astro/Next.js)</td><td>Two hosts, two deploy pipelines, fast-churning JS ecosystem. Doubles cost and violates "maintainable alone, without AI." Earns its place at omnichannel scale this site doesn't have.</td></tr>
+    <tr><td>Static SSG + git-based CMS</td><td>Cheapest and most secure, but git/markdown concepts leak into the owner's editing experience, and it isn't .NET. Fails the two hardest requirements simultaneously.</td></tr>
+    <tr><td>Hand-rolled ASP.NET Core + custom admin</td><td>Months spent rebuilding a worse Umbraco backoffice. The CMS is the part worth not writing.</td></tr>
+    <tr><td>Layered Clean Architecture / DDD inside the app</td><td>Correct for a transactional system; overhead for a content site with no complex domain logic. A single well-organized project is the right granularity.</td></tr>
+  </table></div>
+  <p><strong>Conclusion:</strong> server-rendered modular monolith, single deployable unit, Umbraco 18 on .NET 10.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">02</span><h2>Edge-first caching</h2></div>
+  <p class="sec-dek">The decision that makes budget hosting viable without the visitor ever experiencing budget hosting.</p>
+
+  <p>Content changes roughly monthly. Traffic is low, but the individual visitor matters enormously — a buyer's compliance officer or bank clicking through mid-due-diligence. On a shared host, cold starts and CPU limits are real. Caching rendered HTML at the edge decouples the visitor's experience from the origin's performance entirely.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 420" role="img" aria-label="Diagram of three request paths through Cloudflare to the Umbraco origin: anonymous page requests are served from the edge cache and never reach the origin; backoffice requests and contact-form POSTs bypass the cache and reach the origin directly; publishing from the backoffice purges the edge cache.">
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 7 3, 0 6" fill="currentColor"/>
+        </marker>
+        <marker id="arOre" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+          <polygon points="0 0, 7 3, 0 6" fill="#A85A2A"/>
+        </marker>
+      </defs>
+      <style>
+        text{ font-family:Georgia,serif; fill:currentColor; }
+        .lbl{ font-family:ui-monospace,Consolas,monospace; font-size:11px; }
+        .sm{ font-family:ui-monospace,Consolas,monospace; font-size:10px; }
+        .box{ fill:none; stroke:currentColor; stroke-width:1.4; }
+        .fillbox{ fill:currentColor; opacity:0.06; stroke:currentColor; stroke-width:1.4; }
+        .ln{ stroke:currentColor; stroke-width:1.4; fill:none; }
+        .ore{ stroke:#A85A2A; stroke-width:1.6; fill:none; }
+        .oretxt{ fill:#A85A2A; }
+      </style>
+
+      <!-- lane labels -->
+      <text x="95" y="28" class="lbl" text-anchor="middle" opacity=".65">WHO</text>
+      <text x="420" y="28" class="lbl" text-anchor="middle" opacity=".65">CLOUDFLARE EDGE</text>
+      <text x="760" y="28" class="lbl" text-anchor="middle" opacity=".65">ORIGIN ($7/mo host)</text>
+
+      <!-- Cloudflare column box -->
+      <rect class="box" x="315" y="45" width="210" height="330" rx="8" stroke-dasharray="4 4" opacity=".5"/>
+
+      <!-- Origin box -->
+      <rect class="fillbox" x="650" y="150" width="220" height="90" rx="6"/>
+      <text x="760" y="182" font-size="13" text-anchor="middle" font-weight="700">Umbraco 18</text>
+      <text x="760" y="200" class="lbl" text-anchor="middle">ASP.NET Core · .NET 10</text>
+      <text x="760" y="218" class="lbl" text-anchor="middle">SQLite + media folder</text>
+
+      <!-- PATH 1: anonymous visitor -->
+      <rect class="box" x="20" y="70" width="150" height="46" rx="6"/>
+      <text x="95" y="92" font-size="12.5" text-anchor="middle">Buyer / bank</text>
+      <text x="95" y="107" class="sm" text-anchor="middle" opacity=".7">anonymous page view</text>
+
+      <path class="ln" d="M170,93 L310,93" marker-end="url(#ar)"/>
+      <rect class="fillbox" x="330" y="70" width="180" height="46" rx="6"/>
+      <text x="420" y="90" font-size="12.5" text-anchor="middle" font-weight="700">CACHE HIT</text>
+      <text x="420" y="106" class="sm" text-anchor="middle">HTML served from edge</text>
+
+      <path class="ln" d="M420,120 L420,150" marker-end="url(#ar)"/>
+      <text x="428" y="140" class="sm">returns</text>
+      <path class="ln" d="M400,150 L400,120"/>
+      <text x="420" y="168" class="lbl" text-anchor="middle" opacity=".8">never reaches origin</text>
+
+      <!-- PATH 2: owner backoffice -->
+      <rect class="box" x="20" y="205" width="150" height="46" rx="6"/>
+      <text x="95" y="227" font-size="12.5" text-anchor="middle">Owner</text>
+      <text x="95" y="242" class="sm" text-anchor="middle" opacity=".7">/umbraco/*</text>
+
+      <path class="ln" d="M170,228 L310,228" marker-end="url(#ar)"/>
+      <text x="240" y="220" class="sm" text-anchor="middle">bypass</text>
+      <rect class="box" x="330" y="205" width="180" height="46" rx="6" stroke-dasharray="3 3"/>
+      <text x="420" y="233" font-size="12" text-anchor="middle">CACHE BYPASS</text>
+      <path class="ln" d="M510,228 L645,228" marker-end="url(#ar)"/>
+
+      <!-- PATH 3: form POST -->
+      <rect class="box" x="20" y="300" width="150" height="46" rx="6"/>
+      <text x="95" y="322" font-size="12.5" text-anchor="middle">Enquiry</text>
+      <text x="95" y="337" class="sm" text-anchor="middle" opacity=".7">POST /contact</text>
+
+      <path class="ln" d="M170,323 L310,323" marker-end="url(#ar)"/>
+      <text x="240" y="315" class="sm" text-anchor="middle">bypass</text>
+      <rect class="box" x="330" y="300" width="180" height="46" rx="6" stroke-dasharray="3 3"/>
+      <text x="420" y="322" font-size="12" text-anchor="middle">CACHE BYPASS</text>
+      <text x="420" y="337" class="sm" text-anchor="middle">+ rate limited</text>
+      <path class="ln" d="M510,323 C580,323 600,270 645,240" marker-end="url(#ar)"/>
+
+      <!-- purge on publish -->
+      <path class="ore" d="M700,150 C700,120 560,120 470,120" marker-end="url(#arOre)" stroke-dasharray="5 3"/>
+      <text x="600" y="112" class="lbl oretxt" text-anchor="middle">purge cache on publish</text>
+
+      <text x="450" y="404" class="lbl" text-anchor="middle" opacity=".75">The only traffic the origin ever sees: the owner editing, and enquiry submissions.</text>
+    </svg>
+    <figcaption>Fig. 1 — Three request paths. Public page views terminate at the edge, so origin performance never reaches the visitor; the backoffice and the single write endpoint deliberately bypass cache. Publishing purges the edge so content changes appear immediately.</figcaption>
+  </figure>
+
+  <div class="callout seam">
+    <span class="label">What this buys</span>
+    Near-static performance and meaningful DDoS resilience on the cheapest hosting tier, plus headroom if the site is ever linked from a trade publication. It also means the choice between Tier A and Tier B hosting stops being a performance decision and becomes purely an operational-convenience one.
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">03</span><h2>The decision not to defer</h2></div>
+  <p class="sec-dek">Everything else here can be changed later at reasonable cost. This one can't.</p>
+
+  <div class="decision flag">
+    <h4>Enable culture variance from day one — even though bilingual is a v2 item</h4>
+    <div class="verdict">Decide now · expensive to retrofit</div>
+    <p>Roughly 100% of the company's recorded buyers are China-based, so an English/Simplified-Chinese site is a plausible near-term requirement rather than a hypothetical. In Umbraco, whether content varies by culture is a per-document-type and per-property setting, and enabling it retrospectively carries documented migration edge cases — notably that culture-varying properties are skipped when the parent content type is invariant, which lands precisely on the composition-based model planned here (<code>seoComposition</code> applied to otherwise-invariant types).</p>
+  </div>
+
+  <p><strong>Recommendation:</strong> turn on <em>Allow vary by culture</em> for the document types and their editable properties at build time, with English as the only active language. The near-term cost is close to zero — one language node and slightly different value access in Razor. The payoff is that adding Chinese later becomes "add a language, translate the content" instead of a content-model migration against live production content.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">04</span><h2>Remaining decisions</h2></div>
+
+  <div class="decision">
+    <h4>Server-rendered Razor, no SPA layer</h4>
+    <div class="verdict">Decided</div>
+    <p>SEO works without effort, there's no hydration cost on mobile — links get opened from WhatsApp on Philippine and Chinese mobile networks — and it's one fewer ecosystem to maintain. ModelsBuilder supplies strongly-typed content models so views stay readable.</p>
+  </div>
+
+  <div class="decision">
+    <h4>Constrained content model, not a free-form page builder</h4>
+    <div class="verdict">Decided</div>
+    <p>Rigidity is a feature on a compliance site. Fixed document types with an approved set of Block List blocks per page type: the owner edits text, swaps images, publishes news, reorders approved blocks — and cannot restructure the Certifications page into something that looks broken while a bank is reviewing it.</p>
+  </div>
+
+  <div class="decision">
+    <h4>Content model versioned in git via uSync</h4>
+    <div class="verdict">Decided</div>
+    <p>uSync 18.0.3 supports Umbraco 18. Document types, data types and templates serialize to disk and get committed, so the schema is versioned alongside the Razor views that depend on it and dev→prod deployment is a file sync rather than manual backoffice clicking. Content itself is <em>not</em> synced — production content belongs to the owner.</p>
+  </div>
+
+  <div class="decision">
+    <h4>Single write path, treated as an invariant</h4>
+    <div class="verdict">Decided · guard it</div>
+    <p>Publicly the site is read-only except one endpoint (the contact form POST). That's an unusually small attack surface and worth protecting as an architectural property, not an accident. Any future feature that adds a write path — RFQ portal, buyer login — is a genuine architectural change requiring a security rethink, not just another page. The backoffice sits behind Cloudflare, ideally IP-restricted.</p>
+  </div>
+
+  <div class="decision">
+    <h4>Backup/DR falls out of the SQLite choice</h4>
+    <div class="verdict">Consequence, not a separate decision</div>
+    <p>The site's entire state is one database file plus the media folder. Backup is copying two things; restore is putting them back. That operational simplicity is a real architectural benefit of SQLite here, not merely a cost saving.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">05</span><h2>Solution structure</h2></div>
+  <p class="sec-dek">One project, organized by concern — not layered into artificial assemblies.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Folder</th><th>Contains</th></tr>
+    <tr><td class="mono">Views/</td><td>Razor templates, one per document type, plus shared layout and partials (<code>_SeoHead.cshtml</code>)</td></tr>
+    <tr><td class="mono">Services/</td><td><code>IEmailSender</code>, sitemap generation — plain C#, unit-testable, no Umbraco coupling where avoidable</td></tr>
+    <tr><td class="mono">Controllers/</td><td><code>ContactSurfaceController</code> — the one write path</td></tr>
+    <tr><td class="mono">Composers/</td><td>Umbraco DI registration (<code>IComposer</code> implementations)</td></tr>
+    <tr><td class="mono">Middleware/</td><td>Security-header middleware</td></tr>
+    <tr><td class="mono">uSync/</td><td>Serialized content model — committed to git</td></tr>
+  </table></div>
+</section>
+
+<footer>
+  Ophir Mineral Ventures — Architecture Decisions · Draft v1 · 2026-08-16 · Companion to the Website Plan &amp; Architecture and the project CLAUDE.md
+</footer>
+
+</div>

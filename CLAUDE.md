@@ -62,6 +62,8 @@ OphirMineralVentures/
 | Email delivery (contact form) | **SendGrid free tier** or MailKit+SMTP | 100 emails/day is far more than this site needs |
 | Forms | **Hand-built** Surface Controller (§6) | Not the paid Umbraco Forms package — see §9 for why |
 | Page building | **Razor views + Block List editors** | Not a paid page-builder package |
+| Schema deployment | **uSync 18.0.3** | Free/open source. Serializes document types, data types and templates to disk so the content model is versioned in git (§4a). The one NuGet dependency that earns its place |
+| Caching | **Cloudflare edge cache** + Umbraco's built-in content cache | No extra package. Cache rules must bypass `/umbraco/*` and the form POST (§4a) |
 
 If you're about to add a NuGet package, stop and check: does solving this in plain C#/Razor take less effort than researching, licensing, and maintaining a package? For a site this size, the answer is usually yes. Every dependency added here is one more thing to patch for the life of the project (§7).
 
@@ -101,6 +103,28 @@ dotnet new umbraco -n OphirMineralVentures.Web --friendly-name "Admin" --friendl
 - **Testing**: no dedicated test project needed at this site's scope. If one becomes warranted later (sitemap.xml generation logic, contact-form validation rules), xUnit is the .NET-ecosystem default — don't reach for anything more elaborate for a content-driven brochure site.
 - Running `dotnet new gitignore` inside `src/` after scaffolding is expected and fine — it'll sit alongside the root `.gitignore` in this repo, not replace it.
 
+## 4a. Architecture decisions
+
+Full reasoning in `docs/proposals/05-Architecture-Decisions.pdf`. The load-bearing points:
+
+**Server-rendered monolith.** One deployable unit, Razor views, no SPA/headless front-end. Headless and static-SSG alternatives were evaluated and rejected — they double the operational surface and violate the "maintainable alone, in my own stack" constraint. Don't reintroduce them.
+
+**Single project, organized by concern — not layered assemblies.** `Views/`, `Services/`, `Controllers/`, `Composers/`, `Middleware/`, `uSync/`. No Domain/Application/Infrastructure split; there's no complex domain logic here to justify it.
+
+**Edge-first caching.** Cloudflare caches rendered HTML with a long TTL; purge on publish. Cache rules must **bypass** `/umbraco/*` and the contact-form POST. This is what makes budget hosting viable — the origin should see almost no public traffic. If a page renders stale or the backoffice behaves oddly, suspect cache rules first.
+
+**Constrained content model.** Fixed document types with an approved set of Block List blocks per page type. The owner edits text/images/news and reorders approved blocks; he must not be able to restructure layout. On a compliance site, rigidity is a feature — don't "helpfully" add a free-form page builder.
+
+**Single write path is an invariant.** The contact form POST is the only public write endpoint. Any feature that adds another (RFQ portal, buyer login) is an architectural change needing a security rethink, not just a new page.
+
+**uSync for the content model.** uSync 18.0.3 supports Umbraco 18. Document types, data types and templates serialize to disk and are committed to git, so schema is versioned alongside the Razor views that depend on it. Content itself is **not** synced — production content belongs to the owner.
+
+### Culture variance — enable at build time, do not defer
+
+**Turn on "Allow vary by culture" for document types and their editable properties from the start**, with English as the only active language.
+
+Bilingual EN/中文 is a likely near-term requirement (~100% of recorded buyers are China-based). Enabling variance retrospectively has documented migration edge cases — culture-varying properties get skipped when the parent content type is invariant ([umbraco-cms#22159](https://github.com/umbraco/umbraco-cms/issues/22159)), which lands exactly on the composition-based model in §5 (`seoComposition` applied to otherwise-invariant types). Cost of doing it now is ~zero: one language node and slightly different value access in Razor. Cost of retrofitting later is a content-model migration against live production content.
+
 ## 5. Content model — Umbraco Document Types
 
 Build one Document Type per row. Aliases are camelCase per Umbraco convention.
@@ -115,6 +139,8 @@ Build one Document Type per row. Aliases are camelCase per Umbraco convention.
 | `article` | title, publishDate, body, featuredImage — for the News section |
 | `contactPage` | address, phone, hours — static content; the form itself is code, not content (§6) |
 | `legalPage` | body — Privacy Policy / Terms, rarely edited but still owner-editable |
+
+All editable properties above should be set to vary by culture (§4a) even though only English is active at launch.
 
 **Two reusable compositions — apply these, don't duplicate the properties per type:**
 
@@ -260,5 +286,6 @@ The full reasoning behind every decision above lives in `docs/proposals/`. Read 
 - `02-Homepage-Design-Draft.pdf` — the visual design direction (placeholder content, real layout)
 - `03-Website-Cost-Proposal.pdf` — full cost breakdown including the Umbraco platform's own licensing costs
 - `04-Client-Proposal.pdf` — the client-facing version sent to John David Montilla
+- `05-Architecture-Decisions.pdf` — why the alternatives were rejected, the edge-caching request-path diagram, and the culture-variance decision (§4a)
 
 `source-html/` under the same folder has the editable HTML source for each PDF — edit there and re-export, don't edit the PDFs directly.
