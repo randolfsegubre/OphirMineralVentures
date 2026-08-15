@@ -84,6 +84,50 @@
 <div class="wrap">
 
 <section>
+  <div class="sec-head"><span class="sec-num">00</span><h2>What this architecture is called</h2></div>
+  <p class="sec-dek">Architecture isn't one label — it's a stack of decisions, each with a proper name. Naming them precisely matters more than picking a fashionable umbrella term.</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Dimension</th><th>Pattern</th><th>Meaning here</th></tr>
+    <tr><td>CMS delivery model</td><td><strong>Coupled (traditional) CMS</strong></td><td>The CMS handles both content management and presentation. Not headless (API-only) and not decoupled (hybrid)</td></tr>
+    <tr><td>Deployment topology</td><td><strong>Monolith</strong></td><td>One deployable unit, one host, one backup story</td></tr>
+    <tr><td>Application pattern</td><td><strong>MVC</strong></td><td>ASP.NET Core MVC as Umbraco implements it: <code>RenderController</code>/<code>SurfaceController</code>, Razor views, ModelsBuilder models</td></tr>
+    <tr><td>Rendering strategy</td><td><strong>SSR</strong></td><td>HTML assembled server-side; no client-side hydration layer</td></tr>
+    <tr><td>Code organization</td><td><strong>Package-by-layer</strong></td><td>Folders by technical concern — Views, Services, Controllers, Middleware</td></tr>
+    <tr><td>Caching</td><td><strong>Reverse-proxy / edge caching</strong></td><td>CDN acts as a caching reverse proxy in front of the origin (§02)</td></tr>
+  </table></div>
+
+  <p><strong>One-phrase version:</strong> a <em>coupled CMS architecture — server-rendered MVC monolith with edge caching.</em></p>
+
+  <div class="callout">
+    <span class="label">Terminology correction</span>
+    An earlier draft of this document called it a "modular monolith." That was imprecise. A modular monolith implies enforced internal module boundaries — vertical slices or bounded contexts within one deployable. This solution is organized by technical concern, which is <strong>package-by-layer</strong>. Different pattern; the accurate term is used throughout from here.
+  </div>
+
+  <h3>Why not DDD, Clean, Onion, or Hexagonal</h3>
+  <p>These are the patterns a senior .NET developer would reach for by default, so the decision to skip them should be explicit rather than accidental.</p>
+
+  <div class="decision">
+    <h4>Not Domain-Driven Design</h4>
+    <div class="verdict">Rejected — no domain to drive</div>
+    <p>DDD manages complexity in a business domain: aggregates, invariants, ubiquitous language, bounded contexts. This site has no business domain. Its entities are pages and documents; its behaviour is rendering them. There are no business rules to encode and no invariants to protect, so DDD's structure is cost without corresponding complexity.</p>
+  </div>
+
+  <div class="decision">
+    <h4>Not Clean / Onion / Hexagonal Architecture</h4>
+    <div class="verdict">Rejected — the framework <em>is</em> the application</div>
+    <p>These patterns exist to keep a domain core independent of frameworks and infrastructure, so the database or web framework can be swapped without touching business logic. Here Umbraco supplies the content model, routing, rendering and editor UI — it <em>is</em> the application. Abstracting away from it would mean building an indirection layer over the very thing providing the value, to enable a swap that will never occur. The pattern's benefit doesn't apply.</p>
+  </div>
+
+  <p>One construct resembles ports-and-adapters — <code>IEmailSender</code> as an interface with a SendGrid implementation — but that is ordinary dependency injection for testability, not hexagonal architecture, and shouldn't be described as such.</p>
+
+  <div class="callout seam">
+    <span class="label">When this would change</span>
+    If the deferred buyer RFQ portal is ever built (quotes, statuses, buyer accounts, approval flow), that <em>is</em> real domain logic with real invariants. At that point the correct move is a properly layered module with its own bounded context <strong>inside</strong> this monolith — not a rewrite, and not retrofitting layering across the brochure pages that will never need it. The trigger is the arrival of genuine domain complexity, not a growth in page count.
+  </div>
+</section>
+
+<section>
   <div class="sec-head"><span class="sec-num">01</span><h2>Why the alternatives lose</h2></div>
   <p class="sec-dek">Stated once so it isn't re-litigated later. Each is rejected on a specific requirement, not on preference.</p>
   <div class="tbl-wrap"><table>
@@ -91,9 +135,9 @@
     <tr><td>Headless (Umbraco + Astro/Next.js)</td><td>Two hosts, two deploy pipelines, fast-churning JS ecosystem. Doubles cost and violates "maintainable alone, without AI." Earns its place at omnichannel scale this site doesn't have.</td></tr>
     <tr><td>Static SSG + git-based CMS</td><td>Cheapest and most secure, but git/markdown concepts leak into the owner's editing experience, and it isn't .NET. Fails the two hardest requirements simultaneously.</td></tr>
     <tr><td>Hand-rolled ASP.NET Core + custom admin</td><td>Months spent rebuilding a worse Umbraco backoffice. The CMS is the part worth not writing.</td></tr>
-    <tr><td>Layered Clean Architecture / DDD inside the app</td><td>Correct for a transactional system; overhead for a content site with no complex domain logic. A single well-organized project is the right granularity.</td></tr>
+    <tr><td>Layered Clean Architecture / DDD inside the app</td><td>Correct for a transactional system; overhead for a content site with no complex domain logic. See §00 for the full reasoning and the trigger that would change it.</td></tr>
   </table></div>
-  <p><strong>Conclusion:</strong> server-rendered modular monolith, single deployable unit, Umbraco 18 on .NET 10.</p>
+  <p><strong>Conclusion:</strong> a coupled CMS architecture — server-rendered MVC monolith on Umbraco 18 / .NET 10, single deployable unit, edge-cached.</p>
 </section>
 
 <section>

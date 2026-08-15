@@ -107,9 +107,32 @@ dotnet new umbraco -n OphirMineralVentures.Web --friendly-name "Admin" --friendl
 
 Full reasoning in `docs/proposals/05-Architecture-Decisions.pdf`. The load-bearing points:
 
-**Server-rendered monolith.** One deployable unit, Razor views, no SPA/headless front-end. Headless and static-SSG alternatives were evaluated and rejected — they double the operational surface and violate the "maintainable alone, in my own stack" constraint. Don't reintroduce them.
+### The architecture, named
 
-**Single project, organized by concern — not layered assemblies.** `Views/`, `Services/`, `Controllers/`, `Composers/`, `Middleware/`, `uSync/`. No Domain/Application/Infrastructure split; there's no complex domain logic here to justify it.
+**Coupled CMS architecture — server-rendered MVC monolith with edge caching.** By dimension:
+
+| Dimension | Pattern |
+|---|---|
+| CMS delivery model | **Coupled (traditional)** — CMS handles management *and* presentation. Not headless, not decoupled |
+| Deployment topology | **Monolith** — one deployable unit |
+| Application pattern | **MVC** — `RenderController`/`SurfaceController`, Razor views, ModelsBuilder models |
+| Rendering | **SSR** — no client-side hydration layer |
+| Code organization | **Package-by-layer** — folders by technical concern |
+| Caching | **Reverse-proxy / edge caching** — CDN in front of origin |
+
+Headless and static-SSG alternatives were evaluated and rejected — they double the operational surface and violate the "maintainable alone, in my own stack" constraint. Don't reintroduce them.
+
+### Explicitly NOT DDD, Clean, Onion, or Hexagonal
+
+A deliberate rejection, not an oversight — do not "improve" the structure by introducing these.
+
+- **Not DDD.** There is no business domain. The entities are pages and documents; the behavior is rendering them. No invariants, aggregates, or ubiquitous language to model. DDD would be structure without complexity to justify it.
+- **Not Clean/Onion/Hexagonal.** These keep a domain core independent of frameworks so infrastructure can be swapped. Here **Umbraco *is* the application** — content model, routing, rendering, editor UI. Abstracting away from it means indirection over the thing supplying all the value, to enable a swap that will never happen.
+- `IEmailSender` (interface + SendGrid implementation) is ordinary DI for testability, **not** ports-and-adapters. Don't describe or extend it as such.
+
+**The one trigger that would change this:** if the deferred buyer RFQ portal (§9) is ever built — quotes, statuses, buyer accounts, approval flow — that is genuine domain logic with real invariants. The correct response then is a properly layered module with its own bounded context *inside* this monolith. Not a rewrite, and not retrofitting layering onto brochure pages that will never need it. The trigger is real domain complexity arriving, not the page count growing.
+
+**Single project, organized by concern.** `Views/`, `Services/`, `Controllers/`, `Composers/`, `Middleware/`, `uSync/`. No Domain/Application/Infrastructure assembly split.
 
 **Edge-first caching.** Cloudflare caches rendered HTML with a long TTL; purge on publish. Cache rules must **bypass** `/umbraco/*` and the contact-form POST. This is what makes budget hosting viable — the origin should see almost no public traffic. If a page renders stale or the backoffice behaves oddly, suspect cache rules first.
 
