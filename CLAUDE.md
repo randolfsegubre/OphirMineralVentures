@@ -17,7 +17,10 @@ This is not a high-traffic site and never needs to be engineered like one. It's 
 
 If this is the first coding session on this project, do these in order before writing any Umbraco-specific code:
 
-1. Confirm the environment: `dotnet --version` should report a .NET 10.x SDK — 10.0.301 was verified installed and working on this machine as of 2026-08-07. If it's missing on whatever machine you're on now, install it first.
+1. Confirm the environment (all three verified present on this machine 2026-08-07):
+   - `dotnet --list-sdks` → .NET 10.x (10.0.301 present) — Umbraco 18 requires .NET 10.0+
+   - `node --version` → v24.11.1 or higher (v24.18.0 present) — required by Umbraco 18's backoffice tooling
+   - `npm --version` (11.16.0 present)
 2. Scaffold the solution per §4 into `src/`.
 3. `dotnet run` and confirm the default Umbraco install wizard loads in the browser before customizing anything — working baseline first, customization second.
 4. Complete the install wizard using SQLite (§3) — no separate database server to stand up.
@@ -50,8 +53,9 @@ OphirMineralVentures/
 
 | Layer | Choice | Notes |
 |---|---|---|
-| CMS | **Umbraco 17 LTS** | Open source, MIT license, free regardless of scale. Runs on .NET 10 |
-| Framework | **ASP.NET Core on .NET 10 LTS** | SDK 10.0.301 already installed on this machine (verified 2026-08-07). Pin the exact version in `global.json` once scaffolded |
+| CMS | **Umbraco 18.1.0** (latest release) | Open source, MIT license, free regardless of scale. **STS, not LTS** — see §3a before assuming this is a set-and-forget choice |
+| Framework | **ASP.NET Core on .NET 10** | Umbraco 18 requires ".NET 10.0 and higher". SDK 10.0.301 verified installed 2026-08-07. Pin in `global.json` once scaffolded |
+| Node.js | **24.11.1+** (v24.18.0 verified) | Required by Umbraco 18's backoffice build tooling |
 | Database | **SQLite** for dev and for Tier A production | Zero-ops, file-based, avoids a separate DB service cost. Move to Azure SQL only if Tier B is adopted |
 | Hosting (default) | **Tier A — budget ASP.NET host** (e.g. SmarterASP.NET-class) | ~$104/yr all-in. See §8 for the full tier comparison |
 | CDN/WAF/DNS | **Cloudflare Free** | MX records stay pointed at Google Workspace — email is completely untouched by this project |
@@ -60,6 +64,25 @@ OphirMineralVentures/
 | Page building | **Razor views + Block List editors** | Not a paid page-builder package |
 
 If you're about to add a NuGet package, stop and check: does solving this in plain C#/Razor take less effort than researching, licensing, and maintaining a package? For a site this size, the answer is usually yes. Every dependency added here is one more thing to patch for the life of the project (§7).
+
+## 3a. Version policy — deliberate choice, with a known cost
+
+**The project owner's standing instruction is to run the latest versions across the stack.** That was chosen knowingly over the safer LTS path, with the tradeoff spelled out below. Don't quietly "correct" this back to LTS in a future session — but equally, don't lose track of what it commits the project to.
+
+Facts as of 2026-08-07:
+
+| | Umbraco 18 (**chosen**) | Umbraco 17 LTS (rejected alternative) |
+|---|---|---|
+| Released | 2026-06-25 (18.1.0 patch 2026-08-05) | 2025-11-27 |
+| Bug/security support ends | **2027-03-25** | 2027-11-27 |
+| Security-only ends | **2027-06-25** | 2028-11-27 |
+| LTS? | No — ~9mo support + 3mo security | Yes — 24mo + 12mo |
+
+**What this commits the project to:** Umbraco ships a new major roughly every 6 months. On the STS track, this site needs a **major CMS upgrade roughly annually**, with the first one due before **June 2027**. Budget for that as recurring maintenance work — it is not covered by the "$0 maintenance / Scenario 1" assumption in the cost proposal, which was written against the LTS assumption. Flag this to the owner if the maintenance arrangement is ever formalized.
+
+**On .NET 11:** .NET 11 does *not* apply yet and should not be installed for this project. It is in preview (Preview 7) until **GA on 2026-11-10**, and no Umbraco release targets it — Umbraco 18 is built against `net10.0`. Running Umbraco on a preview runtime would be unsupported by both Microsoft and Umbraco simultaneously. **Revisit in/after November 2026**, when .NET 11 is GA *and* an Umbraco version targeting it exists (likely Umbraco 19, expected Q4 2026) — both conditions, not just the first.
+
+**Standing upgrade rule:** prefer the newest *released, non-preview* version of everything, and re-verify at the start of any significant work session rather than trusting the numbers written in this file. Never adopt a preview/RC release for this client's production site.
 
 ## 4. Solution scaffold
 
@@ -182,9 +205,9 @@ Action versions above (`@v6`, `@v3`) were current as of 2026-08-07 — check the
 
 Secrets (deploy credentials, SendGrid API key) live in GitHub Actions secrets. Never in `appsettings.json`, never committed.
 
-## General rule: use current stable versions, not the ones written above
+## General rule: re-verify versions, don't trust this file's numbers
 
-Every specific version pinned in this file (.NET 10, Umbraco 17, the Action tags above) was the latest stable release as of 2026-08-07. The instruction from the project owner is to build on **current stable versions across the whole stack**, not to freeze on whatever's written here — treat every version number in this document as "verify this is still latest stable, bump if not" rather than as a hard requirement to match exactly. The one exception: don't jump to a *preview/RC* release for the sake of being newest — "latest stable," not "latest, period."
+Every version pinned in this file (.NET 10, Umbraco 18.1.0, Node 24, the Action tags above) was the newest released option as of 2026-08-07. Per §3a, the owner wants the latest across the stack — so treat every version number here as "verify this is still current, bump if not," not as a fixed target. Stable releases only; never preview/RC on this client's production site.
 
 ## 9. Explicitly out of scope — do not build unless asked
 
