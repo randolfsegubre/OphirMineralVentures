@@ -1,0 +1,729 @@
+<title>Ophir Mineral Ventures — Complete Website Proposal</title>
+<style>
+  :root{
+    --paper:#F5F1E7; --paper-raised:#FFFFFF; --ink:#201C16; --ink-soft:#4B453B;
+    --slate:#33474A; --ore:#A85A2A; --ore-soft:#F0DFCC; --seam:#4F6B57; --seam-soft:#E1E9E2;
+    --line:rgba(32,28,22,0.15); --line-strong:rgba(32,28,22,0.32); --danger:#a13f2e;
+    --font-display:Georgia,"Noto Serif","Iowan Old Style",serif;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:ui-monospace,"Cascadia Code","SF Mono",Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#16181A; --paper-raised:#1D2022; --ink:#EAE5D8; --ink-soft:#B8B2A2;
+      --slate:#9FB8B4; --ore:#E39257; --ore-soft:#3A2A1E; --seam:#8CBB9B; --seam-soft:#20302A;
+      --line:rgba(234,229,216,0.16); --line-strong:rgba(234,229,216,0.34); --danger:#e2836f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#16181A; --paper-raised:#1D2022; --ink:#EAE5D8; --ink-soft:#B8B2A2;
+    --slate:#9FB8B4; --ore:#E39257; --ore-soft:#3A2A1E; --seam:#8CBB9B; --seam-soft:#20302A;
+    --line:rgba(234,229,216,0.16); --line-strong:rgba(234,229,216,0.34); --danger:#e2836f;
+  }
+  :root[data-theme="light"]{
+    --paper:#F5F1E7; --paper-raised:#FFFFFF; --ink:#201C16; --ink-soft:#4B453B;
+    --slate:#33474A; --ore:#A85A2A; --ore-soft:#F0DFCC; --seam:#4F6B57; --seam-soft:#E1E9E2;
+    --line:rgba(32,28,22,0.15); --line-strong:rgba(32,28,22,0.32); --danger:#a13f2e;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body); line-height:1.62; font-size:16px; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--ore-soft); }
+  .wrap{ max-width:880px; margin:0 auto; padding:0 26px 100px; }
+  a{ color:var(--ore); }
+
+  /* COVER */
+  .cover{ padding:80px 26px 44px; max-width:880px; margin:0 auto; border-bottom:3px double var(--line-strong); }
+  .eyebrow{ font-family:var(--font-mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--seam); margin:0 0 20px; }
+  h1.title{ font-family:var(--font-display); font-weight:700; font-size:clamp(32px,5vw,50px); line-height:1.06; margin:0 0 18px; text-wrap:balance; }
+  .cover .lede{ font-size:18.5px; color:var(--ink-soft); max-width:620px; margin:0 0 34px; text-wrap:balance; }
+  .cover-meta{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:18px; border-top:1px solid var(--line); padding-top:22px; }
+  .cover-meta dt{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-soft); margin-bottom:5px; }
+  .cover-meta dd{ margin:0; font-size:14.5px; }
+
+  /* EXEC */
+  .execwrap{ max-width:880px; margin:0 auto; padding:40px 26px 0; }
+  .exec{ background:var(--paper-raised); border:1px solid var(--line-strong); border-radius:8px; padding:30px 32px; }
+  .exec h2{ font-family:var(--font-display); font-size:23px; margin:0 0 14px; }
+  .exec-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:24px; padding-top:22px; border-top:1px solid var(--line); }
+  @media (max-width:640px){ .exec-stats{ grid-template-columns:1fr; } }
+  .exec-stats b{ display:block; font-family:var(--font-mono); font-size:19px; margin-bottom:3px; }
+  .exec-stats span{ font-size:12.5px; color:var(--ink-soft); }
+
+  /* TOC */
+  .toc{ max-width:880px; margin:44px auto 0; padding:0 26px; }
+  .toc h2{ font-family:var(--font-display); font-size:19px; margin:0 0 16px; }
+  .toc ol{ list-style:none; padding:0; margin:0; column-count:2; column-gap:36px; }
+  @media (max-width:640px){ .toc ol{ column-count:1; } }
+  .toc li{ font-size:14px; padding:5px 0; border-bottom:1px dotted var(--line); break-inside:avoid; }
+  .toc li a{ text-decoration:none; color:var(--ink); }
+  .toc .n{ font-family:var(--font-mono); color:var(--ore); font-size:11.5px; margin-right:8px; }
+
+  /* PART DIVIDERS */
+  .part{ margin:64px 0 0; padding:22px 0 0; border-top:3px double var(--line-strong); }
+  .part .plabel{ font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ore); }
+  .part h2{ font-family:var(--font-display); font-size:28px; margin:6px 0 0; }
+
+  section{ padding:38px 0 0; }
+  .sec-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:8px; }
+  .sec-num{ font-family:var(--font-mono); color:var(--ore); font-size:13px; }
+  h3.sh{ font-family:var(--font-display); font-size:22px; margin:0; text-wrap:balance; }
+  h4{ font-family:var(--font-display); font-size:17px; margin:24px 0 8px; color:var(--slate); }
+  p{ margin:0 0 14px; max-width:70ch; }
+  ul,ol{ margin:0 0 16px; padding-left:22px; }
+  li{ margin-bottom:8px; max-width:66ch; }
+  strong{ color:var(--ink); }
+  code{ font-family:var(--font-mono); background:var(--paper-raised); border:1px solid var(--line); border-radius:3px; padding:1px 5px; font-size:13px; }
+
+  .callout{ background:var(--seam-soft); border:1px solid var(--line); border-left:3px solid var(--seam); border-radius:4px; padding:16px 18px; margin:18px 0; font-size:14.5px; }
+  .callout .label{ font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.08em; font-size:10.5px; color:var(--seam); display:block; margin-bottom:6px;}
+  .callout.ore{ background:var(--ore-soft); border-left-color:var(--ore); }
+  .callout.ore .label{ color:var(--ore); }
+  .callout p:last-child{ margin-bottom:0; }
+
+  table{ width:100%; border-collapse:collapse; font-size:14px; background:var(--paper-raised); }
+  .tbl-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:6px; margin:18px 0; }
+  th,td{ text-align:left; padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); background:var(--paper); white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td.num,th.num{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
+  tr.total td{ font-weight:700; border-top:2px solid var(--line-strong); background:var(--ore-soft); }
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:680px){ .grid2,.grid3{ grid-template-columns:1fr; } }
+  .card{ border:1px solid var(--line); border-radius:6px; padding:17px 19px; background:var(--paper-raised); }
+  .card h5{ font-family:var(--font-display); margin:0 0 7px; font-size:15.5px; }
+  .card p{ font-size:13.5px; margin-bottom:0; color:var(--ink-soft); }
+
+  .qa{ border-left:3px solid var(--line-strong); padding:2px 0 2px 20px; margin:22px 0; }
+  .qa .q{ font-family:var(--font-display); font-size:17px; color:var(--ink); margin:0 0 8px; font-weight:700; }
+  .qa p{ font-size:14.5px; }
+  .qa p:last-child{ margin-bottom:0; }
+
+  figure{ margin:26px 0; }
+  figure svg{ max-width:100%; height:auto; display:block; }
+  figcaption{ font-size:12.5px; color:var(--ink-soft); margin-top:10px; max-width:70ch; }
+
+  .price-cards{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:22px 0; }
+  @media (max-width:680px){ .price-cards{ grid-template-columns:1fr; } }
+  .pcard{ border:1px solid var(--line-strong); border-radius:8px; padding:22px 24px; background:var(--paper-raised); }
+  .pcard.reco{ border-color:var(--seam); box-shadow:inset 0 0 0 1px var(--seam); }
+  .pcard .tag{ font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.07em; color:var(--seam); }
+  .pcard h5{ font-family:var(--font-display); font-size:19px; margin:6px 0 8px; }
+  .pcard .amt{ font-family:var(--font-mono); font-size:23px; }
+  .pcard .amt small{ font-size:12px; color:var(--ink-soft); }
+  .pcard .php{ font-family:var(--font-mono); font-size:14px; color:var(--ink-soft); margin-bottom:12px; }
+  .pcard ul{ padding-left:18px; margin:10px 0 0; font-size:13.5px; color:var(--ink-soft); }
+
+  .checklist{ list-style:none; padding-left:0; }
+  .checklist li{ padding-left:28px; position:relative; }
+  .checklist li::before{ content:""; position:absolute; left:0; top:4px; width:15px; height:15px; border:1.5px solid var(--line-strong); border-radius:3px; }
+
+  .approval{ border:1px dashed var(--line-strong); border-radius:8px; padding:24px 26px; margin-top:16px; }
+  .approval-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px 34px; margin-top:18px; }
+  @media (max-width:600px){ .approval-grid{ grid-template-columns:1fr; } }
+  .aline{ border-bottom:1px solid var(--line-strong); min-height:26px; margin-bottom:5px; }
+  .acap{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); }
+
+  footer{ margin-top:56px; padding:26px 0 0; border-top:1px solid var(--line); color:var(--ink-soft); font-size:12px; font-family:var(--font-mono); }
+</style>
+
+<div class="cover">
+  <p class="eyebrow">Complete Proposal · Website Design, Build &amp; Hosting</p>
+  <h1 class="title">A website for Ophir Mineral Ventures, Inc.</h1>
+  <p class="lede">Built to satisfy compliance review, to help close deals with overseas buyers, and to be run day-to-day by you rather than by a developer.</p>
+  <dl class="cover-meta">
+    <div><dt>Prepared for</dt><dd>John David Montilla<br><span style="color:var(--ink-soft);font-size:13px;">Owner, Ophir Mineral Ventures, Inc.</span></dd></div>
+    <div><dt>Prepared by</dt><dd>Randolf Segubre<br><span style="color:var(--ink-soft);font-size:13px;">Senior Software Developer</span></dd></div>
+    <div><dt>Date</dt><dd>16 August 2026</dd></div>
+    <div><dt>Status</dt><dd>For your review</dd></div>
+  </dl>
+</div>
+
+<div class="execwrap">
+  <div class="exec">
+    <h2>In summary</h2>
+    <p>You don't currently have a website. For a company shipping ore in quantities worth six and seven figures to overseas buyers, that absence is doing quiet damage — buyers, their banks, and regulators routinely check a counterparty online before committing, and finding nothing is itself a negative signal.</p>
+    <p>This proposal covers a custom-built, eight-page website you can update yourself, hosted for roughly the price of a modest monthly dinner, with no ongoing software licence fees. It answers the question you raised about your Google subscription, explains every technical choice in plain terms, and sets out what happens after launch — not just up to it.</p>
+    <p style="margin-bottom:0;"><strong>Nothing here touches your existing email.</strong> That's addressed directly in Part III.</p>
+    <div class="exec-stats">
+      <div><b>~$104 <span style="font-size:13px;color:var(--ink-soft)">/ ₱6,389</span></b><span>Total first-year running cost, recommended option</span></div>
+      <div><b>₱0</b><span>Software licence fees — the platform is free and open-source</span></div>
+      <div><b>~6 weeks</b><span>From approval to live, subject to content from you</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><span class="n">I</span><a href="#part1">Why this website, and for whom</a></li>
+    <li><span class="n">II</span><a href="#part2">What you're getting</a></li>
+    <li><span class="n">III</span><a href="#part3">Your Google subscription, explained</a></li>
+    <li><span class="n">IV</span><a href="#part4">The technology, and why</a></li>
+    <li><span class="n">V</span><a href="#part5">How it's built — architecture</a></li>
+    <li><span class="n">VI</span><a href="#part6">Where it lives — hosting</a></li>
+    <li><span class="n">VII</span><a href="#part7">Security</a></li>
+    <li><span class="n">VIII</span><a href="#part8">Being found on Google</a></li>
+    <li><span class="n">IX</span><a href="#part9">Cost</a></li>
+    <li><span class="n">X</span><a href="#part10">Deployment plan</a></li>
+    <li><span class="n">XI</span><a href="#part11">After go-live</a></li>
+    <li><span class="n">XII</span><a href="#part12">Future improvements</a></li>
+    <li><span class="n">XIII</span><a href="#part13">Questions you may have</a></li>
+    <li><span class="n">XIV</span><a href="#part14">What I need from you</a></li>
+    <li><span class="n">XV</span><a href="#part15">Assumptions &amp; approval</a></li>
+  </ol>
+</div>
+
+<div class="wrap">
+
+<!-- ============ PART I ============ -->
+<div class="part" id="part1">
+  <p class="plabel">Part I</p>
+  <h2>Why this website, and for whom</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">1.1</span><h3 class="sh">The business case</h3></div>
+  <p>You described the website's purpose as compliance. That's the right starting point, but it undersells what a good site will actually do for you. There are two distinct jobs here:</p>
+
+  <div class="grid2">
+    <div class="card"><h5>Compliance &amp; credibility</h5><p>A verifiable public presence for regulators, banks, and the compliance teams of overseas buyers. When someone is asked to approve a large transfer to a counterparty, they look. A professional site with visible registrations and permits materially smooths that path.</p></div>
+    <div class="card"><h5>Marketing &amp; closing deals</h5><p>Something substantial to point a prospective buyer to, instead of a phone number and a trade-directory listing. It works while you sleep, in a time zone where your buyers are awake.</p></div>
+  </div>
+
+  <div class="callout">
+    <span class="label">Worth knowing</span>
+    <p>Publicly available trade records show your shipments going overwhelmingly to buyers based in China. That single fact shapes several recommendations in this document — particularly around how the site should read to a foreign compliance officer, and the case for a Chinese-language version later (Part XII).</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">1.2</span><h3 class="sh">Who the site is written for</h3></div>
+  <div class="grid2">
+    <div class="card"><h5>Overseas buyers &amp; their compliance teams</h5><p>Want: proof you are a real, permitted, documented operation. Product specifications. A clear way to make contact.</p></div>
+    <div class="card"><h5>Banks &amp; regulators</h5><p>Want: registered company name, address, permit numbers, transparent ownership. Consistency with what's on your paperwork.</p></div>
+    <div class="card"><h5>Partners, LGUs, and the local community</h5><p>Want: legitimacy, an overview of operations, evidence of responsible practice.</p></div>
+    <div class="card"><h5>You</h5><p>Want: to update content without paying someone every time a certificate is renewed or a shipment milestone is worth announcing.</p></div>
+  </div>
+</section>
+
+<!-- ============ PART II ============ -->
+<div class="part" id="part2">
+  <p class="plabel">Part II</p>
+  <h2>What you're getting</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">2.1</span><h3 class="sh">Eight pages</h3></div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Page</th><th>What it does</th><th>You can edit</th></tr>
+    <tr><td><strong>Home</strong></td><td>First impression; headline figures; routes visitors onward</td><td>Headline, main photo, key statistics, featured news</td></tr>
+    <tr><td><strong>About</strong></td><td>Company history, leadership, your own background</td><td>All text, photos, leadership profiles</td></tr>
+    <tr><td><strong>Products</strong></td><td>Nickel ore and chromite ore — the specifications buyers ask for</td><td>Grade tables, photos, downloadable spec sheets</td></tr>
+    <tr><td><strong>Compliance &amp; Certifications</strong></td><td>Registrations and permits — the heart of the compliance purpose</td><td>Certificate files, reference numbers, expiry dates</td></tr>
+    <tr><td><strong>Sustainability</strong></td><td>Environmental and community practice — increasingly asked about by buyers</td><td>All text and photos</td></tr>
+    <tr><td><strong>News</strong></td><td>Shipment milestones, announcements. Also keeps Google returning</td><td>Add unlimited posts yourself</td></tr>
+    <tr><td><strong>Contact</strong></td><td>Enquiry form delivered to your inbox; address; direct contact details</td><td>All contact details</td></tr>
+    <tr><td><strong>Privacy Policy</strong></td><td>Required by the Data Privacy Act (RA 10173)</td><td>Rarely needs changing</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">2.2</span><h3 class="sh">What "you can edit it yourself" actually means</h3></div>
+  <p>You'll sign in to a private administration area and see your pages listed much like folders. Click a page, click the text, retype it, press Save and Publish. Swapping a photo is choosing a new file. Adding a news post is filling in a title, a date, and the body.</p>
+  <p>What you deliberately <em>won't</em> be able to do is break the design. The layout, fonts, colours and structure are fixed by me at build time; your controls are for content. On a site whose main job is to look credible to a bank, that restriction is a feature, not a limitation — there's no way to accidentally leave the Compliance page looking broken.</p>
+  <div class="callout">
+    <span class="label">Included at handover</span>
+    <p>A short, plain-language guide covering the handful of things you'll actually do — edit a page, swap a photo, publish a news post, and who to contact if something looks wrong. Written for you, not for a developer.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">2.3</span><h3 class="sh">Design direction</h3></div>
+  <p>A separate homepage design draft accompanies this proposal, showing the intended look: restrained, industrial, document-led — the visual language of a company that ships bulk commodities, not a consumer brand. The wording and figures in that draft are placeholders for review; the layout and design direction are the substance of it.</p>
+  <p>The site will be built mobile-first. Most buyer-side contacts will open a link you send them on a phone, often over a mobile connection, so it must load quickly and read well on a small screen before anything else.</p>
+</section>
+
+<!-- ============ PART III ============ -->
+<div class="part" id="part3">
+  <p class="plabel">Part III</p>
+  <h2>Your Google subscription, explained</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">3.1</span><h3 class="sh">What you're actually paying Google for</h3></div>
+  <p>You mentioned having a Google host used for email, and not wanting the template-style website that comes with it. That instinct is correct, and it's worth separating three different Google products that are easy to confuse:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Product</th><th>What it is</th><th>Relevant?</th></tr>
+    <tr><td><strong>Google Workspace</strong></td><td>The paid subscription giving you professional email on your own company domain, plus Drive, Calendar and Docs. <em>This is what you have.</em></td><td>Keep exactly as-is</td></tr>
+    <tr><td><strong>Google Sites</strong></td><td>A very basic website builder bundled inside Workspace. This produces the template look you're reacting against. It cannot run a proper content system, a real enquiry form, or a custom design.</td><td>Not used</td></tr>
+    <tr><td><strong>Google Domains</strong></td><td>Google's former domain registrar. Closed and migrated to Squarespace in 2024 — so if you registered a domain through Google before then, it now sits in a Squarespace account.</td><td>Need to check where yours is</td></tr>
+  </table></div>
+  <p>I also checked specifically whether your Workspace subscription could host the new website, to save you a separate hosting cost. It cannot — Google does not offer a way to run a custom-built site of this kind inside a Workspace plan. Hosting is a separate, small cost, covered in Part IX.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">3.2</span><h3 class="sh">Your email will not be touched</h3></div>
+  <p>This is the single most common worry when a business gets a new website, so it's worth showing rather than asserting. A domain name carries two separate sets of instructions: one saying where email should go, another saying where the website lives. They're independent.</p>
+
+  <figure>
+    <svg viewBox="0 0 860 380" role="img" aria-label="Diagram showing one domain name splitting into two independent paths: website records point to the new web host, while mail records continue pointing to Google Workspace, unchanged.">
+      <defs><marker id="a1" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><polygon points="0 0, 7 3, 0 6" fill="currentColor"/></marker></defs>
+      <style>
+        text{ font-family:Georgia,serif; fill:currentColor; }
+        .lbl{ font-family:ui-monospace,Consolas,monospace; font-size:11px; }
+        .bx{ fill:none; stroke:currentColor; stroke-width:1.4; }
+        .fb{ fill:currentColor; opacity:0.06; stroke:currentColor; stroke-width:1.4; }
+        .ln{ stroke:currentColor; stroke-width:1.4; fill:none; }
+      </style>
+      <rect class="fb" x="320" y="20" width="230" height="54" rx="6"/>
+      <text x="435" y="42" font-size="13.5" text-anchor="middle" font-weight="700">Your domain name</text>
+      <text x="435" y="60" class="lbl" text-anchor="middle">ophirmineralventures.com</text>
+
+      <path class="ln" d="M380,74 C330,120 260,140 215,170" marker-end="url(#a1)"/>
+      <text x="250" y="122" class="lbl" text-anchor="middle">website instructions</text>
+
+      <path class="ln" d="M490,74 C540,120 610,140 655,170" marker-end="url(#a1)"/>
+      <text x="620" y="122" class="lbl" text-anchor="middle">mail instructions</text>
+
+      <rect class="fb" x="95" y="172" width="240" height="66" rx="6"/>
+      <text x="215" y="198" font-size="13" text-anchor="middle" font-weight="700">New website host</text>
+      <text x="215" y="216" class="lbl" text-anchor="middle">changes during this project</text>
+      <text x="215" y="231" class="lbl" text-anchor="middle" opacity=".7">the only thing that moves</text>
+
+      <rect class="bx" x="535" y="172" width="240" height="66" rx="6"/>
+      <text x="655" y="198" font-size="13" text-anchor="middle" font-weight="700">Google Workspace</text>
+      <text x="655" y="216" class="lbl" text-anchor="middle">your existing email</text>
+      <text x="655" y="231" class="lbl" text-anchor="middle" opacity=".7">completely unchanged</text>
+
+      <path class="ln" d="M215,238 L215,286" marker-end="url(#a1)"/>
+      <text x="215" y="308" font-size="12.5" text-anchor="middle">Visitors see the new site</text>
+
+      <path class="ln" d="M655,238 L655,286" marker-end="url(#a1)"/>
+      <text x="655" y="308" font-size="12.5" text-anchor="middle">Your email keeps working</text>
+      <text x="655" y="326" class="lbl" text-anchor="middle" opacity=".7">john@ophirmineralventures.com</text>
+
+      <text x="435" y="364" class="lbl" text-anchor="middle" opacity=".75">Two independent paths from one domain — launching the website cannot disturb your email.</text>
+    </svg>
+    <figcaption>Only the website instructions change during this project. Your mail instructions are left exactly as they are, and email continues flowing through Google throughout — including during the launch itself.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ PART IV ============ -->
+<div class="part" id="part4">
+  <p class="plabel">Part IV</p>
+  <h2>The technology, and why</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">4.1</span><h3 class="sh">What the site will be built on</h3></div>
+  <p>The site will use <strong>Umbraco</strong>, an established open-source content management system, running on <strong>Microsoft's .NET platform</strong>. In plain terms: Umbraco is the part that gives you the editing screens; .NET is the engine underneath.</p>
+  <div class="grid3">
+    <div class="card"><h5>No licence fee, ever</h5><p>Umbraco is free and open-source under an MIT licence. There's no per-user charge, no revenue threshold, and no expiry. Your only recurring cost is hosting.</p></div>
+    <div class="card"><h5>Genuinely custom</h5><p>Nothing about the finished site will look like it came from a template gallery. The design is built specifically for your company.</p></div>
+    <div class="card"><h5>Maintainable long-term</h5><p>This is the technology I work in professionally every day, so I can support it directly — and it's a mainstream platform with a large pool of other developers if you ever need someone else.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">4.2</span><h3 class="sh">Why not a website builder like Wix or Squarespace?</h3></div>
+  <p>They're faster to launch and I considered them seriously. Three reasons they lose here:</p>
+  <ul>
+    <li><strong>They look like what they are.</strong> Buyers and compliance officers see hundreds of these. A recognisably templated site subtly signals a smaller, less established operation — the exact opposite of what yours needs to convey.</li>
+    <li><strong>You'd be renting, not owning.</strong> Your content and design live inside their system. Moving later means rebuilding from scratch.</li>
+    <li><strong>They cost more to run.</strong> Roughly $200–470 per year versus around $104, with less control.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">4.3</span><h3 class="sh">A word on software versions</h3></div>
+  <p>The site will be built on the current release of Umbraco (version 18) and Microsoft .NET 10. Being current matters for security, since older versions eventually stop receiving fixes.</p>
+  <div class="callout ore">
+    <span class="label">Something you should know upfront</span>
+    <p>Umbraco 18 is a <em>standard-support</em> release rather than a long-term-support one. Its security updates run until <strong>June 2027</strong>, after which the site should be moved to a newer version. Umbraco issues a new major version roughly every six months, so this is best thought of as a modest recurring maintenance task rather than a one-off.</p>
+    <p>I'm raising it now because it's a real, ongoing consideration rather than something to discover in a year. A longer-support alternative exists (Umbraco 17, supported to late 2028) if you would prefer fewer updates over having the newest version — happy to switch to that if you'd rather. Either way the cost figures in Part IX are unchanged; what differs is how often the underlying platform needs attention.</p>
+  </div>
+</section>
+
+<!-- ============ PART V ============ -->
+<div class="part" id="part5">
+  <p class="plabel">Part V</p>
+  <h2>How it's built — architecture</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">5.1</span><h3 class="sh">The shape of the system</h3></div>
+  <p>You may be shown technical terms by other developers, so here's the plain description of what's being built and why it's appropriate.</p>
+  <p>The formal description is a <strong>coupled content-management architecture</strong> — a single, self-contained application that both stores your content and produces the pages visitors see. The pages are assembled on the server and sent to the browser as finished HTML.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Choice</th><th>In plain terms</th><th>Why it's right here</th></tr>
+    <tr><td>One single application</td><td>Rather than splitting the site across several separate systems</td><td>One thing to host, back up, secure and update. Half the running cost and far less that can go wrong</td></tr>
+    <tr><td>Pages built on the server</td><td>The page arrives complete, rather than being assembled inside the visitor's browser</td><td>Google indexes it properly, and it loads fast on a phone over a mobile connection</td></tr>
+    <tr><td>Deliberately simple internal structure</td><td>No elaborate engineering patterns</td><td>Those patterns exist to manage complex business rules. A website presenting company information has none, so adding them would add cost and risk with no benefit</td></tr>
+  </table></div>
+  <p style="font-size:14px;color:var(--ink-soft)">That last point is a deliberate decision rather than a shortcut. Over-engineering a simple system is a common and expensive mistake; the discipline is in matching the structure to the actual problem.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">5.2</span><h3 class="sh">How the site stays fast and protected</h3></div>
+  <p>A copy of each page is held on a worldwide delivery network (Cloudflare) that sits in front of your site. Visitors are served from whichever location is nearest to them, and your actual server is rarely touched at all.</p>
+  <div class="grid3">
+    <div class="card"><h5>Fast everywhere</h5><p>A buyer in Tianjin gets the page from a nearby location rather than from a server in the Philippines.</p></div>
+    <div class="card"><h5>Resilient</h5><p>The network absorbs traffic surges and malicious attacks before they ever reach your site.</p></div>
+    <div class="card"><h5>Inexpensive</h5><p>Because the server itself does very little work, a modest hosting plan is genuinely sufficient. This is what keeps the annual cost near $104.</p></div>
+  </div>
+  <p>When you publish a change, that copy is refreshed immediately — you'll see your edits straight away.</p>
+</section>
+
+<!-- ============ PART VI ============ -->
+<div class="part" id="part6">
+  <p class="plabel">Part VI</p>
+  <h2>Where it lives — hosting</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">6.1</span><h3 class="sh">Two options</h3></div>
+  <p>Both are equally secure. The difference is operational convenience, not safety — there is no "cheap and risky" option here.</p>
+  <div class="price-cards">
+    <div class="pcard reco">
+      <span class="tag">Recommended to start</span>
+      <h5>Essential</h5>
+      <div class="amt">~$104<small> / year</small></div>
+      <div class="php">≈ ₱6,389 / year</div>
+      <ul>
+        <li>Your domain name and hosting</li>
+        <li>Secure connection (the padlock in the browser)</li>
+        <li>Daily automatic backups</li>
+        <li>Firewall and attack protection</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <span class="tag">If you want more headroom</span>
+      <h5>Managed</h5>
+      <div class="amt">~$236<small> / year</small></div>
+      <div class="php">≈ ₱14,497 / year</div>
+      <ul>
+        <li>Everything in Essential</li>
+        <li>Hosted on Microsoft Azure</li>
+        <li>A test copy of the site for trying changes safely</li>
+        <li>Built-in performance monitoring</li>
+      </ul>
+    </div>
+  </div>
+  <p><strong>My recommendation is Essential.</strong> Because of the delivery network described in Part V, your visitors' experience is effectively identical on both. Managed buys convenience for me and easier growth later — worth revisiting if the site ever becomes busier or changes more often. You can move between them later without rebuilding anything.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">6.2</span><h3 class="sh">Why not Umbraco's own hosting?</h3></div>
+  <p>Umbraco sells a fully-managed hosting service starting at roughly $660 per year (≈₱40,544), rising to considerably more. It's a legitimate product that removes most server management work — but that convenience is priced for organisations without a developer. Since you have one, it would be paying to avoid something already covered.</p>
+</section>
+
+<!-- ============ PART VII ============ -->
+<div class="part" id="part7">
+  <p class="plabel">Part VII</p>
+  <h2>Security</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">7.1</span><h3 class="sh">What protects the site</h3></div>
+  <p>Worth being clear about the risk profile first: this site holds no customer accounts, no payment details, and no sensitive records. The only information it receives is enquiry-form messages. That's a deliberately small target, and the protections are sized accordingly — thorough where it matters, without paying for enterprise measures that address risks you don't carry.</p>
+  <div class="grid2">
+    <div class="card"><h5>Encrypted connections</h5><p>All traffic over HTTPS, so visitors see the padlock. Certificates renew automatically.</p></div>
+    <div class="card"><h5>Protected sign-in</h5><p>Two-factor authentication on your administrator account, plus limits on repeated login attempts.</p></div>
+    <div class="card"><h5>Firewall &amp; attack filtering</h5><p>Malicious traffic is filtered before it reaches the site.</p></div>
+    <div class="card"><h5>Spam-resistant enquiry form</h5><p>Automated filtering and rate limiting, so the form doesn't become a nuisance channel.</p></div>
+    <div class="card"><h5>Backups, held off-site</h5><p>Daily, stored separately from the site itself, and periodically test-restored — an untested backup isn't really a backup.</p></div>
+    <div class="card"><h5>Data Privacy Act compliance</h5><p>Published privacy policy, explicit consent on the enquiry form, and minimal retention of personal information (RA 10173).</p></div>
+  </div>
+  <p>Almost all of the above costs nothing beyond the hosting already listed. Paid security upgrades exist, but none of them close a gap that matters at this site's size and risk profile — so they're not included, and I'd rather say so than bundle them in.</p>
+</section>
+
+<!-- ============ PART VIII ============ -->
+<div class="part" id="part8">
+  <p class="plabel">Part VIII</p>
+  <h2>Being found on Google</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">8.1</span><h3 class="sh">Search engines</h3></div>
+  <p>A useful shortcut: <strong>Yahoo's search results have been supplied by Bing since 2015.</strong> Covering Google and Bing therefore covers effectively the entire market, Yahoo included. No separate work is needed for Yahoo.</p>
+  <p>Included at launch:</p>
+  <ul>
+    <li>Site registered with both Google Search Console and Bing Webmaster Tools, with a sitemap submitted to each</li>
+    <li>A <strong>Google Business Profile</strong> created, so the company appears on Google Maps and in local results</li>
+    <li>Each page given its own title and description, written for the terms buyers actually search</li>
+    <li>Structured company information embedded so search engines can identify the business correctly</li>
+    <li>Existing trade-directory listings pointed at the new official domain</li>
+  </ul>
+  <div class="callout">
+    <span class="label">A realistic expectation</span>
+    <p>Search visibility builds over months, not days, and "nickel ore exporter Philippines" is a competitive term. Realistically, most early traffic will come from people you've directed to the site — which is exactly what matters for the compliance and deal-closing purposes. Search visibility is a compounding bonus on top, helped by posting to the News page occasionally.</p>
+  </div>
+</section>
+
+<!-- ============ PART IX ============ -->
+<div class="part" id="part9">
+  <p class="plabel">Part IX</p>
+  <h2>Cost</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">9.1</span><h3 class="sh">First year</h3></div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Item</th><th class="num">USD</th><th class="num">PHP</th><th>Notes</th></tr>
+    <tr><td>Domain name (.com)</td><td class="num">$20</td><td class="num">₱1,229</td><td>Annual renewal. A .com.ph is ~$40–60 if you'd prefer a local domain</td></tr>
+    <tr><td>Hosting</td><td class="num">$84</td><td class="num">₱5,160</td><td>Roughly $7/month, secure connection included</td></tr>
+    <tr><td>Database</td><td class="num">$0</td><td class="num">₱0</td><td>Built into the hosting; no separate service required</td></tr>
+    <tr><td>Delivery network &amp; firewall</td><td class="num">$0</td><td class="num">₱0</td><td>Cloudflare's free tier genuinely suffices at this scale</td></tr>
+    <tr><td>Software licence (Umbraco)</td><td class="num">$0</td><td class="num">₱0</td><td>Free and open-source, with no cap</td></tr>
+    <tr><td>Enquiry form &amp; email delivery</td><td class="num">$0</td><td class="num">₱0</td><td>Built directly rather than licensed</td></tr>
+    <tr><td>Backups &amp; uptime monitoring</td><td class="num">$0</td><td class="num">₱0</td><td>Free tiers, sufficient for this site</td></tr>
+    <tr><td>Photography / branding polish <em>(optional)</em></td><td class="num">$0–150</td><td class="num">₱0–9,215</td><td>Only if you'd like professional photos taken; your own operational photos are preferred regardless</td></tr>
+    <tr class="total"><td>First-year total</td><td class="num">~$104–254</td><td class="num">~₱6,389–15,603</td><td></td></tr>
+  </table></div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">9.2</span><h3 class="sh">Every year after</h3></div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Item</th><th class="num">USD</th><th class="num">PHP</th></tr>
+    <tr><td>Domain renewal</td><td class="num">$20</td><td class="num">₱1,229</td></tr>
+    <tr><td>Hosting renewal</td><td class="num">$84</td><td class="num">₱5,160</td></tr>
+    <tr class="total"><td>Annual total</td><td class="num">~$104</td><td class="num">~₱6,389</td></tr>
+  </table></div>
+  <div class="callout ore">
+    <span class="label">Exchange rate — as of today</span>
+    <p>All peso figures use the mid-market rate of <strong>₱61.43 to US$1, as at 15 August 2026</strong>. Rates move daily — for reference, this was ₱60.73 five days earlier. Treat peso amounts as today's guide rather than a fixed price; hosting and domains are billed in US dollars, so the peso cost will drift with the exchange rate.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">9.3</span><h3 class="sh">Why so little?</h3></div>
+  <p>A fair question when website quotes commonly run to six figures in pesos. Three reasons:</p>
+  <ul>
+    <li><strong>No licence fees.</strong> The content system is free and open-source. Much of what agencies charge for annually is licensed software and page-builder subscriptions.</li>
+    <li><strong>Right-sized hosting.</strong> The delivery network described in Part V means a modest plan performs like an expensive one.</li>
+    <li><strong>The figures above are running costs, not development.</strong> Build work isn't itemised here — that's a separate conversation between us (Part XI), and it's the one number in this document that's a discussion rather than a calculation.</li>
+  </ul>
+</section>
+
+<!-- ============ PART X ============ -->
+<div class="part" id="part10">
+  <p class="plabel">Part X</p>
+  <h2>Deployment plan</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">10.1</span><h3 class="sh">Six phases, about six weeks</h3></div>
+  <figure>
+    <svg viewBox="0 0 880 170" role="img" aria-label="Timeline of six deployment phases from discovery through launch across approximately six weeks.">
+      <defs><marker id="a2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><polygon points="0 0, 7 3, 0 6" fill="currentColor"/></marker></defs>
+      <style>
+        text{ font-family:Georgia,serif; fill:currentColor; }
+        .lbl{ font-family:ui-monospace,Consolas,monospace; font-size:10px; }
+        .nd{ fill:currentColor; }
+      </style>
+      <line x1="40" y1="85" x2="820" y2="85" stroke="currentColor" stroke-width="1.4" marker-end="url(#a2)"/>
+      <g><circle cx="60" cy="85" r="5" class="nd"/><text x="60" y="60" font-size="12" text-anchor="middle" font-weight="700">Discovery</text><text x="60" y="107" class="lbl" text-anchor="middle">Week 1</text></g>
+      <g><circle cx="205" cy="85" r="5" class="nd"/><text x="205" y="117" font-size="12" text-anchor="middle" font-weight="700">Setup</text><text x="205" y="70" class="lbl" text-anchor="middle">Week 2</text></g>
+      <g><circle cx="360" cy="85" r="5" class="nd"/><text x="360" y="60" font-size="12" text-anchor="middle" font-weight="700">Build</text><text x="360" y="107" class="lbl" text-anchor="middle">Weeks 3–4</text></g>
+      <g><circle cx="520" cy="85" r="5" class="nd"/><text x="520" y="117" font-size="12" text-anchor="middle" font-weight="700">Content</text><text x="520" y="70" class="lbl" text-anchor="middle">Weeks 4–5</text></g>
+      <g><circle cx="670" cy="85" r="5" class="nd"/><text x="670" y="60" font-size="12" text-anchor="middle" font-weight="700">Review</text><text x="670" y="107" class="lbl" text-anchor="middle">Week 5</text></g>
+      <g><circle cx="815" cy="85" r="5" class="nd"/><text x="815" y="117" font-size="12" text-anchor="middle" font-weight="700">Launch</text><text x="815" y="70" class="lbl" text-anchor="middle">Week 6</text></g>
+    </svg>
+  </figure>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>Phase</th><th>What happens</th><th>What I need from you</th></tr>
+    <tr><td><strong>1 · Discovery</strong></td><td>Confirm the domain situation, agree the page list, gather your materials</td><td>The items in Part XIV</td></tr>
+    <tr><td><strong>2 · Setup</strong></td><td>Register or redirect the domain, set up hosting and the delivery network, install the content system</td><td>Domain login details, or authority to register a new one</td></tr>
+    <tr><td><strong>3 · Build</strong></td><td>Build the design and every page template; build the enquiry form</td><td>Nothing — heads-down work</td></tr>
+    <tr><td><strong>4 · Content</strong></td><td>Load your real text, photos and certificates; write page titles for search</td><td>Prompt answers to content questions as they arise</td></tr>
+    <tr><td><strong>5 · Review</strong></td><td>Testing across phones and browsers, security checks, then a walkthrough with you</td><td>~1 hour with me, and your feedback</td></tr>
+    <tr><td><strong>6 · Launch</strong></td><td>Point the domain at the new site, confirm email still works, submit to search engines</td><td>Final approval to go live</td></tr>
+  </table></div>
+
+  <div class="callout">
+    <span class="label">What determines the timeline</span>
+    <p>Honestly: the build itself is predictable — what usually sets the pace is how quickly photos, certificate copies and approvals come back. If those arrive promptly, six weeks is comfortable. If they take a month, the project takes a month longer. That's within your control, and worth knowing upfront.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">10.2</span><h3 class="sh">Launch day</h3></div>
+  <p>The change itself is small and reversible. I switch the website instruction on your domain to point at the new site; the mail instruction is left untouched. The new site typically appears within an hour and is fully propagated worldwide within 24–48 hours.</p>
+  <p>During that window some visitors may briefly still see the old state — which, since there's no existing site, simply means the new one appearing at slightly different times in different places. <strong>Your email continues working throughout, without interruption.</strong> I verify this explicitly as part of launch rather than assuming it.</p>
+</section>
+
+<!-- ============ PART XI ============ -->
+<div class="part" id="part11">
+  <p class="plabel">Part XI</p>
+  <h2>After go-live</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">11.1</span><h3 class="sh">What ongoing care involves</h3></div>
+  <p>A website isn't a one-off purchase. Software needs updating, backups need verifying, and certificates on your Compliance page expire. None of it is heavy, but it isn't zero either — and it's better agreed now than discovered later.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>How often</th><th>What happens</th><th>Who</th></tr>
+    <tr><td><strong>Ongoing</strong></td><td>You add news posts, update text, swap photos, replace renewed certificates</td><td>You</td></tr>
+    <tr><td><strong>Monthly</strong></td><td>Security updates applied; confirm backups actually ran</td><td>Me</td></tr>
+    <tr><td><strong>Quarterly</strong></td><td>Check for broken links, review certificate expiry dates, test-restore a backup</td><td>Me</td></tr>
+    <tr><td><strong>Annually</strong></td><td>Renew domain and hosting; review whether the hosting tier still fits</td><td>Me, with your approval on renewals</td></tr>
+    <tr><td><strong>~Yearly</strong></td><td>Move to a newer Umbraco version before the current one stops receiving security updates (see 4.3 — first one due before June 2027)</td><td>Me</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">11.2</span><h3 class="sh">Support arrangement</h3></div>
+  <p>Worth settling explicitly, so "who fixes it if something breaks" is never ambiguous. Two sensible options:</p>
+  <div class="grid2">
+    <div class="card"><h5>Included</h5><p>I continue supporting the site as part of our working relationship, at no additional charge. Simple, informal, and dependent on my availability — best-effort rather than guaranteed response times.</p></div>
+    <div class="card"><h5>Light retainer</h5><p>A small predictable monthly fee — the Philippine market rate for this scope runs roughly ₱2,000–6,000 (≈$33–98) — covering the routine work above with priority turnaround.</p></div>
+  </div>
+  <p style="font-size:14px;color:var(--ink-soft)">Either is genuinely fine by me. The retainer mainly buys predictability and a clearer claim on my time; the included arrangement is simpler. Your call, and easy to change later.</p>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">11.3</span><h3 class="sh">What this plan assumes</h3></div>
+  <p>The plan above holds under the following assumptions. If any turns out differently, it's worth revisiting — none is a problem, but each would change something:</p>
+  <ul>
+    <li><strong>Traffic stays modest.</strong> A business-to-business site visited by buyers, banks and partners — not consumer-scale volume. A sudden surge would mean moving to the Managed tier.</li>
+    <li><strong>Content changes occasionally, not daily.</strong> Monthly-ish updates. Daily publishing would justify the test-environment setup in the Managed tier.</li>
+    <li><strong>The site stays informational.</strong> No online payments, customer accounts, or buyer login portal. Any of those changes the security requirements materially and would need separate planning.</li>
+    <li><strong>Your Google Workspace email continues as-is</strong>, billed and managed by you, unaffected by this project.</li>
+    <li><strong>One language at launch</strong> (English), with the site built so Chinese can be added later without rework (Part XII).</li>
+    <li><strong>Content is supplied by you</strong> — text, photos, certificates. I'll draft and structure it, but the underlying facts, figures and documents have to come from your side. Nothing about your business will be invented to fill a gap.</li>
+    <li><strong>I remain available</strong> for maintenance, per whichever arrangement in 11.2 we agree. If that ever changes, the platform is mainstream enough that another developer can take it over.</li>
+  </ul>
+</section>
+
+<!-- ============ PART XII ============ -->
+<div class="part" id="part12">
+  <p class="plabel">Part XII</p>
+  <h2>Future improvements</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">12.1</span><h3 class="sh">Deliberately not in this phase</h3></div>
+  <p>All of these are sensible later. None is needed to launch, and including them now would add cost and delay without improving the site's core purpose.</p>
+  <div class="grid2">
+    <div class="card"><h5>Chinese-language version 中文</h5><p>Given that essentially all your recorded buyers are China-based, this is the highest-value future addition. <strong>The site will be built from day one so this can be added without rework</strong> — a deliberate decision now that saves significant cost later.</p></div>
+    <div class="card"><h5>Buyer enquiry portal</h5><p>A structured quote-request system rather than a general enquiry form, if inbound volume ever justifies it.</p></div>
+    <div class="card"><h5>Careers page</h5><p>Straightforward to add whenever hiring becomes regular.</p></div>
+    <div class="card"><h5>Advertising</h5><p>Considered as a way to offset running costs. Set aside for now — at this site's realistic traffic it would generate very little, and advertisements sit awkwardly on pages a bank is reviewing. Revisit later with real traffic data if you'd like.</p></div>
+  </div>
+</section>
+
+<!-- ============ PART XIII ============ -->
+<div class="part" id="part13">
+  <p class="plabel">Part XIII</p>
+  <h2>Questions you may have</h2>
+</div>
+
+<section>
+  <div class="qa">
+    <p class="q">Will this affect my current email at all?</p>
+    <p>No. Email and website are controlled by separate settings on your domain, and only the website setting changes. I verify your email is working as part of launch rather than assuming it. See 3.2 for the diagram.</p>
+  </div>
+  <div class="qa">
+    <p class="q">Do I own the website?</p>
+    <p>Yes — entirely. The domain is registered in your company's name, the content is yours, and the software is open-source with no licence tying you to anyone. If you ever wanted to move to a different developer, everything transfers.</p>
+  </div>
+  <div class="qa">
+    <p class="q">What if you become unavailable?</p>
+    <p>A fair question to ask of any solo arrangement. The site is built on mainstream Microsoft technology with a large developer pool, deliberately rather than on anything exotic. Everything is documented and stored in a standard version-control system, so another developer can pick it up. I'd rather you have that assurance in writing than take it on trust.</p>
+  </div>
+  <div class="qa">
+    <p class="q">Can I see it before it goes live?</p>
+    <p>Yes. You'll review it on a private address in Phase 5, before anything is public, and I'll walk you through it. Nothing goes live without your approval.</p>
+  </div>
+  <div class="qa">
+    <p class="q">What if I want changes after launch?</p>
+    <p>Content changes — text, photos, news, certificates — you do yourself, at no cost. Design or structural changes come to me, under whichever support arrangement we agree in 11.2.</p>
+  </div>
+  <div class="qa">
+    <p class="q">Is it safe to publish our permit numbers?</p>
+    <p>That's your judgement to make, and worth a conversation. Generally, publishing registration and permit references is standard practice for exporters and actively helps due-diligence checks — it's what a compliance officer is looking for. But you know your regulatory and competitive situation better than I do. Publish only what you're comfortable with; the site works either way.</p>
+  </div>
+  <div class="qa">
+    <p class="q">Why does the site need to be fast if we only have a few visitors?</p>
+    <p>Because of <em>who</em> those visitors are. A slow, awkward site read by a bank's compliance officer on a phone does real damage; the same site read by a thousand casual visitors wouldn't matter at all. Low traffic, high stakes per visit.</p>
+  </div>
+  <div class="qa">
+    <p class="q">Could we just use the free Google website builder?</p>
+    <p>You could, and it would cost nothing. But it produces exactly the templated look you told me you wanted to avoid, and it can't run a proper enquiry form or document library. For a site whose purpose is to signal that this is an established operation, it works against you. See Part III.</p>
+  </div>
+</section>
+
+<!-- ============ PART XIV ============ -->
+<div class="part" id="part14">
+  <p class="plabel">Part XIV</p>
+  <h2>What I need from you</h2>
+</div>
+
+<section>
+  <p>These are the things only you can provide. The sooner they arrive, the sooner the timeline in Part X starts.</p>
+  <ul class="checklist">
+    <li><strong>Domain name</strong> — your preferred web address, and where it's currently registered if you already have one (it may be with Squarespace if it came from Google originally)</li>
+    <li><strong>Company registration details</strong> — SEC registration, DTI/BIR details, exactly as you want them displayed publicly</li>
+    <li><strong>Permits and certifications</strong> — which ones you're comfortable publishing (DENR-MGB, ECC, others), with current copies</li>
+    <li><strong>Logo and brand materials</strong> — or confirmation that I should design one</li>
+    <li><strong>Photographs</strong> — operations, ore samples, facilities, and one of yourself. Real photos matter here; stock imagery actively undermines credibility with the audience this site is for</li>
+    <li><strong>Your background</strong> — how you'd like your role and history described on the About page</li>
+    <li><strong>Product specifications</strong> — typical grades and assay figures you're willing to publish</li>
+    <li><strong>Business address, phone, and hours</strong> as they should appear publicly</li>
+    <li><strong>A decision on the Chinese-language version</strong> — not needed now, but knowing your appetite shapes how I build it</li>
+    <li><strong>Confirmation</strong> that your Google Workspace email should be left exactly as it is</li>
+  </ul>
+  <div class="callout ore">
+    <span class="label">On accuracy</span>
+    <p>Nothing about your company will be invented or approximated to fill a gap. Until you supply real registration numbers, permit references, addresses and figures, those areas stay visibly marked as placeholders and the site does not go live. On a website whose entire purpose is being verifiable, a plausible-looking but incorrect detail is worse than an obvious blank.</p>
+  </div>
+</section>
+
+<!-- ============ PART XV ============ -->
+<div class="part" id="part15">
+  <p class="plabel">Part XV</p>
+  <h2>Assumptions &amp; approval</h2>
+</div>
+
+<section>
+  <div class="sec-head"><span class="sec-num">15.1</span><h3 class="sh">Please note</h3></div>
+  <ul>
+    <li>Costs are running costs (hosting, domain, services) and exclude development work, which is a separate discussion between us.</li>
+    <li>Third-party prices — hosting, domains, Google Workspace — are set by those providers and may change.</li>
+    <li>Peso figures use ₱61.43 to US$1 as at 15 August 2026 and will drift with the exchange rate.</li>
+    <li>The six-week timeline assumes materials and approvals arrive promptly (Part X).</li>
+    <li>Software versions were current as at 16 August 2026; the version note in 4.3 applies.</li>
+    <li>Any figures or details shown in the accompanying design draft are placeholders for illustration, not statements about your business.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head"><span class="sec-num">15.2</span><h3 class="sh">To proceed</h3></div>
+  <p>If this looks right, three decisions and then we can begin:</p>
+  <ol>
+    <li><strong>Hosting option</strong> — Essential (recommended) or Managed</li>
+    <li><strong>Support arrangement</strong> — included, or a light retainer</li>
+    <li><strong>Software version preference</strong> — newest (Umbraco 18, updated roughly yearly) or longer-support (Umbraco 17, supported into late 2028). See 4.3</li>
+  </ol>
+  <div class="approval">
+    <div class="approval-grid">
+      <div><div class="aline">&nbsp;</div><span class="acap">Approved by (name &amp; role)</span></div>
+      <div><div class="aline">&nbsp;</div><span class="acap">Date</span></div>
+      <div><div class="aline">&nbsp;</div><span class="acap">Hosting option</span></div>
+      <div><div class="aline">&nbsp;</div><span class="acap">Support arrangement</span></div>
+      <div><div class="aline">&nbsp;</div><span class="acap">Version preference</span></div>
+      <div><div class="aline">&nbsp;</div><span class="acap">Signature</span></div>
+    </div>
+  </div>
+  <p style="margin-top:22px;">Happy to walk through any part of this on a call — particularly the hosting and support choices, which are the two worth a conversation rather than a decision made from a document.</p>
+</section>
+
+<footer>
+  Ophir Mineral Ventures, Inc. — Complete Website Proposal · Prepared by Randolf Segubre · 16 August 2026 · Accompanied by the homepage design draft
+</footer>
+
+</div>

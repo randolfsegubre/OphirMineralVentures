@@ -308,7 +308,8 @@ The full reasoning behind every decision above lives in `docs/proposals/`. Read 
 - `01-Website-Plan-and-Architecture.pdf` — research findings, stack comparison, sitemap rationale, security/SEO plan
 - `02-Homepage-Design-Draft.pdf` — the visual design direction (placeholder content, real layout)
 - `03-Website-Cost-Proposal.pdf` — full cost breakdown including the Umbraco platform's own licensing costs
-- `04-Client-Proposal.pdf` — the client-facing version sent to John David Montilla
+- `00-Ophir-Website-Complete-Proposal.pdf` — **the master client document.** Consolidates everything below into one comprehensive, client-facing proposal (business case, Google Workspace explainer, architecture in plain terms, hosting, security, SEO, cost in USD+PHP, deployment plan, post-launch plan and its assumptions, FAQ, sign-off). This is what goes to John. The others are working documents.
+- `04-Client-Proposal.pdf` — the earlier, shorter client-facing version. Superseded by `00-` but kept for history
 - `05-Architecture-Decisions.pdf` — why the alternatives were rejected, the edge-caching request-path diagram, and the culture-variance decision (§4a)
 
 `source-html/` under the same folder has the editable HTML source for each PDF — edit there and re-export, don't edit the PDFs directly.
