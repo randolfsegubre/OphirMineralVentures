@@ -113,7 +113,7 @@
     <div><dt>Prepared for</dt><dd>John David Montilla &amp; Associates</dd></div>
     <div><dt>Stack</dt><dd>Umbraco CMS on ASP.NET Core</dd></div>
     <div><dt>Status</dt><dd>Draft — for review</dd></div>
-    <div><dt>Date</dt><dd>2026-08-07</dd></div>
+    <div><dt>Date</dt><dd>2026-08-28</dd></div>
   </dl>
 </div>
 
@@ -123,11 +123,11 @@
     <p style="margin-bottom:10px;">Recommendation: build on <strong>Umbraco</strong>, a free, open-source content management system, self-hosted on a budget ASP.NET Core plan. The CMS itself has no license fee — the money goes entirely to hosting, not software. This keeps the site inexpensive to run indefinitely while meeting the compliance and security bar the business needs.</p>
     <p style="margin-bottom:0;">Advertising as a way to offset costs was evaluated and is <strong>deferred to a future phase</strong> — not part of this proposal (§08). It doesn't change the recommendation below either way: infrastructure cost is already low enough that self-funding isn't the deciding factor.</p>
     <div class="execsum-grid">
-      <div class="execsum-stat"><b>~$104 / ~₱6,313</b><span>Year 1, recommended tier (domain + hosting)</span></div>
+      <div class="execsum-stat"><b>~$75 / ~₱4,640</b><span>Year 1, recommended tier (domain + hosting)</span></div>
       <div class="execsum-stat"><b>$0</b><span>Umbraco CMS license — free, open source, no cap</span></div>
-      <div class="execsum-stat"><b>~$104/yr / ~₱6,313/yr</b><span>Ongoing run-rate after year 1, before any maintenance retainer</span></div>
+      <div class="execsum-stat"><b>~$75/yr / ~₱4,640/yr</b><span>Ongoing run-rate after year 1, before any maintenance retainer</span></div>
     </div>
-    <p style="font-size:12.5px;color:var(--ink-soft);margin:16px 0 0;">All peso figures in this document use the mid-market USD→PHP rate <strong>as of August 6, 2026 (≈₱60.70 = US$1)</strong> — exchange rates move daily; treat these as a same-day guide, not a locked-in quote.</p>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin:16px 0 0;">All peso figures in this document use the mid-market USD→PHP rate <strong>as of August 28, 2026 (≈₱61.87 = US$1)</strong> — exchange rates move daily; treat these as a same-day guide, not a locked-in quote. Vendor prices re-verified on the same date.</p>
   </div>
 </div>
 
@@ -139,7 +139,7 @@
   <p>The site's job is compliance credibility and marketing support for a business whose real revenue comes from ore shipments worth six to seven figures. It is not expected to pay for itself. That reframes every decision in this document: the goal isn't the cheapest possible setup at any cost to security — it's <strong>spending as little as responsibly possible while never being the reason a deal falls through or a compliance review goes badly</strong>.</p>
   <div class="callout seam">
     <span class="label">Keep this number in your head</span>
-    Every recurring budget figure in this document is under $250/year in its self-hosted form. Compare that to the ~$39.86M single shipment referenced in the main plan's research section — this is not where the business should be cost-sensitive in absolute terms, even though it's still worth doing properly and cheaply.
+    Every recurring budget figure in this document is under $250/year in its self-hosted form — and the recommended tier is under $80. Compare that to the ~$39.86M single shipment referenced in the main plan's research section — this is not where the business should be cost-sensitive in absolute terms, even though it's still worth doing properly and cheaply.
   </div>
 </section>
 
@@ -167,30 +167,30 @@
   <h3>Tier A — Minimum Secure</h3>
   <div class="tbl-wrap"><table>
     <tr><th>Item</th><th class="num">USD/yr</th><th class="num">≈ PHP/yr</th><th>Notes</th></tr>
-    <tr><td>Domain (.com)</td><td class="num">$20</td><td class="num">₱1,214</td><td>Annual renewal</td></tr>
-    <tr><td>ASP.NET hosting (SmarterASP.NET-class)</td><td class="num">$84</td><td class="num">₱5,099</td><td>~$7/mo, custom domain + free SSL included</td></tr>
+    <tr><td>Domain (.com)</td><td class="num">$15</td><td class="num">₱928</td><td>Annual renewal. Verisign wholesale fee rises 2026-11-01, so expect slight upward drift</td></tr>
+    <tr><td>ASP.NET hosting (SmarterASP.NET-class)</td><td class="num">$60</td><td class="num">₱3,712</td><td>Advance plan ~$4.95/mo; Basic is $2.95/mo. .NET 10.x confirmed supported. <strong>No renewal price increase</strong> — signup rate holds</td></tr>
     <tr><td>Database — SQLite</td><td class="num">$0</td><td class="num">₱0</td><td>Embedded file, no separate DB service</td></tr>
     <tr><td>Cloudflare (DNS/CDN/WAF)</td><td class="num">$0</td><td class="num">₱0</td><td>Free plan</td></tr>
     <tr><td>Backups</td><td class="num">$0</td><td class="num">₱0</td><td>Scripted export to John's existing Google Drive (Workspace storage he already pays for)</td></tr>
     <tr><td>Uptime monitoring</td><td class="num">$0</td><td class="num">₱0</td><td>UptimeRobot free tier — email/SMS alert if the site goes down</td></tr>
     <tr><td>Contact-form email delivery</td><td class="num">$0</td><td class="num">₱0</td><td>SendGrid free tier, 100 emails/day</td></tr>
-    <tr><td><strong>Total — infrastructure only</strong></td><td class="num"><strong>~$104</strong></td><td class="num"><strong>~₱6,313</strong></td><td>This is the number to prepare if the site stays self-maintained</td></tr>
+    <tr><td><strong>Total — infrastructure only</strong></td><td class="num"><strong>~$75</strong></td><td class="num"><strong>~₱4,640</strong></td><td>This is the number to prepare if the site stays self-maintained</td></tr>
   </table></div>
 
   <h3>Tier B — Managed (Azure)</h3>
   <div class="tbl-wrap"><table>
     <tr><th>Item</th><th class="num">USD/yr</th><th class="num">≈ PHP/yr</th><th>Notes</th></tr>
-    <tr><td>Domain (.com)</td><td class="num">$20</td><td class="num">₱1,214</td><td>Same as Tier A</td></tr>
-    <tr><td>Azure App Service (B1, Linux)</td><td class="num">$156</td><td class="num">₱9,469</td><td>~$13/mo, includes a staging slot for safe updates</td></tr>
-    <tr><td>Azure SQL Database (Basic)</td><td class="num">$60</td><td class="num">₱3,642</td><td>~$5/mo, managed backups included</td></tr>
+    <tr><td>Domain (.com)</td><td class="num">$15</td><td class="num">₱928</td><td>Same as Tier A</td></tr>
+    <tr><td>Azure App Service (B1, Linux)</td><td class="num">$158</td><td class="num">₱9,775</td><td>$13.14/mo, includes a staging slot for safe updates</td></tr>
+    <tr><td>Azure SQL Database (Basic)</td><td class="num">$59</td><td class="num">₱3,650</td><td>$4.90/mo, 5 DTU / 2 GB, managed backups included</td></tr>
     <tr><td>Cloudflare (DNS/CDN/WAF)</td><td class="num">$0</td><td class="num">₱0</td><td>Free plan</td></tr>
     <tr><td>Application Insights (monitoring)</td><td class="num">$0</td><td class="num">₱0</td><td>Free monthly quota covers this traffic volume</td></tr>
     <tr><td>Contact-form email delivery</td><td class="num">$0</td><td class="num">₱0</td><td>SendGrid free tier</td></tr>
-    <tr><td><strong>Total — infrastructure only</strong></td><td class="num"><strong>~$236</strong></td><td class="num"><strong>~₱14,325</strong></td><td>Buys managed backups, staging, and easier scaling</td></tr>
+    <tr><td><strong>Total — infrastructure only</strong></td><td class="num"><strong>~$232</strong></td><td class="num"><strong>~₱14,353</strong></td><td>Buys managed backups, staging, and easier scaling</td></tr>
   </table></div>
   <div class="callout">
     <span class="label">Exchange rate — as of today</span>
-    All PHP figures on this page use the mid-market rate <strong>as of August 6, 2026: ≈₱60.70 = US$1.</strong> This moves daily — re-check the live rate before treating any peso figure as final, especially for Tier B's Azure costs, which are billed and fluctuate in USD regardless.
+    All PHP figures on this page use the mid-market rate <strong>as of August 28, 2026: ≈₱61.87 = US$1.</strong> This moves daily — over the trailing year it has ranged ₱56.54–₱61.95, so it currently sits near the top of that band. Re-check the live rate before treating any peso figure as final, especially for Tier B's Azure costs, which are billed and fluctuate in USD regardless.
   </div>
 
   <div class="callout">
@@ -206,7 +206,7 @@
   <div class="tbl-wrap"><table>
     <tr><th>Layer</th><th>What it is</th><th class="num">Cost</th><th>In this proposal?</th></tr>
     <tr><td><strong>Umbraco CMS (core)</strong></td><td>The content management system itself — content tree, backoffice editor, templating engine</td><td class="num">$0</td><td>Yes — this is what Tier A/B run</td></tr>
-    <tr><td>Umbraco Cloud</td><td>Umbraco's own fully-managed hosting: infrastructure + deployment pipeline + support bundled together</td><td class="num">$660–$10,800/yr (₱40,062–₱655,560)</td><td>No — see below</td></tr>
+    <tr><td>Umbraco Cloud</td><td>Umbraco's own fully-managed hosting: infrastructure + deployment pipeline + support bundled together</td><td class="num">$660–$10,800/yr (₱40,833–₱668,174)</td><td>No — see below</td></tr>
     <tr><td>Umbraco Forms</td><td>Official add-on for building forms visually in the backoffice, no code</td><td class="num">Paid, quote-based</td><td>No — hand-built instead</td></tr>
     <tr><td>Umbraco commercial support</td><td>A paid contract with Umbraco HQ for guaranteed support response times on a self-hosted install</td><td class="num">Quote-based</td><td>No — see §06</td></tr>
   </table></div>
@@ -217,11 +217,11 @@
   <h3>Umbraco Cloud — the official all-in-one option (not recommended here)</h3>
   <div class="tbl-wrap"><table>
     <tr><th>Plan</th><th class="num">Per month</th><th class="num">Per year</th><th>Fit for this site</th></tr>
-    <tr><td>Starter</td><td class="num">$55 (₱3,339)</td><td class="num">$660 (₱40,062)</td><td>Aimed at low-traffic, low-complexity sites with no support needs — closest match, but still ~6x Tier A's entire infrastructure cost for what Cloudflare + a budget host already provide</td></tr>
-    <tr><td>Standard</td><td class="num">$330 (₱20,031)</td><td class="num">$3,960 (₱240,372)</td><td>Built for teams needing multiple environments and faster support — well beyond this site's scale</td></tr>
-    <tr><td>Professional</td><td class="num">$900 (₱54,630)</td><td class="num">$10,800 (₱655,560)</td><td>Large, high-traffic, support-critical sites — not this one</td></tr>
+    <tr><td>Starter</td><td class="num">$55 (₱3,403)</td><td class="num">$660 (₱40,833)</td><td>Aimed at low-traffic, low-complexity sites with no support needs — closest match, but still ~9x Tier A's entire infrastructure cost for what Cloudflare + a budget host already provide</td></tr>
+    <tr><td>Standard</td><td class="num">$330 (₱20,416)</td><td class="num">$3,960 (₱244,997)</td><td>Built for teams needing multiple environments and faster support — well beyond this site's scale</td></tr>
+    <tr><td>Professional</td><td class="num">$900 (₱55,681)</td><td class="num">$10,800 (₱668,174)</td><td>Large, high-traffic, support-critical sites — not this one</td></tr>
   </table></div>
-  <p style="font-size:12.5px;color:var(--ink-soft)">Peso figures throughout this document use ≈₱60.70 = US$1, the mid-market rate as of August 6, 2026 — check the live rate for anything time-sensitive.</p>
+  <p style="font-size:12.5px;color:var(--ink-soft)">Peso figures throughout this document use ≈₱61.87 = US$1, the mid-market rate as of August 28, 2026 — check the live rate for anything time-sensitive.</p>
   <p>Umbraco Cloud is a legitimate product — it removes almost all server-management work by bundling hosting, backups, and a deployment pipeline with a support contract. It's not recommended here because that convenience is priced for teams without an in-house .NET developer, which this project isn't. Worth revisiting only if the site outgrows self-hosting or the maintenance arrangement in §06 changes materially.</p>
 
   <h3>Umbraco Forms — why it's being skipped</h3>
@@ -262,8 +262,8 @@
 
   <div class="grid3">
     <div class="card"><h4>Scenario 1 — Developer maintains it, no charge</h4><p><strong>$0/mo.</strong> Fine as long as it's genuinely sustainable long-term. The risk is informal: no SLA, best-effort turnaround, dependent on one person's availability.</p></div>
-    <div class="card"><h4>Scenario 2 — Light paid retainer</h4><p><strong>₱2,000–6,000/mo (~$33–99)</strong>, in line with the Philippine market rate for a "basic" plan (updates, backups, a few support hours). Turns an informal favor into a predictable line item.</p></div>
-    <div class="card"><h4>Scenario 3 — Outside help takes over</h4><p><strong>₱6,000–25,000/mo (~$99–412)</strong> depending on scope, if the original developer is ever unavailable. Umbraco's talent pool is smaller than WordPress's but real.</p></div>
+    <div class="card"><h4>Scenario 2 — Light paid retainer</h4><p><strong>₱2,000–6,000/mo (~$32–97)</strong>, in line with the Philippine market rate for a "basic" plan (updates, backups, a few support hours). Turns an informal favor into a predictable line item.</p></div>
+    <div class="card"><h4>Scenario 3 — Outside help takes over</h4><p><strong>₱6,000–25,000/mo (~$97–404)</strong> depending on scope, if the original developer is ever unavailable. Umbraco's talent pool is smaller than WordPress's but real.</p></div>
   </div>
   <p style="font-size:14px;color:var(--ink-soft);margin-top:14px;">Whichever scenario is chosen, put it in writing once — even a one-paragraph email between the owner and the developer — so "who fixes it if it breaks" isn't ambiguous later.</p>
 </section>
@@ -273,13 +273,13 @@
   <p class="sec-dek">The number to approve. No speculative income netted against it — see §08 for why.</p>
   <div class="tbl-wrap"><table>
     <tr><th>Line item</th><th class="num">Year 1</th><th class="num">Year 2+</th></tr>
-    <tr><td>Infrastructure (Tier A, recommended start)</td><td class="num">~$104 (₱6,313)</td><td class="num">~$104 (₱6,313)</td></tr>
+    <tr><td>Infrastructure (Tier A, recommended start)</td><td class="num">~$75 (₱4,640)</td><td class="num">~$75 (₱4,640)</td></tr>
     <tr><td>Umbraco CMS license</td><td class="num">$0</td><td class="num">$0</td></tr>
-    <tr><td>One-time: real photos/branding polish (optional)</td><td class="num">$0–150 (₱0–9,105)</td><td class="num">—</td></tr>
+    <tr><td>One-time: real photos/branding polish (optional)</td><td class="num">$0–150 (₱0–9,280)</td><td class="num">—</td></tr>
     <tr><td>Maintenance (Scenario 1 default — see §06)</td><td class="num">$0</td><td class="num">$0</td></tr>
-    <tr><td><strong>Total to approve</strong></td><td class="num"><strong>~$104–254 (₱6,313–15,418)</strong></td><td class="num"><strong>~$104 (₱6,313)</strong></td></tr>
+    <tr><td><strong>Total to approve</strong></td><td class="num"><strong>~$75–225 (₱4,640–13,920)</strong></td><td class="num"><strong>~$75 (₱4,640)</strong></td></tr>
   </table></div>
-  <p style="font-size:13.5px;color:var(--ink-soft)">If a paid maintenance retainer is agreed instead of Scenario 1, add that figure from §06 on top — it will be the largest line by far, and it's the one number in this whole proposal that's a conversation, not a calculation. Peso figures use the ≈₱60.70 = US$1 rate as of August 6, 2026 — re-check before finalizing.</p>
+  <p style="font-size:13.5px;color:var(--ink-soft)">If a paid maintenance retainer is agreed instead of Scenario 1, add that figure from §06 on top — it will be the largest line by far, and it's the one number in this whole proposal that's a conversation, not a calculation. Peso figures use the ≈₱61.87 = US$1 rate as of August 28, 2026 — re-check before finalizing.</p>
 </section>
 
 <section id="ads">
@@ -319,7 +319,7 @@
 </section>
 
 <footer>
-  Ophir Mineral Ventures — Website Cost Proposal · Draft v1 · Companion to the Website Plan &amp; Architecture (v1.1) · Prepared 2026-08-07.
+  Ophir Mineral Ventures — Website Cost Proposal · Draft v1 · Companion to the Website Plan &amp; Architecture (v1.1) · Prepared 2026-08-07, prices updated 2026-08-28.
 </footer>
 
 </div>

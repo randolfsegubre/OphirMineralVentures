@@ -57,7 +57,7 @@ OphirMineralVentures/
 | Framework | **ASP.NET Core on .NET 10** | Umbraco 18 requires ".NET 10.0 and higher". SDK 10.0.301 verified installed 2026-08-07. Pin in `global.json` once scaffolded |
 | Node.js | **24.11.1+** (v24.18.0 verified) | Required by Umbraco 18's backoffice build tooling |
 | Database | **SQLite** for dev and for Tier A production | Zero-ops, file-based, avoids a separate DB service cost. Move to Azure SQL only if Tier B is adopted |
-| Hosting (default) | **Tier A — budget ASP.NET host** (e.g. SmarterASP.NET-class) | ~$104/yr all-in. See §8 for the full tier comparison |
+| Hosting (default) | **Tier A — budget ASP.NET host** (e.g. SmarterASP.NET-class) | ~$75/yr all-in. .NET 10.x support confirmed; no renewal price hike. See §8 |
 | CDN/WAF/DNS | **Cloudflare Free** | MX records stay pointed at Google Workspace — email is completely untouched by this project |
 | Email delivery (contact form) | **SendGrid free tier** or MailKit+SMTP | 100 emails/day is far more than this site needs |
 | Forms | **Hand-built** Surface Controller (§6) | Not the paid Umbraco Forms package — see §9 for why |
@@ -226,9 +226,10 @@ These are acceptance criteria, not suggestions. Any PR/change touching `Program.
 
 | Tier | Stack | Est. cost | When to use |
 |---|---|---|---|
-| **A — Minimum Secure** (default) | Budget ASP.NET host + SQLite | ~$104/yr | Start here. Nothing about the other tiers is "more secure" — just more convenient at scale |
-| B — Managed (Azure) | Azure App Service (B1) + Azure SQL Basic | ~$236/yr | If staging slots / less hands-on ops become worth paying for |
-| C — Google Cloud Run | Containerized, serverless | ~$0–60/yr | Cheapest at this traffic level if comfortable with Docker. **Separate Google Cloud billing — not part of the client's Workspace subscription**, don't conflate the two when discussing this with the client |
+| **A — Minimum Secure** (default) | Budget ASP.NET host + SQLite | ~$75/yr | Start here. Nothing about the other tiers is "more secure" — just more convenient at scale |
+| B — Managed (Azure) | Azure App Service (B1 Linux, $13.14/mo) + Azure SQL Basic ($4.90/mo) | ~$232/yr | If staging slots / less hands-on ops become worth paying for |
+| C — Google Cloud Run | Containerized, serverless | ~$0–60/yr |
+| | | | *Prices re-verified 2026-08-28; USD→PHP ₱61.87. Re-check before quoting — see `docs/proposals/03-Website-Cost-Proposal.pdf`* | Cheapest at this traffic level if comfortable with Docker. **Separate Google Cloud billing — not part of the client's Workspace subscription**, don't conflate the two when discussing this with the client |
 
 DNS: only the A/CNAME record changes to point at whichever host is chosen. **MX records are never touched** — the client's Google Workspace email must keep working through every deployment. If you ever find yourself editing MX records for this project, stop — that's out of scope and risks breaking the client's email.
 

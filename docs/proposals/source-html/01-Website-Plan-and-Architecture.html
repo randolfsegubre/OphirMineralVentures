@@ -262,7 +262,7 @@
 
   <div class="tbl-wrap"><table>
     <tr><th>Option</th><th>Owner can self-edit?</th><th>Fits your existing skills?</th><th>Security surface</th><th>Cost/yr</th><th>Verdict</th></tr>
-    <tr><td><strong>Umbraco CMS</strong> (ASP.NET Core / C#, self-hosted)</td><td>Yes — polished, purpose-built non-technical backoffice</td><td><strong>Yes</strong> — pure C# and Razor, the same Visual Studio/.NET tooling you already use daily; SQLite or SQL Server, your call</td><td>Moderate-low — .NET's default output encoding and anti-forgery protections, a small dependency surface, and you wire the CSP/security headers yourself in middleware</td><td class="num">~$90–450</td><td><strong>Recommended</strong></td></tr>
+    <tr><td><strong>Umbraco CMS</strong> (ASP.NET Core / C#, self-hosted)</td><td>Yes — polished, purpose-built non-technical backoffice</td><td><strong>Yes</strong> — pure C# and Razor, the same Visual Studio/.NET tooling you already use daily; SQLite or SQL Server, your call</td><td>Moderate-low — .NET's default output encoding and anti-forgery protections, a small dependency surface, and you wire the CSP/security headers yourself in middleware</td><td class="num">~$75–400</td><td><strong>Recommended</strong></td></tr>
     <tr><td>WordPress + page-builder theme, managed hosting</td><td>Yes, mature, huge tutorial base</td><td>No — PHP/MySQL ecosystem, a different debugging mental model, plugin updates you'd be trusting rather than reading</td><td>Moderate — mitigated by managed host + WAF, but plugin sprawl is WordPress's classic weak point</td><td class="num">~$150–450</td><td>Only makes sense if you plan to eventually hand this off to someone else entirely</td></tr>
     <tr><td>All-in-one builder (Webflow / Wix / Squarespace)</td><td>Yes, easiest onboarding</td><td>No — proprietary visual builder, no code at all to "maintain"</td><td>Low (vendor-managed)</td><td class="num">~$200–470</td><td>Fastest to launch, but reinforces the "generic template" feel John is trying to avoid, and it's not something you build or own</td></tr>
   </table></div>
@@ -455,25 +455,25 @@
   <h3>Year 1 — one-time + first year</h3>
   <div class="tbl-wrap"><table>
     <tr><th>Item</th><th>Lean MVP</th><th>Recommended</th><th>Notes</th></tr>
-    <tr><td>Domain (.com)</td><td class="num">$20</td><td class="num">$20</td><td>Or ~$40–60 for a .com.ph if local trust signaling matters</td></tr>
-    <tr><td>ASP.NET hosting</td><td class="num">$84</td><td class="num">$200</td><td>Lean: budget host like SmarterASP.NET (~$7/mo). Recommended: Azure App Service B1, with a staging slot</td></tr>
-    <tr><td>Database</td><td class="num">$0</td><td class="num">$60</td><td>Lean: SQLite, embedded, no server to manage. Recommended: Azure SQL Basic for managed backups/scale</td></tr>
+    <tr><td>Domain (.com)</td><td class="num">$15</td><td class="num">$15</td><td>Or ~$40–60 for a .com.ph if local trust signaling matters. Verisign wholesale rises 2026-11-01</td></tr>
+    <tr><td>ASP.NET hosting</td><td class="num">$60</td><td class="num">$158</td><td>Lean: SmarterASP.NET Advance ~$4.95/mo (Basic $2.95), .NET 10.x supported, no renewal hike. Recommended: Azure App Service B1 Linux $13.14/mo, with a staging slot</td></tr>
+    <tr><td>Database</td><td class="num">$0</td><td class="num">$59</td><td>Lean: SQLite, embedded, no server to manage. Recommended: Azure SQL Basic $4.90/mo for managed backups/scale</td></tr>
     <tr><td>Cloudflare (DNS/CDN/WAF)</td><td class="num">$0</td><td class="num">$0</td><td>Free plan is sufficient at this traffic scale</td></tr>
     <tr><td>Contact form + email delivery</td><td class="num">$0</td><td class="num">$0</td><td>Hand-built in Razor + SendGrid free tier (100 emails/day) — no paid forms plugin needed</td></tr>
     <tr><td>SEO tooling</td><td class="num">$0</td><td class="num">$0</td><td>Meta fields, schema markup and sitemap.xml are hand-built, not a paid plugin</td></tr>
     <tr><td>Monitoring</td><td class="num">$0</td><td class="num">$0</td><td>Azure Application Insights free tier covers this traffic volume</td></tr>
     <tr><td>Stock photos / branding polish</td><td class="num">$0</td><td class="num">$150</td><td>Real operations photos from John are strongly preferred over stock either way</td></tr>
     <tr><td>Google Workspace email</td><td class="num">$84</td><td class="num">$84</td><td>Already paid by John — Business Starter, 1 user, annual. Unaffected by this project.</td></tr>
-    <tr><td><strong>Year 1 total (excl. existing email)</strong></td><td class="num"><strong>~$104</strong></td><td class="num"><strong>~$430</strong></td><td></td></tr>
+    <tr><td><strong>Year 1 total (excl. existing email)</strong></td><td class="num"><strong>~$75</strong></td><td class="num"><strong>~$382</strong></td><td></td></tr>
   </table></div>
 
   <h3>Year 2+ recurring</h3>
   <div class="tbl-wrap"><table>
     <tr><th>Item</th><th>Lean MVP</th><th>Recommended</th></tr>
-    <tr><td>Domain renewal</td><td class="num">$20</td><td class="num">$20</td></tr>
-    <tr><td>Hosting renewal</td><td class="num">$84</td><td class="num">$200</td></tr>
-    <tr><td>Database</td><td class="num">$0</td><td class="num">$60</td></tr>
-    <tr><td><strong>Annual total</strong></td><td class="num"><strong>~$104</strong></td><td class="num"><strong>~$280</strong></td></tr>
+    <tr><td>Domain renewal</td><td class="num">$15</td><td class="num">$15</td></tr>
+    <tr><td>Hosting renewal</td><td class="num">$60</td><td class="num">$158</td></tr>
+    <tr><td>Database</td><td class="num">$0</td><td class="num">$59</td></tr>
+    <tr><td><strong>Annual total</strong></td><td class="num"><strong>~$75</strong></td><td class="num"><strong>~$232</strong></td></tr>
   </table></div>
 
   <div class="callout seam">
