@@ -10,13 +10,18 @@
 set -uo pipefail
 cd "$(dirname "$0")"
 
+# Edge needs a Windows-style path (D:/...), not Git Bash's /d/... form.
+WINDIR="$(pwd -W 2>/dev/null || pwd)"
+
 EDGE="/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
 [ -f "$EDGE" ] || EDGE="/c/Program Files/Google/Chrome/Application/chrome.exe"
 [ -f "$EDGE" ] || { echo "ERROR: no Edge or Chrome found for PDF rendering"; exit 1; }
 
 # A dedicated profile dir avoids the "Missing headless user data directory" error.
-UDD="$(mktemp -d 2>/dev/null || echo "/tmp/edge-pdf-$$")"
-trap 'rm -rf "$UDD"' EXIT
+# Must be a Windows-style path — Edge cannot use Git Bash's /tmp/... form.
+UDD_WIN="$WINDIR/.edge-pdf-profile"
+rm -rf "$UDD_WIN"; mkdir -p "$UDD_WIN"
+trap 'rm -rf "$UDD_WIN"' EXIT
 
 # source-html basename  ->  output PDF basename
 build() {
@@ -26,9 +31,11 @@ build() {
     return 1
   fi
   rm -f "$out.pdf"
-  "$EDGE" --headless=new --disable-gpu --user-data-dir="$UDD" \
-          --no-pdf-header-footer --print-to-pdf="$out.pdf" \
-          "file:///$(pwd)/source-html/$src.html" 2>/dev/null
+  # Both --print-to-pdf and the source URL need absolute Windows paths:
+  # Edge resolves relative output paths against its own working directory.
+  "$EDGE" --headless=new --disable-gpu --user-data-dir="$UDD_WIN" \
+          --no-pdf-header-footer --print-to-pdf="$WINDIR/$out.pdf" \
+          "file:///$WINDIR/source-html/$src.html" 2>/dev/null
   sleep 3
   if [ -f "$out.pdf" ]; then
     echo "  OK      $out.pdf  ($(stat -c%s "$out.pdf") bytes)"
