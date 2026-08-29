@@ -28,6 +28,7 @@ If this is the first coding session on this project, do these in order before wr
 6. Build templates/views page by page against the sitemap in §5, using placeholder content per the §10 policy. Don't wait on real client content to build structure.
 7. Implement the contact form (§6) and the security middleware (§7) before considering any page done — they're small, and retrofitting security headers after the fact is exactly the kind of thing that gets skipped.
 8. Only check off the §12 go-live list once every placeholder has been replaced with real client-provided content (§11).
+9. **Before purchasing a paid Tier A hosting plan**, deploy to the host's free trial first and confirm Umbraco actually boots (§8's "Before committing money" gate) — this is unverified for the specific host until an actual trial deploy proves it.
 
 If anything below conflicts with what you actually observe in the code, a newer Umbraco/.NET release, or something the client says — trust what you observe now, not this file. It was accurate as of 2026-08-07; the ecosystem moves.
 
@@ -226,10 +227,21 @@ These are acceptance criteria, not suggestions. Any PR/change touching `Program.
 
 | Tier | Stack | Est. cost | When to use |
 |---|---|---|---|
-| **A — Minimum Secure** (default) | Budget ASP.NET host + SQLite | ~$75/yr | Start here. Nothing about the other tiers is "more secure" — just more convenient at scale |
+| **A — Minimum Secure** (default) | Budget ASP.NET host (SmarterASP.NET-class) + SQLite | ~$75/yr | Start here. Nothing about the other tiers is "more secure" — just more convenient at scale |
 | B — Managed (Azure) | Azure App Service (B1 Linux, $13.14/mo) + Azure SQL Basic ($4.90/mo) | ~$232/yr | If staging slots / less hands-on ops become worth paying for |
-| C — Google Cloud Run | Containerized, serverless | ~$0–60/yr |
-| | | | *Prices re-verified 2026-08-28; USD→PHP ₱61.87. Re-check before quoting — see `docs/proposals/03-Website-Cost-Proposal.pdf`* | Cheapest at this traffic level if comfortable with Docker. **Separate Google Cloud billing — not part of the client's Workspace subscription**, don't conflate the two when discussing this with the client |
+| C — Google Cloud Run | Containerized, serverless | ~$0–60/yr | Cheapest at this traffic level if comfortable with Docker. **Separate Google Cloud billing — not part of the client's Workspace subscription**, don't conflate the two when discussing this with the client |
+
+*Prices re-verified 2026-08-28; USD→PHP ₱61.87. Re-check before quoting — see `docs/proposals/03-Website-Cost-Proposal.pdf`.*
+
+### Before committing money to Tier A: verify it actually runs Umbraco
+
+Tier A's host choice (SmarterASP.NET-class shared hosting) has an evidence gap worth closing before any paid commitment, not after. Checked 2026-08-30:
+
+- **Confirmed:** the host supports the right underlying prerequisites — .NET 10 / ASP.NET Core hosting, and SQLite with proper file read/write access (their own KB confirms this).
+- **Not confirmed:** no independent report found of current Umbraco (13+) actually running there. The only concrete Umbraco data point for that host is a decade-old forum report — for Umbraco 7.2, a pre-.NET-Core architecture with a completely different hosting model (classic ASP.NET Full/Medium Trust, which doesn't apply to modern .NET at all). Not evidence of a problem, just not evidence of anything current.
+- **Azure (Tier B), by contrast, needs no such check** — Umbraco publishes [its own official Azure App Service docs](https://docs.umbraco.com/umbraco-cms/fundamentals/setup/server-setup/azure-web-apps), first-party and current.
+
+**Gate:** once the solution is scaffolded (§4), before purchasing a paid Tier A term, deploy it to the host's free trial (SmarterASP.NET offers 60 days, no card required) and confirm it actually boots, the backoffice loads, and SQLite writes correctly. Only commit to a paid plan after that passes. If it fails, fall back to Tier B (Azure) without re-litigating the plan — the cost proposal already prices both, and moving between tiers costs nothing but time.
 
 DNS: only the A/CNAME record changes to point at whichever host is chosen. **MX records are never touched** — the client's Google Workspace email must keep working through every deployment. If you ever find yourself editing MX records for this project, stop — that's out of scope and risks breaking the client's email.
 
