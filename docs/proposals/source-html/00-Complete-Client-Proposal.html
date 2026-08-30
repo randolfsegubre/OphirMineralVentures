@@ -373,13 +373,19 @@
 
 <section>
   <div class="sec-head"><span class="sec-num">5.2</span><h3 class="sh">How the site stays fast and protected</h3></div>
-  <p>A copy of each page is held on a worldwide delivery network (<a href="https://www.cloudflare.com" target="_blank" rel="noopener">Cloudflare</a>) that sits in front of your site. Visitors are served from whichever location is nearest to them, and your actual server is rarely touched at all.</p>
+  <p>A copy of each page is held on a worldwide delivery network (<a href="https://www.cloudflare.com" target="_blank" rel="noopener">Cloudflare</a>) that sits in front of your site. For most visitors — the Philippines, banks and regulators, and international buyers outside mainland China — pages are served from whichever location is nearest to them, and your actual server is rarely touched at all.</p>
   <div class="grid3">
-    <div class="card"><h5>Fast everywhere</h5><p>A buyer in Tianjin gets the page from a nearby location rather than from a server in the Philippines.</p></div>
+    <div class="card"><h5>Fast for most visitors</h5><p>A buyer in Singapore or Tokyo gets the page from a nearby location rather than from a server on the other side of the world.</p></div>
     <div class="card"><h5>Resilient</h5><p>The network absorbs traffic surges and malicious attacks before they ever reach your site.</p></div>
     <div class="card"><h5>Inexpensive</h5><p>Because the server itself does very little work, a modest hosting plan is genuinely sufficient. This is what keeps the annual cost near $75.</p></div>
   </div>
-  <p>When you publish a change, that copy is refreshed immediately — you'll see your edits straight away.</p>
+  <p>When you publish a change, that copy is refreshed immediately — you'll see your edits straight away. The hosting server itself will also be placed in Singapore rather than defaulting to the US or Europe, at no extra cost — physically closer to both you and your buyers.</p>
+
+  <div class="callout ore">
+    <span class="label">One honest limitation, specific to mainland China</span>
+    <p>Given essentially all your recorded buyers are China-based, this deserves a direct answer rather than a footnote. Mainland China routes international internet traffic — including this delivery network — through congested gateways, so a buyer physically inside mainland China will typically see the site load a few seconds slower than everywhere else, occasionally with a retry needed. <strong>The site remains fully working and fully legal to access</strong> either way — no license or China-based entity is required on your end. The registration China requires (an "ICP" filing) only applies to a server physically hosted inside mainland China itself, not to a foreign site simply being viewed from there.</p>
+    <p style="margin-bottom:0;">A specialised service exists to close this gap properly, at real additional monthly cost — priced out as an optional upgrade in Part XII, not built into this proposal by default, since it's a genuine investment decision rather than something to assume.</p>
+  </div>
 </section>
 
 <!-- ============ PART VI ============ -->
@@ -625,6 +631,7 @@
   <p>All of these are sensible later. None is needed to launch, and including them now would add cost and delay without improving the site's core purpose.</p>
   <div class="grid2">
     <div class="card"><h5>Chinese-language version 中文</h5><p>Given that essentially all your recorded buyers are China-based, this is the highest-value future addition. <strong>The site will be built from day one so this can be added without rework</strong> — a deliberate decision now that saves significant cost later.</p></div>
+    <div class="card"><h5>China delivery acceleration</h5><p>Addresses the mainland-China loading-speed limitation noted in Part V.2 — a different lever from the language card above; that one is about what the site says, this is about how fast it arrives. A specialised service (e.g. <a href="https://www.chinafy.com" target="_blank" rel="noopener">Chinafy</a>) brings mainland load times close to normal, from roughly <strong>$280/month (≈$3,360/year)</strong> — a real jump from the ~$75/year baseline, so worth doing once real traffic data shows buyers are actually visiting often enough to justify it, not before. No ICP license or China entity needed on your side either way; the service handles that layer.</p></div>
     <div class="card"><h5>Buyer enquiry portal</h5><p>A structured quote-request system rather than a general enquiry form, if inbound volume ever justifies it.</p></div>
     <div class="card"><h5>Careers page</h5><p>Straightforward to add whenever hiring becomes regular.</p></div>
     <div class="card"><h5>Advertising</h5><p>Considered as a way to offset running costs. Set aside for now — at this site's realistic traffic it would generate very little, and advertisements sit awkwardly on pages a bank is reviewing. Revisit later with real traffic data if you'd like.</p></div>
@@ -758,6 +765,7 @@
     <tr><td><strong>Google Search Console</strong></td><td>Free tool for monitoring how Google indexes the site (Part VIII)</td><td><a href="https://search.google.com/search-console/about" target="_blank" rel="noopener">search.google.com/search-console</a></td></tr>
     <tr><td><strong>Bing Webmaster Tools</strong></td><td>Same, for Bing — and therefore Yahoo, which uses Bing's results (Part VIII)</td><td><a href="https://www.bing.com/webmasters" target="_blank" rel="noopener">bing.com/webmasters</a></td></tr>
     <tr><td><strong>Google Business Profile</strong></td><td>Free local listing on Google Maps and in local search (Part VIII)</td><td><a href="https://www.google.com/business/" target="_blank" rel="noopener">google.com/business</a></td></tr>
+    <tr><td><strong>Chinafy</strong></td><td>Optional mainland-China acceleration service, not included by default (Part V.2, Part XII)</td><td><a href="https://www.chinafy.com" target="_blank" rel="noopener">chinafy.com</a></td></tr>
   </table></div>
 
   <p style="font-size:13px;color:var(--ink-soft)">All links go to each company's own official site — worth a look at any of them before deciding, rather than taking my description on trust. If a link doesn't work from within your PDF viewer, copy the address shown into a browser.</p>
