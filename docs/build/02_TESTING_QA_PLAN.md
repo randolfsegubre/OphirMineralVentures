@@ -1,6 +1,18 @@
 # Testing & QA Plan
 
-This site has no dedicated test project by default (`CLAUDE.md` §4 — xUnit only if genuine logic like sitemap generation or contact-form validation warrants it). QA here is mostly manual verification against real tools, not an automated suite. That's a deliberate scope call for a brochure site this size, not a corner cut.
+Two different things live in this document, don't conflate them: **TDD** is the develop-time practice for this project's actual custom logic (write the test, watch it fail, implement, watch it pass); the **checklists below** are QA — end-to-end/manual verification that the whole system behaves correctly once built, regardless of how the pieces were developed. Both matter; they check different things.
+
+## Development practice — TDD (Build Phase 3 onward)
+
+**Decided 2026-08-31, `CLAUDE.md` §4: this project is built TDD for its actual custom logic.** Scope is deliberately bounded — this is not a blanket "test everything" mandate:
+
+- **TDD applies to:** anything that's genuinely C# logic with a testable contract — `ContactSurfaceController`'s validation/honeypot behavior, `IEmailSender`'s dispatch (mocked), the security header middleware (integration-tested via `WebApplicationFactory`), the rate limiter's threshold behavior, and sitemap.xml/hreflang generation. `docs/build/00_BUILD_PLAN.md`'s Phase 3 and Phase 4 call out exactly where this applies.
+- **TDD does not apply to:** Umbraco document types, compositions, culture-variance configuration, or Razor templates. These are configuration and markup, not logic with an independently testable contract — there's no meaningful failing test for "the About page has a body field" or "the header shows the language switcher." Verify those through the functional checklist below instead, not by forcing a unit test where there's no real behavior to assert against.
+- **Red-green-refactor, actually practiced, not just "tests exist":** write the failing test before the implementation, confirm it fails for the right reason, implement the minimum to pass, refactor with the test as a safety net. A test written *after* the implementation to match whatever it already does isn't TDD and doesn't get the same guarantee (it can pass by construction while the code is still wrong).
+- Test project: `OphirMineralVentures.Web.Tests` (xUnit), scaffolded in Phase 0 per `CLAUDE.md` §4, referencing the main project.
+- Every phase from 3 onward that touches this logic should leave `dotnet test` green before the phase is marked done in `DEVLOG.md`.
+
+QA here is mostly manual verification against real tools for everything else, not an automated suite — that's a deliberate scope call for a brochure site this size, not a corner cut, and it's a separate concern from the TDD scope above.
 
 ## Functional checks (Build Phase 2–3, re-run in Phase 7 against staging)
 

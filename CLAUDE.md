@@ -102,14 +102,19 @@ Not yet created. When this becomes the active task:
 ```bash
 dotnet new install Umbraco.Templates
 dotnet new umbraco -n OphirMineralVentures.Web --friendly-name "Admin" --friendly-email admin@ophirminerals.com
-# move the generated project into src/
+dotnet new xunit -n OphirMineralVentures.Web.Tests
+dotnet add OphirMineralVentures.Web.Tests reference OphirMineralVentures.Web
+dotnet new sln -n OphirMineralVentures
+dotnet sln add OphirMineralVentures.Web OphirMineralVentures.Web.Tests
+# move both projects + the .sln into src/
 ```
 
-- Single ASP.NET Core project is enough. Do not split into multiple class libraries (Domain/Application/Infrastructure layering) for a site this size — that's the right call for the E-Commerce.AI.API-style project elsewhere in this workspace, not for a content-driven brochure site with no complex business logic.
+- Single ASP.NET Core project is enough — do not split *the application* into multiple class libraries (Domain/Application/Infrastructure layering) for a site this size, that's the right call for the E-Commerce.AI.API-style project elsewhere in this workspace, not for a content-driven brochure site with no complex business logic. The test project above is a second project for the tests themselves, not a layering decision — that distinction matters, see below.
 - Nullable reference types: enabled.
 - File-scoped namespaces.
 - `dotnet user-secrets` for local connection strings/API keys. Never committed. Production secrets live in host-level environment variables/app settings.
-- **Testing**: no dedicated test project needed at this site's scope. If one becomes warranted later (sitemap.xml generation logic, contact-form validation rules), xUnit is the .NET-ecosystem default — don't reach for anything more elaborate for a content-driven brochure site.
+- **Testing: TDD, decided 2026-08-31, do not re-litigate.** Scaffold the xUnit test project in Phase 0, alongside the main project, not deferred until "warranted." Write the failing test before the implementation for every piece of actual custom logic this site has: the contact form's validation/honeypot behavior, the security header middleware (an integration test asserting each `CLAUDE.md` §7 header is present, via `WebApplicationFactory`), the rate limiter, `IEmailSender`'s dispatch logic (mocked, not a real send), and sitemap.xml/hreflang generation. **Scope boundary — this does not mean TDD-ing Umbraco itself.** Document types, compositions, culture variance, and Razor templates are configuration and markup, not logic with a testable contract — there's no meaningful failing test to write for "the Home page has a hero heading field." Apply TDD to the C#/`Services`/`Controllers`/`Middleware` code this project actually writes, not to Umbraco's own backoffice-driven content model. If a future session finds itself trying to force a unit test onto a document type, that's the scope boundary being crossed, not a gap in test coverage.
+- **This is an internal engineering practice, not currently in the client-facing proposal.** Randolf's call (2026-08-31): don't add it to `docs/proposals/`'s sales documents — it's exactly the kind of detail that reads as noise to a non-technical buyer deciding whether to proceed. If a more technical "how we build and maintain this" document ever gets prepared for Ophir later (post-engagement, or if John's own IT-literate staff/advisor asks), that's a new document to write then, not a retrofit into the existing proposal set.
 - Running `dotnet new gitignore` inside `src/` after scaffolding is expected and fine — it'll sit alongside the root `.gitignore` in this repo, not replace it.
 
 ## 4a. Architecture decisions

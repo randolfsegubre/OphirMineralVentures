@@ -31,12 +31,13 @@
 **Goal:** a booting, unmodified Umbraco install sitting in `src/`, proving the baseline works before any customization begins.
 
 - Confirm `.NET 10.x`, `Node 24.11.1+`, `npm` per `CLAUDE.md`'s first-session checklist step 1. Don't assume the machine still matches the 2026-08-07 snapshot in that file — re-check.
-- Run the scaffold command in `CLAUDE.md` §4. Move the generated project into `src/`.
+- Run the scaffold command in `CLAUDE.md` §4 — **this now includes the xUnit test project**, scaffolded alongside the main project from the start, not deferred. Move both projects + the `.sln` into `src/`.
 - `dotnet run`, complete the install wizard with SQLite (`CLAUDE.md` §3). No customization yet.
 - Confirm the default Umbraco starter kit or blank install loads cleanly in the browser, backoffice included.
+- Confirm the empty test project actually builds and `dotnet test` runs (zero tests, zero failures) — proving the harness works before Phase 3 needs it for real.
 - `dotnet new gitignore` inside `src/` per §4's note. Commit the untouched scaffold as its own commit before changing anything — this gives a clean revert point if a later phase goes sideways.
 
-**Exit criteria:** `dotnet run` boots Umbraco, backoffice login works, nothing customized yet. Committed.
+**Exit criteria:** `dotnet run` boots Umbraco, backoffice login works, `dotnet test` runs clean against the empty test project, nothing customized yet. Committed.
 
 **Devlog entry:** environment versions actually found (they may differ from `CLAUDE.md`'s snapshot — note the delta), any scaffold surprises.
 
@@ -73,16 +74,21 @@
 
 ## Phase 3 — Contact form & security middleware
 
-**Goal:** the site's only public write path works and is hardened; every §7 requirement is implemented, not deferred.
+**Goal:** the site's only public write path works and is hardened; every §7 requirement is implemented, not deferred. **This is the first phase with real custom logic — build it TDD, per `CLAUDE.md` §4's testing decision.**
 
+- Write the failing tests first, then implement, for each piece in turn — don't batch all the implementation and backfill tests after:
+  - `ContactSurfaceController`'s validation and honeypot behavior (a filled honeypot field → no email sent, no error surfaced; invalid model state → `CurrentUmbracoPage()` returned).
+  - `IEmailSender`'s dispatch call (mocked — assert it's called with the right arguments, not a real send).
+  - The security header middleware — an integration test via `WebApplicationFactory` asserting every header from `CLAUDE.md` §7 is present with the exact value, on a real in-memory request/response.
+  - The rate limiter's threshold behavior.
 - Implement `ContactSurfaceController` per `CLAUDE.md` §6 exactly — anti-forgery token, honeypot, Post-Redirect-Get.
 - Wire `IEmailSender` (SendGrid free tier or MailKit+SMTP per §3) behind an interface — ordinary DI, not a ports-and-adapters pattern (§4a is explicit that this distinction matters, don't over-describe it).
 - Add ASP.NET Core's built-in `RateLimiter` middleware on the POST endpoint.
-- Add the full security header middleware block from `CLAUDE.md` §7 verbatim, then verify with a headers-scanning tool locally (see `docs/build/02_TESTING_QA_PLAN.md`).
+- Add the full security header middleware block from `CLAUDE.md` §7 verbatim, then verify both with the tests above and with a headers-scanning tool locally (see `docs/build/02_TESTING_QA_PLAN.md` — the tests and the scanning tool check the same thing at different layers, both are worth keeping).
 - Enable 2FA on the Umbraco backoffice via built-in Identity 2FA.
 - Set the client's eventual login to Editor role, never Administrator — do this now so it's not forgotten under later pressure.
 
-**Exit criteria:** contact form submits and emails successfully, honeypot silently drops bot posts, rate limit triggers under rapid repeat submission, every header in §7 present on every response, 2FA enabled.
+**Exit criteria:** `dotnet test` passes for all of the above, contact form submits and emails successfully, honeypot silently drops bot posts, rate limit triggers under rapid repeat submission, every header in §7 present on every response, 2FA enabled.
 
 **Devlog entry:** which email provider was actually wired up, and the exact recipient address confirmed against `CLAUDE.md` §11's open question (the `to:` address in §6's code sample is a placeholder pending client confirmation — don't ship it unverified).
 
@@ -91,7 +97,7 @@
 **Goal:** the technical SEO baseline from the proposal's SEO section is actually implemented, not just promised.
 
 - `seoComposition` fields (metaTitle, metaDescription, ogImage) actually rendered into `<head>` on every page.
-- `sitemap.xml` generated (dynamically from published content, both cultures, correct `hreflang` alternates per page).
+- `sitemap.xml` generation logic is the second real piece of custom logic in this build — same TDD approach as Phase 3: write a failing test first (given a known set of published content nodes across both cultures, assert the generated XML contains the right URLs and the right `hreflang` alternates), then implement the generator against it.
 - `robots.txt` present, not blocking anything it shouldn't.
 - Structured data (schema.org `Organization`/`LocalBusiness` markup, driven by `siteSettings`) on at least Home and Contact.
 - Confirm Cloudflare cache rules bypass `/umbraco/*` and the contact-form POST per `CLAUDE.md` §4a — verify this once Cloudflare is actually in front of something in Phase 6, but write the rule now if the account exists.
