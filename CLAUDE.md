@@ -15,7 +15,7 @@ This is not a high-traffic site and never needs to be engineered like one. It's 
 
 ## Start here — first-session checklist
 
-If this is the first coding session on this project, do these in order before writing any Umbraco-specific code:
+If this is the first coding session on this project, read `docs/build/00_BUILD_PLAN.md` first — it sequences everything below into phases with entry/exit criteria and the documentation expected at each step. The list here is the short version:
 
 1. Confirm the environment (all three verified present on this machine 2026-08-07):
    - `dotnet --list-sdks` → .NET 10.x (10.0.301 present) — Umbraco 18 requires .NET 10.0+
@@ -36,19 +36,27 @@ If anything below conflicts with what you actually observe in the code, a newer 
 
 ```
 OphirMineralVentures/
-├── CLAUDE.md                  ← this file
+├── CLAUDE.md                  ← this file — what to build (stack, architecture, content model, security)
 ├── README.md                  ← short human-facing pointer
 ├── docs/
-│   └── proposals/             ← business documents (PDFs = what was sent/shown; source-html = editable originals)
-│       ├── 01-Website-Plan-and-Architecture.pdf
-│       ├── 02-Homepage-Design-Draft.pdf
-│       ├── 03-Website-Cost-Proposal.pdf
-│       ├── 04-Client-Proposal.pdf
-│       └── source-html/       ← the .html source of each PDF above, edit these then re-export
+│   ├── proposals/             ← business documents sent to the client (PDFs = what was sent/shown; source-html = editable originals)
+│   │   ├── 01-Website-Plan-and-Architecture.pdf
+│   │   ├── 02-Homepage-Design-Draft.pdf
+│   │   ├── 03-Website-Cost-Proposal.pdf
+│   │   ├── 04-Client-Proposal.pdf
+│   │   └── source-html/       ← the .html source of each PDF above, edit these then re-export
+│   └── build/                 ← HOW to build it: phased execution plan, running devlog, client handover guide
+│       ├── 00_BUILD_PLAN.md   ← START HERE for the build itself — phases, sequencing, doc discipline
+│       ├── 01_CONTENT_MODEL_SPEC.md   ← implementation-ready detail behind §5 (property editors, culture flags, view names)
+│       ├── 02_TESTING_QA_PLAN.md
+│       ├── 03_DEPLOYMENT_RUNBOOK.md   ← step-by-step actions behind §8/§12
+│       ├── DEVLOG.md          ← running build log, one entry per session/phase
+│       ├── START_BUILD_PROMPT.md  ← the ready-to-paste kickoff prompt for a fresh build session
+│       └── USER_GUIDE.md      ← the plain-language CMS guide for John — the pre-go-live deliverable, §12
 └── src/                       ← the actual Umbraco solution — does not exist yet, see §3
 ```
 
-`src/` is intentionally empty until the solution is scaffolded (§3). Don't create placeholder files in it.
+`src/` is intentionally empty until the solution is scaffolded (§3). Don't create placeholder files in it. **`docs/build/` is the build-execution layer; this file (`CLAUDE.md`) stays the specification layer — when they'd repeat each other, `docs/build/` should link back here rather than copy.**
 
 ## 3. Tech stack — decided, do not re-litigate without asking
 
@@ -93,7 +101,7 @@ Not yet created. When this becomes the active task:
 
 ```bash
 dotnet new install Umbraco.Templates
-dotnet new umbraco -n OphirMineralVentures.Web --friendly-name "Admin" --friendly-email admin@ophirmineralventures.com
+dotnet new umbraco -n OphirMineralVentures.Web --friendly-name "Admin" --friendly-email admin@ophirminerals.com
 # move the generated project into src/
 ```
 
@@ -210,7 +218,7 @@ public class ContactSurfaceController : SurfaceController
         if (!ModelState.IsValid) return CurrentUmbracoPage();
         if (!string.IsNullOrEmpty(model.HoneypotField)) return RedirectToCurrentUmbracoPage(); // silently drop bots
 
-        await _emailSender.SendAsync(to: "john@ophirmineralventures.com", model);
+        await _emailSender.SendAsync(to: "john@ophirminerals.com", model); // TODO confirm exact recipient inbox per §11
         TempData["FormSubmitted"] = true;
         return RedirectToCurrentUmbracoPage(); // Post-Redirect-Get
     }
@@ -368,3 +376,5 @@ The full reasoning behind every decision above lives in `docs/proposals/`. Read 
 - `05-Architecture-Decisions.pdf` — why the alternatives were rejected, the edge-caching request-path diagram, and the culture-variance decision (§4a)
 
 `source-html/` under the same folder has the editable HTML source for each PDF — edit there and re-export, don't edit the PDFs directly.
+
+**For the build itself** (not the business case above it), see `docs/build/00_BUILD_PLAN.md` and the rest of `docs/build/` — that folder is the phased execution plan, running devlog, and the client-facing user guide, complementing rather than duplicating this file. `docs/build/START_BUILD_PROMPT.md` is the ready-to-paste kickoff prompt for a fresh Claude Code session starting the actual implementation.
