@@ -157,6 +157,15 @@ A deliberate rejection, not an oversight — do not "improve" the structure by i
 
 **Do not substitute browser-based auto-translate (Chrome's built-in translate, etc.) for real culture-variant content — checked 2026-08-30, this isn't viable, not just inferior.** Chrome's translate feature calls Google's Translate API; that API has been blocked in mainland China since 2022, so for a buyer browsing without a VPN it doesn't fire at all, not just badly. It's also invisible to search engines — they index what's actually served, not text a browser swaps in client-side afterwards — so relying on it would mean the site never appears in Chinese-language search results either. If this ever comes up again (a future session, a cost-cutting request), the answer is still no: real server-rendered zh-Hans content via Umbraco's culture variance is the only approach that reaches this audience at all, not merely the higher-quality one.
 
+**Scope boundary, confirmed with the client 2026-08-30: bilingual applies to the public site only, never the Umbraco backoffice.** Umbraco has two genuinely separate language systems — don't conflate them:
+
+| System | What it controls | Scope here |
+|---|---|---|
+| **Content culture variance** (§4a above) | What a *visitor* reads on the public pages | **Both en-US and zh-Hans, active** — this is the whole feature |
+| **Backoffice UI language** (an Umbraco user-account setting, unrelated to culture variance) | What an *editor* sees inside `/umbraco` — menu labels, buttons, "Save and Publish" | **English only, always.** All CMS users are internal Ophir staff; no one editing content needs a Chinese admin UI |
+
+Concretely: never install/enable an Umbraco backoffice Chinese language pack, never treat "the site needs to be bilingual" as implying anything about the editing experience. This isn't a cost-saving shortcut — it was never in scope, and no proposal figure (Part IX cost, Part X timeline) ever assumed it was. Worth stating explicitly anyway, since the two systems share the word "language" and are an easy thing for a fresh session to genuinely confuse.
+
 **This is a recurring content-maintenance cost, not a one-time launch task.** Every future edit (news post, updated cert note, changed spec) needs a Chinese counterpart or the zh-Hans version silently goes stale. If you ever notice an English-only page live for more than a few days without its Chinese counterpart, flag it to the client — don't let it drift quietly.
 
 ## 5. Content model — Umbraco Document Types
