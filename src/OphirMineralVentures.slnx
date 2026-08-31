@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="OphirMineralVentures.Web.Tests/OphirMineralVentures.Web.Tests.csproj" />
+  <Project Path="OphirMineralVentures.Web/OphirMineralVentures.Web.csproj" />
+</Solution>
