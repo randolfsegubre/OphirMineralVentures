@@ -1,0 +1,42 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Product>
+@{
+    Layout = "_Layout.cshtml";
+    var specs = Model.Value<BlockListModel>("specs");
+    var sheet = Model.Value<MediaWithCrops>("specSheet");
+    var productName = Model.Value<string>("metaTitle");
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">Product</p>
+        <h1>@productName</h1>
+        <p class="lede" style="color:var(--basalt-ink-soft);">@(Model.Value<string>("useCase"))</p>
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="prodgrid">
+            <div class="prodcard">
+                <div class="swatch"></div>
+                <div class="body">
+                    @if (specs is not null && specs.Any())
+                    {
+                        <dl class="spec">
+                            @foreach (var block in specs)
+                            {
+                                var item = block.Content as LabelValueItem;
+                                <dt>@item?.Label</dt><dd>@item?.Value</dd>
+                            }
+                        </dl>
+                    }
+                    @if (sheet is not null)
+                    {
+                        <a class="btn btn-primary" href="@sheet.Url()" target="_blank" rel="noopener">Download Spec Sheet (PDF)</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,117 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using OphirMineralVentures.Web.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Home>
+@{
+    Layout = "_Layout.cshtml";
+    var heroImage = Model.Value<MediaWithCrops>("heroImage");
+    var stats = Model.Value<BlockListModel>("stats");
+    var featuredNews = Model.Value<IEnumerable<IPublishedContent>>("featuredNews");
+
+    var children = Model.ChildrenOf(Context).ToList();
+    var about = children.FirstOrDefault(x => x.ContentType.Alias == "aboutPage");
+    var products = children.FirstOrDefault(x => x.ContentType.Alias == "productsListing");
+    var compliance = children.FirstOrDefault(x => x.ContentType.Alias == "certificationsListing");
+    var sustainability = children.FirstOrDefault(x => x.ContentType.Alias == "sustainabilityPage");
+    var news = children.FirstOrDefault(x => x.ContentType.Alias == "newsListing");
+    var contact = children.FirstOrDefault(x => x.ContentType.Alias == "contactPage");
+}
+<header class="hero">
+    <div class="hero-in">
+        <div>
+            <p class="eyebrow">Nickel &amp; Chromite Ore Exporter — Philippines</p>
+            <h1 class="headline">@(Model.Value<string>("heroHeading"))</h1>
+            <p class="hero-sub">@(Model.Value<string>("heroSubtext"))</p>
+            <div class="hero-ctas">
+                @if (products is not null) { <a class="btn btn-primary" href="@products.Url()">View Products</a> }
+                @if (compliance is not null) { <a class="btn btn-ghost" href="@compliance.Url()">View Certifications</a> }
+            </div>
+        </div>
+        <div>
+            @if (heroImage is not null)
+            {
+                <img src="@heroImage.Url()" alt="" />
+            }
+        </div>
+    </div>
+</header>
+
+@if (stats is not null && stats.Any())
+{
+    <div class="statsbar">
+        <div class="stats-in">
+            @foreach (var block in stats)
+            {
+                var item = block.Content as LabelValueItem;
+                <div class="stat"><b>@item?.Value</b><span>@item?.Label</span></div>
+            }
+        </div>
+    </div>
+}
+
+<section>
+    <div class="site px">
+        <p class="kicker">Explore</p>
+        <h2 class="h2">Everything a buyer or bank needs to verify us.</h2>
+        <div class="teasergrid">
+            @if (about is not null)
+            {
+                <a class="teaser" href="@about.Url()"><h3>@about.Name</h3><p>Company background and leadership.</p><span class="arrow">Learn more &rarr;</span></a>
+            }
+            @if (products is not null)
+            {
+                <a class="teaser" href="@products.Url()"><h3>@products.Name</h3><p>Nickel and chromite ore, fully specified.</p><span class="arrow">View products &rarr;</span></a>
+            }
+            @if (compliance is not null)
+            {
+                <a class="teaser" href="@compliance.Url()"><h3>@compliance.Name</h3><p>Registrations, permits and certificates.</p><span class="arrow">View certifications &rarr;</span></a>
+            }
+            @if (sustainability is not null)
+            {
+                <a class="teaser" href="@sustainability.Url()"><h3>@sustainability.Name</h3><p>Responsible sourcing initiatives.</p><span class="arrow">Learn more &rarr;</span></a>
+            }
+            @if (news is not null)
+            {
+                <a class="teaser" href="@news.Url()"><h3>@news.Name</h3><p>Company and shipment updates.</p><span class="arrow">Read news &rarr;</span></a>
+            }
+            @if (contact is not null)
+            {
+                <a class="teaser" href="@contact.Url()"><h3>@contact.Name</h3><p>Request a quote or ask a question.</p><span class="arrow">Get in touch &rarr;</span></a>
+            }
+        </div>
+    </div>
+</section>
+
+@if (featuredNews is not null && featuredNews.Any())
+{
+    <section class="section-tint">
+        <div class="site px">
+            <p class="kicker">Latest news</p>
+            <h2 class="h2">Recent shipments and company updates.</h2>
+            <div class="newsgrid">
+                @foreach (var article in featuredNews)
+                {
+                    var thumb = article.Value<MediaWithCrops>("featuredImage");
+                    <a class="newscard" href="@article.Url()">
+                        <div class="thumb">@if (thumb is not null) { <img src="@thumb.Url()" alt="" /> }</div>
+                        <div class="body">
+                            <div class="date">@(article.Value<DateTime>("publishDate").ToString("MMMM d, yyyy"))</div>
+                            <h3>@(article.Value<string>("title"))</h3>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<section class="markets">
+    <div class="site px">
+        <p class="kicker">Get in touch</p>
+        <h2 class="h2">Request a quote or ask about compliance documents.</h2>
+        @if (contact is not null)
+        {
+            <p><a class="btn btn-primary" href="@contact.Url()">Contact Us</a></p>
+        }
+    </div>
+</section>

@@ -1,0 +1,24 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Strings
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Article>
+@{
+    Layout = "_Layout.cshtml";
+    var image = Model.Value<MediaWithCrops>("featuredImage");
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">News</p>
+        <h1>@(Model.Value<string>("title"))</h1>
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="article-meta">@(Model.Value<DateTime>("publishDate").ToString("MMMM d, yyyy"))</div>
+        @if (image is not null)
+        {
+            <div class="article-hero"><img src="@image.Url()" alt="" /></div>
+        }
+        <div class="rte">@(Model.Value<IHtmlEncodedString>("body"))</div>
+    </div>
+</section>

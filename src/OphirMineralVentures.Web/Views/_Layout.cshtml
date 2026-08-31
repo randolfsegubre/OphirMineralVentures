@@ -1,0 +1,69 @@
+@using System.Globalization
+@using Umbraco.Cms.Core.Models
+@using OphirMineralVentures.Web.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@{
+    var siteSettings = Umbraco.SiteSettings();
+    var companyName = siteSettings?.Value<string>("companyName");
+    if (string.IsNullOrWhiteSpace(companyName)) { companyName = "Ophir Mineral Ventures"; }
+
+    var metaTitle = Model.Value<string>("metaTitle");
+    var pageTitle = string.IsNullOrWhiteSpace(metaTitle) ? Model.Name : metaTitle;
+
+    var metaDescription = Model.Value<string>("metaDescription");
+
+    var ogImage = Model.Value<MediaWithCrops>("ogImage") ?? siteSettings?.Value<MediaWithCrops>("defaultOgImage");
+}
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentCulture.Name">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@pageTitle — @companyName</title>
+    @if (!string.IsNullOrWhiteSpace(metaDescription))
+    {
+        <meta name="description" content="@metaDescription" />
+    }
+    @if (ogImage is not null)
+    {
+        <meta property="og:image" content="@ogImage.Url()" />
+    }
+    <link rel="stylesheet" href="/css/site.css" />
+</head>
+<body>
+    @await Html.PartialAsync("_Nav", Model)
+    <main>
+        @RenderBody()
+    </main>
+    <footer class="site-footer">
+        <div class="footer-in">
+            <div class="brand-word" style="color:var(--basalt-ink);">
+                @(companyName?.ToUpperInvariant())
+                <small style="color:var(--basalt-ink-soft);">NICKEL &amp; CHROMITE ORE &middot; PHILIPPINES</small>
+            </div>
+            <div class="footer-links">
+                <a href="@(Umbraco.ContentAtRoot().FirstOrDefault(x => x.ContentType.Alias == "home")?.Url())">Home</a>
+                @{
+                    var homeForFooter = Umbraco.ContentAtRoot().FirstOrDefault(x => x.ContentType.Alias == "home");
+                    var legalPages = homeForFooter?.ChildrenOf(Context).Where(x => x.ContentType.Alias == "legalPage") ?? Enumerable.Empty<IPublishedContent>();
+                }
+                @foreach (var legal in legalPages)
+                {
+                    <a href="@legal.Url()">@legal.Name</a>
+                }
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; @DateTime.Now.Year.ToString() @companyName</span>
+            @{
+                var phone = siteSettings?.Value<string>("phone");
+                var address = siteSettings?.Value<string>("registeredAddress");
+            }
+            @if (!string.IsNullOrWhiteSpace(phone))
+            {
+                <span>@phone</span>
+            }
+        </div>
+    </footer>
+</body>
+</html>

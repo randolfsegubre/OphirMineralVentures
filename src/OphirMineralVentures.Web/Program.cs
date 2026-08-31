@@ -12,6 +12,11 @@ WebApplication app = builder.Build();
 
 await app.BootUmbracoAsync();
 
+if (args.Contains("--seed-phase2"))
+{
+    await OphirMineralVentures.Web.Seed.Phase2Seeder.RunAsync(app.Services);
+    return;
+}
 
 app.UseUmbraco()
     .WithMiddleware(u =>

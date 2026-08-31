@@ -1,0 +1,18 @@
+@using System.Globalization
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@{
+    // Umbraco's own documented pattern: loop IPublishedContent.Cultures and build a link per
+    // available culture on *this* node (docs.umbraco.com/umbraco-cms/tutorials/multilanguage-setup).
+    var currentCulture = CultureInfo.CurrentCulture.Name;
+}
+@if (Model.Cultures.Count > 1)
+{
+    <div class="langswitch" role="group" aria-label="Language">
+        @foreach (var culture in Model.Cultures.Keys.OrderBy(c => c))
+        {
+            var isActive = string.Equals(culture, currentCulture, StringComparison.OrdinalIgnoreCase);
+            var label = culture.StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? "中文" : "EN";
+            <a class="@(isActive ? "lang-active" : "")" href="@Model.Url(culture)" hreflang="@culture">@label</a>
+        }
+    </div>
+}

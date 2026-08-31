@@ -1,0 +1,43 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Core.Strings
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<AboutPage>
+@{
+    Layout = "_Layout.cshtml";
+    var leadership = Model.Value<BlockListModel>("leadership");
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">About</p>
+        <h1>@Model.Name</h1>
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="rte">@(Model.Value<IHtmlEncodedString>("body"))</div>
+    </div>
+</section>
+
+@if (leadership is not null && leadership.Any())
+{
+    <section class="section-tint">
+        <div class="site px">
+            <p class="kicker">Leadership</p>
+            <h2 class="h2">Who runs the company.</h2>
+            <div class="leadgrid">
+                @foreach (var block in leadership)
+                {
+                    var person = block.Content as LeadershipItem;
+                    var photo = person?.Photo;
+                    <div class="leadcard">
+                        <div class="photo">@if (photo is not null) { <img src="@photo.Url()" alt="" /> }</div>
+                        <h3>@person?.Name</h3>
+                        <div class="role">@person?.Role</div>
+                        <div class="bio">@person?.Bio</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

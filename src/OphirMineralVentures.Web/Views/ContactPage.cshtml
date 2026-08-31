@@ -1,0 +1,37 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContactPage>
+@{
+    Layout = "_Layout.cshtml";
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">Contact</p>
+        <h1>@Model.Name</h1>
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="contact-grid">
+            @* Wired to ContactSurfaceController with anti-forgery + honeypot + rate limiting in Phase 3 (CLAUDE.md §6/§7). *@
+            <form method="post">
+                <div class="field"><label>Company name</label><input type="text" name="companyName" placeholder="Your company" /></div>
+                <div class="field"><label>Email</label><input type="email" name="email" placeholder="you@company.com" /></div>
+                <div class="field"><label>Inquiry type</label>
+                    <select name="inquiryType">
+                        <option>Buyer inquiry / quote request</option>
+                        <option>Compliance / certification request</option>
+                        <option>Partnership</option>
+                        <option>General</option>
+                    </select>
+                </div>
+                <div class="field"><label>Message</label><textarea name="message" rows="4" placeholder="Tell us what you need"></textarea></div>
+                <button class="btn btn-primary" type="submit" style="border:none;">Send Inquiry</button>
+            </form>
+            <div class="contact-meta">
+                <div class="row"><span>Address</span><span>@(Model.Value<string>("address"))</span></div>
+                <div class="row"><span>Phone</span><span>@(Model.Value<string>("phone"))</span></div>
+                <div class="row"><span>Hours</span><span>@(Model.Value<string>("hours"))</span></div>
+            </div>
+        </div>
+    </div>
+</section>
