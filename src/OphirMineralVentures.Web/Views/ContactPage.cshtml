@@ -1,6 +1,9 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContactPage>
+@using OphirMineralVentures.Web.Services
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContactPage>
 @{
     Layout = "_Layout.cshtml";
+    var resultRaw = TempData["ContactFormResult"] as string;
+    ContactSubmissionResult? result = resultRaw is not null ? Enum.Parse<ContactSubmissionResult>(resultRaw) : null;
 }
 <header class="page-hero">
     <div class="site px">
@@ -12,21 +15,35 @@
 <section>
     <div class="site px">
         <div class="contact-grid">
-            @* Wired to ContactSurfaceController with anti-forgery + honeypot + rate limiting in Phase 3 (CLAUDE.md §6/§7). *@
-            <form method="post">
-                <div class="field"><label>Company name</label><input type="text" name="companyName" placeholder="Your company" /></div>
-                <div class="field"><label>Email</label><input type="email" name="email" placeholder="you@company.com" /></div>
-                <div class="field"><label>Inquiry type</label>
-                    <select name="inquiryType">
-                        <option>Buyer inquiry / quote request</option>
-                        <option>Compliance / certification request</option>
-                        <option>Partnership</option>
-                        <option>General</option>
-                    </select>
-                </div>
-                <div class="field"><label>Message</label><textarea name="message" rows="4" placeholder="Tell us what you need"></textarea></div>
-                <button class="btn btn-primary" type="submit" style="border:none;">Send Inquiry</button>
-            </form>
+            <div>
+                @if (result == ContactSubmissionResult.Sent)
+                {
+                    <div class="form-notice">Thanks — your message has been sent. We'll get back to you shortly.</div>
+                }
+                else if (result == ContactSubmissionResult.Failed)
+                {
+                    <div class="form-notice error">Sorry — something went wrong sending your message. Please try again, or email us directly.</div>
+                }
+                @using (Html.BeginUmbracoForm("Submit", "ContactSurface"))
+                {
+                    <div class="field field-hp">
+                        <label>Leave this field blank</label>
+                        <input type="text" name="HoneypotField" tabindex="-1" autocomplete="off" />
+                    </div>
+                    <div class="field"><label>Company name</label><input type="text" name="CompanyName" placeholder="Your company" /></div>
+                    <div class="field"><label>Email</label><input type="email" name="Email" placeholder="you@company.com" /></div>
+                    <div class="field"><label>Inquiry type</label>
+                        <select name="InquiryType">
+                            <option>Buyer inquiry / quote request</option>
+                            <option>Compliance / certification request</option>
+                            <option>Partnership</option>
+                            <option>General</option>
+                        </select>
+                    </div>
+                    <div class="field"><label>Message</label><textarea name="Message" rows="4" placeholder="Tell us what you need"></textarea></div>
+                    <button class="btn btn-primary" type="submit" style="border:none;">Send Inquiry</button>
+                }
+            </div>
             <div class="contact-meta">
                 <div class="row"><span>Address</span><span>@(Model.Value<string>("address"))</span></div>
                 <div class="row"><span>Phone</span><span>@(Model.Value<string>("phone"))</span></div>
