@@ -1,10 +1,25 @@
+@using System.Text.Json
+@using Umbraco.Cms.Core.Routing
+@using OphirMineralVentures.Web.Extensions
+@using OphirMineralVentures.Web.Seo
 @using OphirMineralVentures.Web.Services
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContactPage>
 @{
     Layout = "_Layout.cshtml";
     var resultRaw = TempData["ContactFormResult"] as string;
     ContactSubmissionResult? result = resultRaw is not null ? Enum.Parse<ContactSubmissionResult>(resultRaw) : null;
+
+    var siteSettings = Umbraco.SiteSettings();
+    var localBusinessSchema = new OrganizationSchema
+    {
+        Type = "LocalBusiness",
+        Name = siteSettings?.Value<string>("companyName"),
+        Url = $"{Context.Request.Scheme}://{Context.Request.Host}" + Model.Url(mode: UrlMode.Relative),
+        Telephone = Model.Value<string>("phone"),
+        Address = new PostalAddressSchema { StreetAddress = Model.Value<string>("address") },
+    };
 }
+<script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(localBusinessSchema))</script>
 <header class="page-hero">
     <div class="site px">
         <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">Contact</p>

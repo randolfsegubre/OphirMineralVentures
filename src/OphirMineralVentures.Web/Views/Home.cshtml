@@ -1,6 +1,9 @@
-﻿@using Umbraco.Cms.Core.Models
+﻿@using System.Text.Json
+@using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Core.Routing
 @using OphirMineralVentures.Web.Extensions
+@using OphirMineralVentures.Web.Seo
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Home>
 @{
     Layout = "_Layout.cshtml";
@@ -15,7 +18,18 @@
     var sustainability = children.FirstOrDefault(x => x.ContentType.Alias == "sustainabilityPage");
     var news = children.FirstOrDefault(x => x.ContentType.Alias == "newsListing");
     var contact = children.FirstOrDefault(x => x.ContentType.Alias == "contactPage");
+
+    var siteSettings = Umbraco.SiteSettings();
+    var organizationSchema = new OrganizationSchema
+    {
+        Type = "Organization",
+        Name = siteSettings?.Value<string>("companyName"),
+        Url = $"{Context.Request.Scheme}://{Context.Request.Host}" + Model.Url(mode: UrlMode.Relative),
+        Telephone = siteSettings?.Value<string>("phone"),
+        Address = new PostalAddressSchema { StreetAddress = siteSettings?.Value<string>("registeredAddress") },
+    };
 }
+<script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(organizationSchema))</script>
 <header class="hero">
     <div class="hero-in">
         <div>
