@@ -153,7 +153,9 @@ A deliberate rejection, not an oversight — do not "improve" the structure by i
 
 **Build a visible language switcher** in the site header — loop over `IPublishedContent.Cultures` per Umbraco's own documented pattern (see `docs.umbraco.com/umbraco-cms/tutorials/multilanguage-setup`), not a custom implementation.
 
-**Translation is content, not code — comes from the client, same as everything else in §10's placeholder-data policy.** Do not write Chinese copy yourself unless you're actually fluent and the client has explicitly asked you to source it; do not machine-translate and publish without human review — on a site whose entire purpose is credibility with Chinese buyers, a bad translation actively undermines the goal rather than being a neutral placeholder. Client proposal Part XIV documents the two sourcing paths (client-provided, or a professional service ~$200–400 for initial content) — confirm which before Phase 5 of the build.
+**Translation is content, not code — comes from the client, same as everything else in §10's placeholder-data policy.** Do not write Chinese copy yourself unless you're actually fluent and the client has explicitly asked you to source it; do not machine-translate and publish without human review — on a site whose entire purpose is credibility with Chinese buyers, a bad translation actively undermines the goal rather than being a neutral placeholder.
+
+**Decided 2026-08-30: client-provided translation (a named bilingual person at Ophir) is the actual v1 plan, not one of two equal options.** A professional translation service (~$200–400 for initial content) is documented in the client proposal (Part IX/XIV) as available on request, not built into the default plan or timeline. Don't treat this as still-open when scoping Phase 5 (§8's deployment phases) — confirm the specific person's name (client proposal Part XIV/XV sign-off), not which sourcing model.
 
 **Do not substitute browser-based auto-translate (Chrome's built-in translate, etc.) for real culture-variant content — checked 2026-08-30, this isn't viable, not just inferior.** Chrome's translate feature calls Google's Translate API; that API has been blocked in mainland China since 2022, so for a buyer browsing without a VPN it doesn't fire at all, not just badly. It's also invisible to search engines — they index what's actually served, not text a browser swaps in client-side afterwards — so relying on it would mean the site never appears in Chinese-language search results either. If this ever comes up again (a future session, a cost-cutting request), the answer is still no: real server-rendered zh-Hans content via Umbraco's culture variance is the only approach that reaches this audience at all, not merely the higher-quality one.
 
@@ -322,6 +324,15 @@ Several real facts about the business are **not yet confirmed** (see §11). Neve
 - Real ore-spec numbers (Ni%, Cr₂O₃%, etc.) shown anywhere are indicative/placeholder until real assay data is provided — label them as such.
 - This isn't a formatting nitpick: this site's whole job is compliance credibility. Publishing an invented-looking number that turns out wrong is worse than publishing nothing.
 
+### Portfolio use — pending client sign-off (client proposal Part XI.4)
+
+Randolf has asked the client for permission to reference this project (design + code) in his own portfolio and to future clients, with real business data excluded. Client sign-off is pending — check `docs/proposals/00-Ophir-Website-Complete-Proposal.pdf` Part XV.2's signed portfolio line before treating this as agreed.
+
+**The architecture already does most of the work here, which is worth preserving deliberately, not by accident:** uSync (§4a) syncs schema/templates to git, **not content** — the client's actual page text, certificate numbers, and figures live in the runtime database, never in the repository. That means the codebase itself is portfolio-safe by construction, as long as this separation is never violated. Concretely:
+
+- **Never commit real client content into git** — not as seed/migration data, not as a "temporary" hardcoded default, not in a code comment or commit message used as a worked example. If a real figure or document needs referencing while building something, use the same bracketed-placeholder convention as the rest of this file, even in your own scratch notes within the repo.
+- **Before any actual portfolio sharing happens** (once/if the client confirms), do a real sweep — `git log -p` for anything that ever touched a real value, not just a check of the current working tree — since a value removed later still lives in history. Squash or exclude history if anything real was ever committed, rather than assuming a clean current state means a clean repo.
+- **Screenshots/demos need their own check**: verify the running site is showing placeholder content (§10 above), not live client data, before capturing anything for portfolio use.
 ## 11. Open questions pending the client
 
 Needed before these areas can move from placeholder to real content — don't guess at these, ask:
@@ -331,7 +342,7 @@ Needed before these areas can move from placeholder to real content — don't gu
 - Logo/brand assets, or sign-off to design a wordmark from scratch.
 - Real operations/product/leadership photos.
 - How he wants his own role/bio presented.
-- **Chinese translation source** — decided the site itself is bilingual (§4a), but not yet decided whether the client/a colleague provides the zh-Hans text or a professional service does (~$200–400, client proposal Part XIV). Needed before Phase 5 (Translate) can start.
+- **Who specifically translates** — the sourcing model is decided (client-provided, §4a) and a professional service stays available on request, so this is down to naming the actual bilingual person at Ophir doing it. Needed before Phase 5 (Translate) can start.
 - Confirmation his Google Workspace email should be left exactly as-is (default assumption: yes).
 - Which maintenance arrangement he and the developer land on — affects nothing technical, but affects the support-response expectations any future work should assume.
 
