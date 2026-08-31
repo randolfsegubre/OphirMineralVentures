@@ -103,7 +103,7 @@ Compositions: `seoComposition`. Allowed child content types: `certification` onl
 | `issueDate` | Date Picker | Yes | |
 | `expiryDate` | Date Picker | Yes | |
 
-Compositions: `seoComposition` is optional here (individual certification detail pages may not need their own SEO meta if they're only ever shown inline on the listing page — decide during Phase 2 based on whether certifications get their own routable detail page or render only as cards on `certificationsListing`).
+Compositions: `seoComposition` — applied. Decided during Phase 1 build (2026-08-31): applying it to every content type uniformly was simpler than tracking one inconsistent exception, and it's a no-cost decision to reverse in Phase 2 if certifications end up rendering only as inline cards on `certificationsListing` with no routable detail page of their own.
 
 ### `newsListing` — single instance, child of `home`
 
