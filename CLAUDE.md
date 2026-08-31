@@ -143,6 +143,8 @@ A deliberate rejection, not an oversight — do not "improve" the structure by i
 
 **uSync for the content model.** uSync 18.0.3 supports Umbraco 18. Document types, data types and templates serialize to disk and are committed to git, so schema is versioned alongside the Razor views that depend on it. Content itself is **not** synced — production content belongs to the owner.
 
+**Theme follows the visitor's system preference — no manual light/dark toggle.** Implement purely via CSS `prefers-color-scheme: dark`, swapping a token palette (background/ink/accent custom properties), the same pattern already used in the homepage design draft and every proposal document (`docs/proposals/source-html/*.html` — copy the token structure from there rather than inventing a new one). No JS-based toggle, no `localStorage` preference, no manual switcher UI for v1 — some visitors are uncomfortable in one mode or the other, and respecting whatever they've already configured at the OS level is both less work and more correct than adding a control for it. If a manual override is ever requested later, layer it on top of the same tokens (a `data-theme` attribute) rather than replacing the system-preference base case.
+
 ### Bilingual EN/中文 — now in v1 scope, not deferred
 
 **Status changed 2026-08-30: this was originally "prepare the schema now, launch English-only, add Chinese later" — the client decided to launch bilingual from day one, since Chinese buyers are current clients, not a speculative future market.** Update any assumption elsewhere in this file or in your own reasoning that treats this as a v2/future item — it isn't anymore.
