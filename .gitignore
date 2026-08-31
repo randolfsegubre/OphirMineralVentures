@@ -7,9 +7,17 @@ obj/
 
 # Umbraco runtime
 src/**/umbraco/Data/
+src/**/umbraco/Logs/
 src/**/App_Data/
 src/**/wwwroot/media/
 src/**/App_Plugins/*/package.json.bak
+
+# Umbraco JSON schema files copied into any project referencing Umbraco.Cms
+# at build time (including the test project, which has no template-provided
+# .gitignore of its own to already exclude these)
+src/**/appsettings-schema.json
+src/**/appsettings-schema.*.json
+src/**/umbraco-package-schema.json
 
 # Secrets — never commit these
 appsettings.*.local.json
