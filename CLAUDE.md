@@ -25,7 +25,7 @@ If this is the first coding session on this project, do these in order before wr
 3. `dotnet run` and confirm the default Umbraco install wizard loads in the browser before customizing anything — working baseline first, customization second.
 4. Complete the install wizard using SQLite (§3) — no separate database server to stand up.
 5. Create the Document Types in §5, applying both compositions (`seoComposition`, `siteSettings`) rather than duplicating their properties per type.
-6. Build templates/views page by page against the sitemap in §5, using placeholder content per the §10 policy. Don't wait on real client content to build structure.
+6. Build templates/views page by page against the sitemap in §5, using placeholder content per the §10 policy. Don't wait on real client content to build structure. Build for both active cultures (§4a) from the start — retrofitting the language switcher onto English-only templates later is exactly the rework §4a's culture-variance decision exists to avoid.
 7. Implement the contact form (§6) and the security middleware (§7) before considering any page done — they're small, and retrofitting security headers after the fact is exactly the kind of thing that gets skipped.
 8. Only check off the §12 go-live list once every placeholder has been replaced with real client-provided content (§11).
 9. **Before purchasing a paid Tier A hosting plan**, deploy to the host's free trial first and confirm Umbraco actually boots (§8's "Before committing money" gate) — this is unverified for the specific host until an actual trial deploy proves it.
@@ -143,11 +143,17 @@ A deliberate rejection, not an oversight — do not "improve" the structure by i
 
 **uSync for the content model.** uSync 18.0.3 supports Umbraco 18. Document types, data types and templates serialize to disk and are committed to git, so schema is versioned alongside the Razor views that depend on it. Content itself is **not** synced — production content belongs to the owner.
 
-### Culture variance — enable at build time, do not defer
+### Bilingual EN/中文 — now in v1 scope, not deferred
 
-**Turn on "Allow vary by culture" for document types and their editable properties from the start**, with English as the only active language.
+**Status changed 2026-08-30: this was originally "prepare the schema now, launch English-only, add Chinese later" — the client decided to launch bilingual from day one, since Chinese buyers are current clients, not a speculative future market.** Update any assumption elsewhere in this file or in your own reasoning that treats this as a v2/future item — it isn't anymore.
 
-Bilingual EN/中文 is a likely near-term requirement (~100% of recorded buyers are China-based). Enabling variance retrospectively has documented migration edge cases — culture-varying properties get skipped when the parent content type is invariant ([umbraco-cms#22159](https://github.com/umbraco/umbraco-cms/issues/22159)), which lands exactly on the composition-based model in §5 (`seoComposition` applied to otherwise-invariant types). Cost of doing it now is ~zero: one language node and slightly different value access in Razor. Cost of retrofitting later is a content-model migration against live production content.
+**Turn on "Allow vary by culture" for document types and their editable properties**, with **both English and Simplified Chinese (zh-Hans) active from launch**, not just English with Chinese prepared-for. Enabling variance retrospectively has documented migration edge cases — culture-varying properties get skipped when the parent content type is invariant ([umbraco-cms#22159](https://github.com/umbraco/umbraco-cms/issues/22159)), which lands exactly on the composition-based model in §5 (`seoComposition` applied to otherwise-invariant types) — this is exactly why the earlier "enable at build time" decision was made, and it's now paying off rather than just being insurance.
+
+**Build a visible language switcher** in the site header — loop over `IPublishedContent.Cultures` per Umbraco's own documented pattern (see `docs.umbraco.com/umbraco-cms/tutorials/multilanguage-setup`), not a custom implementation.
+
+**Translation is content, not code — comes from the client, same as everything else in §10's placeholder-data policy.** Do not write Chinese copy yourself unless you're actually fluent and the client has explicitly asked you to source it; do not machine-translate and publish without human review — on a site whose entire purpose is credibility with Chinese buyers, a bad translation actively undermines the goal rather than being a neutral placeholder. Client proposal Part XIV documents the two sourcing paths (client-provided, or a professional service ~$200–400 for initial content) — confirm which before Phase 5 of the build.
+
+**This is a recurring content-maintenance cost, not a one-time launch task.** Every future edit (news post, updated cert note, changed spec) needs a Chinese counterpart or the zh-Hans version silently goes stale. If you ever notice an English-only page live for more than a few days without its Chinese counterpart, flag it to the client — don't let it drift quietly.
 
 ## 5. Content model — Umbraco Document Types
 
@@ -290,7 +296,7 @@ These were evaluated and deliberately deferred. Don't scope-creep into them whil
 - **Umbraco Cloud** (managed hosting, $660–$10,800/yr) — self-hosting is cheaper and this project has an in-house .NET developer, which is what Cloud's price is really paying to avoid needing.
 - **Umbraco commercial support contract** — same reasoning.
 - **Advertising** (AdSense or sponsored placements) — evaluated, deliberately parked. If revisited: News section only, never on Home/About/Compliance/Products/Contact, and see the CSP note in §7.
-- **Bilingual (English/Chinese) site** — real strategic value given buyers are ~100% China-based (per the research in the main plan doc), but a v2 item, not v1.
+- **China delivery acceleration** (Chinafy or similar, ~$280/mo) — real option, deliberately parked pending actual traffic data. See §8's China-reachability section. **Not the same thing as the bilingual site below — that one IS in scope.**
 - **Buyer RFQ portal, careers page, investor-relations section, CRM integration** — all v2+, listed in `docs/proposals/01-Website-Plan-and-Architecture.pdf` §11.
 
 ## 10. Placeholder-data policy — read before writing any content
@@ -312,7 +318,7 @@ Needed before these areas can move from placeholder to real content — don't gu
 - Logo/brand assets, or sign-off to design a wordmark from scratch.
 - Real operations/product/leadership photos.
 - How he wants his own role/bio presented.
-- Interest in a future bilingual (English/Chinese) version.
+- **Chinese translation source** — decided the site itself is bilingual (§4a), but not yet decided whether the client/a colleague provides the zh-Hans text or a professional service does (~$200–400, client proposal Part XIV). Needed before Phase 5 (Translate) can start.
 - Confirmation his Google Workspace email should be left exactly as-is (default assumption: yes).
 - Which maintenance arrangement he and the developer land on — affects nothing technical, but affects the support-response expectations any future work should assume.
 
@@ -324,6 +330,7 @@ Needed before these areas can move from placeholder to real content — don't gu
 - [ ] Google Business Profile created/claimed
 - [ ] Lighthouse/PageSpeed pass on mobile
 - [ ] No placeholder data (§10) remains published — full sweep before calling it live
+- [ ] Every page has a reviewed (not just machine-translated) Simplified Chinese version live, and the language switcher works both directions — §4a
 
 ## 13. Reference documents
 
