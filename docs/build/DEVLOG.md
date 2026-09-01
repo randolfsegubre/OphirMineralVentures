@@ -118,3 +118,19 @@ Verified live end-to-end on the port matching the seeded domain (`:5205` — tes
 - Google's Rich Results Test / actual sitemap submission — needs a real, publicly reachable domain; can't be done against `localhost`.
 
 **Next:** Phase 5 — placeholder content pass: sweep every page type for any remaining gaps against `CLAUDE.md` §10 (most of this is already done from Phase 2's seeder, so this should be closer to a verification/polish pass than starting fresh), confirm nothing could be mistaken for real client data before treating the site as demoable.
+
+## 2026-09-01 — Phase 5: Placeholder content pass
+
+**Did:** As expected from Phase 2's note, this was a verification pass, not a from-scratch content build — Phase 2's seeder already populated the full tree in both cultures. Started the app on the seeded domain's port and pulled the plain-text content of all 10 page types in en-US, plus the 7 zh-Hans routes, and read every line against `CLAUDE.md` §10 line by line rather than spot-checking.
+
+**Result: clean, no gaps found.** Every field that could look like a real business fact is bracketed exactly per §10's convention: SEC/DTI-BIR/DENR-MGB reference numbers, business address, phone, John David Montilla's bio, and every ore-spec figure (labeled "(indicative)" per §10's specific instruction for assay data). Certification *names* and *issuing bodies* ("Securities and Exchange Commission (Philippines)", "Mines and Geosciences Bureau (DENR)") are real, public institutional facts — not fabricated data about Ophir itself — so they're correctly left unbracketed, matching the design draft's own precedent. `companyName` is the real legal name, which is a given fact from the client brief, not something §10 asks to placeholder. Every zh-Hans page consistently shows the `[zh-Hans placeholder — pending client translation]` / `[ZH] ...` markers from Phase 2's seeder — no accidental English leakage, no developer-authored Chinese, matching `CLAUDE.md` §4a's translation policy exactly.
+
+Two things noted, neither a §10 violation nor blocking:
+- Article dates render with the culture-correct month name (`八月 24, 2026` on the zh-Hans pages) via `.ToString("MMMM d, yyyy")` picking up the request's `CultureInfo` automatically — correct behavior, just not full Chinese date formatting (`2026年8月24日`). A cosmetic localization nicety for a later pass, not a data-accuracy issue Phase 5 is scoped to fix.
+- Media Picker fields (hero image, leadership photos, spec sheets, certificate PDFs, featured images) remain empty — there's no real media to upload yet, and unlike text there's no bracketed-placeholder convention for a binary file. Left empty by design; every template already hides the corresponding UI section gracefully when the field is null (verified in Phase 2), and the CSS's gradient-swatch fallback treatments (`.swatch`, `.portrait`, `.leadcard .photo`, `.thumb`, `.article-hero`) keep every page looking visually finished without a real image. This is expected to stay this way until Phase 8's real assets arrive — not a gap to close now.
+
+**Deviated from plan:** None — this phase's own plan language already anticipated it would be closer to verification than a build, and that's exactly how it went.
+
+**Blocked on:** Nothing for Phase 5 itself. The site is demoable/screenshot-safe right now per `CLAUDE.md` §10's portfolio-use subsection (confirmed via this audit) — but per `00_BUILD_PLAN.md`'s own note, sending an actual preview link to the client is still blocked on Phase 6 (hosting), since there's no publicly reachable URL yet, only `localhost`.
+
+**Next:** Phase 6 — hosting trial & verification: deploy to the Tier A host's free trial (`CLAUDE.md` §8's "before committing money" gate) and confirm Umbraco actually boots there before any paid commitment. **This phase needs Randolf directly (hosting account signup) — stopping here per the standing instruction to check in before Phase 6.**
