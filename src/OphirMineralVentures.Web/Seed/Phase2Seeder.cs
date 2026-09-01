@@ -35,6 +35,14 @@ public static class Phase2Seeder
         var json = sp.GetRequiredService<IJsonSerializer>();
         var userService = sp.GetRequiredService<IUserService>();
         var templateService = sp.GetRequiredService<ITemplateService>();
+        var configuration = sp.GetRequiredService<IConfiguration>();
+
+        // Local-dev-only: which host:port the seeded content culture domains resolve against (see the
+        // domain assignment below). Configurable rather than hardcoded because it's tied to whichever
+        // launch profile/port you're actually running on locally — never read outside this dev seeder,
+        // so it has no bearing on production (the real domain gets set once, through the backoffice's
+        // own "Culture and Hostnames" screen, when real content goes in).
+        var devSeedHost = configuration["DevSeed:DomainHost"] ?? "localhost:44325";
 
         var adminUser = userService.GetByEmail("rsegubre@gmail.com");
         var userKey = adminUser?.Key ?? SuperUserKey;
@@ -176,14 +184,20 @@ public static class Phase2Seeder
         home.SetValue("stats", home.GetValue<string>("stats", EnUs), ZhHans);
         SaveAndPublish(home);
 
+        // Path-prefixed culture routing needs a real domain-to-culture mapping (CLAUDE.md §4a), and
+        // Umbraco's domain matching is host+port specific. devSeedHost defaults to the HTTPS
+        // "Umbraco.Web.UI" launch profile port (backoffice login needs HTTPS) — override it via
+        // DevSeed:DomainHost in appsettings.Development.json or user-secrets if you standardize on a
+        // different local port, then reseed. Never read outside this dev seeder — production sets its
+        // real domain once, through the backoffice's own "Culture and Hostnames" screen, not here.
         var domainService = sp.GetRequiredService<IDomainService>();
         var domainResult = await domainService.UpdateDomainsAsync(home.Key, new DomainsUpdateModel
         {
             DefaultIsoCode = EnUs,
             Domains =
             [
-                new DomainModel { DomainName = "localhost:5205/", IsoCode = EnUs },
-                new DomainModel { DomainName = "localhost:5205/zh-hans", IsoCode = ZhHans },
+                new DomainModel { DomainName = $"{devSeedHost}/", IsoCode = EnUs },
+                new DomainModel { DomainName = $"{devSeedHost}/zh-hans", IsoCode = ZhHans },
             ],
         });
         Console.WriteLine($"Domain assignment for home: success={domainResult.Success} status={domainResult.Status}");
