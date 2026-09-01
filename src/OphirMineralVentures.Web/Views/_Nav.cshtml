@@ -1,0 +1,38 @@
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using OphirMineralVentures.Web.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@{
+    var home = Model.RootOf(Context);
+    var homeChildren = home.ChildrenOf(Context).ToList();
+    var contact = homeChildren.FirstOrDefault(x => x.ContentType.Alias == "contactPage");
+
+    IPublishedContent? NavChild(string alias) => homeChildren.FirstOrDefault(x => x.ContentType.Alias == alias);
+}
+<nav class="topnav">
+    <div class="topnav-in">
+        <a class="brand" href="@home.Url()">
+            <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+                <polygon points="15,2 27,9 27,21 15,28 3,21 3,9" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <polygon points="15,9 21,12.5 21,17.5 15,21 9,17.5 9,12.5" fill="var(--ore)" />
+            </svg>
+            <span class="brand-word">@home.Name<small>NICKEL &amp; CHROMITE ORE EXPORTER</small></span>
+        </a>
+        <div class="navlinks">
+            @{ var about = NavChild("aboutPage"); }
+            @if (about is not null) { <a class="@(Model.Id == about.Id ? "current" : "")" href="@about.Url()">@about.Name</a> }
+            @{ var products = NavChild("productsListing"); }
+            @if (products is not null) { <a class="@(Model.Id == products.Id ? "current" : "")" href="@products.Url()">@products.Name</a> }
+            @{ var compliance = NavChild("certificationsListing"); }
+            @if (compliance is not null) { <a class="@(Model.Id == compliance.Id ? "current" : "")" href="@compliance.Url()">@compliance.Name</a> }
+            @{ var sustainability = NavChild("sustainabilityPage"); }
+            @if (sustainability is not null) { <a class="@(Model.Id == sustainability.Id ? "current" : "")" href="@sustainability.Url()">@sustainability.Name</a> }
+            @{ var news = NavChild("newsListing"); }
+            @if (news is not null) { <a class="@(Model.Id == news.Id ? "current" : "")" href="@news.Url()">@news.Name</a> }
+        </div>
+        @await Html.PartialAsync("_LanguageSwitcher", Model)
+        @if (contact is not null)
+        {
+            <a class="btn btn-primary" href="@contact.Url()">Request a Quote</a>
+        }
+    </div>
+</nav>

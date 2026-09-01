@@ -1,0 +1,69 @@
+@using System.Text.Json
+@using Umbraco.Cms.Core.Routing
+@using OphirMineralVentures.Web.Extensions
+@using OphirMineralVentures.Web.Seo
+@using OphirMineralVentures.Web.Services
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContactPage>
+@{
+    Layout = "_Layout.cshtml";
+    var resultRaw = TempData["ContactFormResult"] as string;
+    ContactSubmissionResult? result = resultRaw is not null ? Enum.Parse<ContactSubmissionResult>(resultRaw) : null;
+
+    var siteSettings = Umbraco.SiteSettings();
+    var localBusinessSchema = new OrganizationSchema
+    {
+        Type = "LocalBusiness",
+        Name = siteSettings?.Value<string>("companyName"),
+        Url = $"{Context.Request.Scheme}://{Context.Request.Host}" + Model.Url(mode: UrlMode.Relative),
+        Telephone = Model.Value<string>("phone"),
+        Address = new PostalAddressSchema { StreetAddress = Model.Value<string>("address") },
+    };
+}
+<script type="application/ld+json">@Html.Raw(JsonSerializer.Serialize(localBusinessSchema))</script>
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">Contact</p>
+        <h1>@Model.Name</h1>
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="contact-grid">
+            <div>
+                @if (result == ContactSubmissionResult.Sent)
+                {
+                    <div class="form-notice">Thanks — your message has been sent. We'll get back to you shortly.</div>
+                }
+                else if (result == ContactSubmissionResult.Failed)
+                {
+                    <div class="form-notice error">Sorry — something went wrong sending your message. Please try again, or email us directly.</div>
+                }
+                @using (Html.BeginUmbracoForm("Submit", "ContactSurface"))
+                {
+                    <div class="field field-hp">
+                        <label>Leave this field blank</label>
+                        <input type="text" name="HoneypotField" tabindex="-1" autocomplete="off" />
+                    </div>
+                    <div class="field"><label>Company name</label><input type="text" name="CompanyName" placeholder="Your company" /></div>
+                    <div class="field"><label>Email</label><input type="email" name="Email" placeholder="you@company.com" /></div>
+                    <div class="field"><label>Inquiry type</label>
+                        <select name="InquiryType">
+                            <option>Buyer inquiry / quote request</option>
+                            <option>Compliance / certification request</option>
+                            <option>Partnership</option>
+                            <option>General</option>
+                        </select>
+                    </div>
+                    <div class="field"><label>Message</label><textarea name="Message" rows="4" placeholder="Tell us what you need"></textarea></div>
+                    <button class="btn btn-primary" type="submit" style="border:none;">Send Inquiry</button>
+                }
+            </div>
+            <div class="contact-meta">
+                <div class="row"><span>Address</span><span>@(Model.Value<string>("address"))</span></div>
+                <div class="row"><span>Phone</span><span>@(Model.Value<string>("phone"))</span></div>
+                <div class="row"><span>Hours</span><span>@(Model.Value<string>("hours"))</span></div>
+            </div>
+        </div>
+    </div>
+</section>

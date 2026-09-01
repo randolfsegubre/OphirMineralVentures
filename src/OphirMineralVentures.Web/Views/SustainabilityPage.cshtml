@@ -1,0 +1,37 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Core.Strings
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<SustainabilityPage>
+@{
+    Layout = "_Layout.cshtml";
+    var initiatives = Model.Value<BlockListModel>("initiatives");
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">Sustainability</p>
+        <h1>@Model.Name</h1>
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="rte">@(Model.Value<IHtmlEncodedString>("body"))</div>
+    </div>
+</section>
+
+@if (initiatives is not null && initiatives.Any())
+{
+    <section class="section-tint">
+        <div class="site px">
+            <p class="kicker">Initiatives</p>
+            <h2 class="h2">Responsible sourcing, not an afterthought.</h2>
+            <ul class="sus-list">
+                @foreach (var block in initiatives)
+                {
+                    var item = block.Content as InitiativeItem;
+                    <li><b>@item?.Title</b>@item?.Description</li>
+                }
+            </ul>
+        </div>
+    </section>
+}

@@ -1,0 +1,38 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Strings
+@using OphirMineralVentures.Web.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<NewsListing>
+@{
+    Layout = "_Layout.cshtml";
+    var articles = Model.ChildrenOf(Context).Where(x => x.ContentType.Alias == "article").OfType<Article>()
+        .OrderByDescending(a => a.Value<DateTime>("publishDate"));
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">News</p>
+        <h1>@Model.Name</h1>
+        @{ var introText = Model.Value<IHtmlEncodedString>("intro"); }
+        @if (introText is not null)
+        {
+            <div class="lede" style="color:var(--basalt-ink-soft);">@introText</div>
+        }
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="newsgrid">
+            @foreach (var article in articles)
+            {
+                var thumb = article.Value<MediaWithCrops>("featuredImage");
+                <a class="newscard" href="@article.Url()">
+                    <div class="thumb">@if (thumb is not null) { <img src="@thumb.Url()" alt="" /> }</div>
+                    <div class="body">
+                        <div class="date">@(article.Value<DateTime>("publishDate").ToString("MMMM d, yyyy"))</div>
+                        <h3>@(article.Value<string>("title"))</h3>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>

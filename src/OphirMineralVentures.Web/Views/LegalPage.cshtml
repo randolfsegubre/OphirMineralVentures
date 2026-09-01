@@ -1,0 +1,17 @@
+﻿@using Umbraco.Cms.Core.Strings
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<LegalPage>
+@{
+    Layout = "_Layout.cshtml";
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">Legal</p>
+        <h1>@Model.Name</h1>
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="rte">@(Model.Value<IHtmlEncodedString>("body"))</div>
+    </div>
+</section>

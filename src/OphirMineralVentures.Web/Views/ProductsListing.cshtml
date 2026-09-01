@@ -1,0 +1,51 @@
+﻿@using Umbraco.Cms.Core.Strings
+@using OphirMineralVentures.Web.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ProductsListing>
+@{
+    Layout = "_Layout.cshtml";
+    var products = Model.ChildrenOf(Context).Where(x => x.ContentType.Alias == "product").OfType<Product>();
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">Products</p>
+        <h1>@Model.Name</h1>
+        @{ var introText = Model.Value<IHtmlEncodedString>("intro"); }
+        @if (introText is not null)
+        {
+            <div class="lede" style="color:var(--basalt-ink-soft);">@introText</div>
+        }
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="prodgrid">
+            @foreach (var product in products)
+            {
+                var specs = product.Value<Umbraco.Cms.Core.Models.Blocks.BlockListModel>("specs");
+                var sheet = product.Value<Umbraco.Cms.Core.Models.MediaWithCrops>("specSheet");
+                <div class="prodcard">
+                    <div class="swatch"></div>
+                    <div class="body">
+                        <h3><a href="@product.Url()">@(product.Value<string>("metaTitle"))</a></h3>
+                        <p class="use">@(product.Value<string>("useCase"))</p>
+                        @if (specs is not null && specs.Any())
+                        {
+                            <dl class="spec">
+                                @foreach (var block in specs)
+                                {
+                                    var item = block.Content as LabelValueItem;
+                                    <dt>@item?.Label</dt><dd>@item?.Value</dd>
+                                }
+                            </dl>
+                        }
+                        @if (sheet is not null)
+                        {
+                            <a class="btn btn-ghost" href="@sheet.Url()" target="_blank" rel="noopener">Download Spec Sheet (PDF)</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

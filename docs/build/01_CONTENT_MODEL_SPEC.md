@@ -148,7 +148,9 @@ Compositions: `seoComposition`.
 
 ## Views / templates
 
-One Razor view per document type, named to match Umbraco's convention against the ModelsBuilder-generated model (`Home.cshtml`, `AboutPage.cshtml`, `ProductsListing.cshtml`, `Product.cshtml`, `SustainabilityPage.cshtml`, `CertificationsListing.cshtml`, `Certification.cshtml` — only if it gets a routable detail page, see note above, `NewsListing.cshtml`, `Article.cshtml`, `ContactPage.cshtml`, `LegalPage.cshtml`). Shared partials: `_Layout.cshtml` (header/nav/language switcher/footer, reading from `siteSettings`), `_Nav.cshtml`, `_LanguageSwitcher.cshtml` (the `IPublishedContent.Cultures` loop per `CLAUDE.md` §4a).
+One Razor view per document type, named to match Umbraco's convention against the ModelsBuilder-generated model (`Home.cshtml`, `AboutPage.cshtml`, `ProductsListing.cshtml`, `Product.cshtml`, `SustainabilityPage.cshtml`, `CertificationsListing.cshtml`, `NewsListing.cshtml`, `Article.cshtml`, `ContactPage.cshtml`, `LegalPage.cshtml`). Shared partials: `_Layout.cshtml` (header/nav/language switcher/footer, reading from `siteSettings`), `_Nav.cshtml`, `_LanguageSwitcher.cshtml` (the `IPublishedContent.Cultures` loop per `CLAUDE.md` §4a).
+
+**`certification` decided in Phase 2 (2026-09-01): card-only, no `Certification.cshtml`.** It renders as inline "seal" cards on `certificationsListing` (matching the homepage design draft's compliance section), with no routable detail page of its own — simpler UX for a handful of certificates, and consistent with the "optional pending a Phase 2 decision" note this section used to carry. Reversible later if certifications ever need their own page (e.g. a longer description or renewal history per certificate).
 
 ## Sanity check before starting Phase 1
 

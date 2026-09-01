@@ -1,0 +1,40 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Strings
+@using OphirMineralVentures.Web.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<CertificationsListing>
+@{
+    Layout = "_Layout.cshtml";
+    var certifications = Model.ChildrenOf(Context).Where(x => x.ContentType.Alias == "certification").OfType<Certification>();
+}
+<header class="page-hero">
+    <div class="site px">
+        <p class="eyebrow" style="color:var(--ore);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 16px;">Compliance</p>
+        <h1>@Model.Name</h1>
+        @{ var introText = Model.Value<IHtmlEncodedString>("intro"); }
+        @if (introText is not null)
+        {
+            <div class="lede" style="color:var(--basalt-ink-soft);">@introText</div>
+        }
+    </div>
+</header>
+
+<section>
+    <div class="site px">
+        <div class="compgrid">
+            @foreach (var cert in certifications)
+            {
+                var file = cert.Value<MediaWithCrops>("certificateFile");
+                <div class="seal">
+                    <svg class="mark" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15" fill="none" stroke="var(--seam)" stroke-width="1.6" /><path d="M10 17l5 5 9-11" fill="none" stroke="var(--seam)" stroke-width="1.6" /></svg>
+                    <h4>@(cert.Value<string>("name"))</h4>
+                    <div class="num">No. @(cert.Value<string>("referenceNumber"))</div>
+                    <div class="num">@(cert.Value<string>("issuingBody"))</div>
+                    @if (file is not null)
+                    {
+                        <a class="dl" href="@file.Url()" target="_blank" rel="noopener">Download Certificate (PDF)</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>
