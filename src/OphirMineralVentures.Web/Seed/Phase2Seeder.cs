@@ -176,14 +176,18 @@ public static class Phase2Seeder
         home.SetValue("stats", home.GetValue<string>("stats", EnUs), ZhHans);
         SaveAndPublish(home);
 
+        // Path-prefixed culture routing needs a real domain-to-culture mapping (CLAUDE.md §4a), and
+        // Umbraco's domain matching is host+port specific — pinned to the HTTPS "Umbraco.Web.UI"
+        // launch profile port since that's the one that also supports backoffice login. Reseed after
+        // changing which port/profile you standardize on locally, or hreflang/zh-Hans routes will 404.
         var domainService = sp.GetRequiredService<IDomainService>();
         var domainResult = await domainService.UpdateDomainsAsync(home.Key, new DomainsUpdateModel
         {
             DefaultIsoCode = EnUs,
             Domains =
             [
-                new DomainModel { DomainName = "localhost:5205/", IsoCode = EnUs },
-                new DomainModel { DomainName = "localhost:5205/zh-hans", IsoCode = ZhHans },
+                new DomainModel { DomainName = "localhost:44325/", IsoCode = EnUs },
+                new DomainModel { DomainName = "localhost:44325/zh-hans", IsoCode = ZhHans },
             ],
         });
         Console.WriteLine($"Domain assignment for home: success={domainResult.Success} status={domainResult.Status}");
