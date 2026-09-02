@@ -18,16 +18,24 @@
     </div>
 </header>
 
+@* Headline from the approved design (docs/proposals/02-Homepage-Design-Draft.pdf) — plain marketing
+   framing, not a specific fact needing client confirmation (CLAUDE.md §10). *@
 <section>
     <div class="site px">
+        <p class="kicker">Compliance &amp; certifications</p>
+        <h2 class="h2">Documented at every step.</h2>
         <div class="compgrid">
             @foreach (var cert in certifications)
             {
                 var file = cert.Value<MediaWithCrops>("certificateFile");
+                var referenceNumber = cert.Value<string>("referenceNumber");
                 <div class="seal">
                     <svg class="mark" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15" fill="none" stroke="var(--seam)" stroke-width="1.6" /><path d="M10 17l5 5 9-11" fill="none" stroke="var(--seam)" stroke-width="1.6" /></svg>
                     <h4>@(cert.Value<string>("name"))</h4>
-                    <div class="num">No. @(cert.Value<string>("referenceNumber"))</div>
+                    @if (!string.IsNullOrEmpty(referenceNumber))
+                    {
+                        <div class="num">No. @referenceNumber</div>
+                    }
                     <div class="num">@(cert.Value<string>("issuingBody"))</div>
                     @if (file is not null)
                     {
