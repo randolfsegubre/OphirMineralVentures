@@ -93,6 +93,39 @@ beyond X" where that's the truth) → why.
   `HoneypotField` form key rather than a fixed path, because `Html.BeginUmbracoForm` posts back to
   whatever page rendered it — see the middleware's own doc comment.
 
+### `ErrorPageMiddleware` (`Middleware/`)
+
+- **What**: serves the site's 404/500 pages (`MapErrorPages()`, an extension method wiring two
+  `app.Map()` terminal branches) as the re-execute targets for `UseStatusCodePagesWithReExecute`
+  and `UseExceptionHandler` in `Program.cs`.
+- **Pattern**: **not** MVC Controller+View, deliberately — that was the first implementation, and
+  it turned out to be unreachable. Confirmed live: Umbraco's own content-resolution middleware
+  (`UseWebsite()`) runs ahead of ASP.NET Core's normal endpoint routing/dispatch and short-circuits
+  any path it doesn't recognise as real content, before a controller mapped via `MapControllers()`
+  is ever dispatched — and forcing early `UseRouting()`/`UseEndpoints()` to compensate broke the
+  real homepage instead, because Umbraco's own content pages aren't pre-registered endpoints either
+  (they're resolved by that same middleware). A plain `app.Map()` branch sidesteps this entirely: it
+  terminates the request itself the instant the path matches, before Umbraco's middleware ever runs
+  — the same primitive this app already used successfully for its `/qa-test-throw` diagnostic.
+- **Why HTML is inlined as C# string constants, not `.cshtml` views**: once the controller/view
+  approach was abandoned, there was no remaining reason to route through Razor's view engine at
+  all — these pages must render even if Umbraco's own content/view resolution is what's broken, so
+  a compile-time string with zero Umbraco/Razor dependency is more robust, not just simpler.
+- **Known limitation, not yet resolved**: `UseStatusCodePagesWithReExecute`'s automatic re-execute
+  only reaches this middleware for genuinely unmatched non-content paths in the isolated test host.
+  In the real running app, Umbraco's own built-in "Page Not Found" handler (`nonodes.css` view)
+  writes a complete response body for an unmatched *public-site* route before the re-execute
+  condition is ever checked (it only fires when the response body is still empty) — so that
+  generic Umbraco page wins for a mistyped URL, not this one. A direct link to `/error/404` (and
+  the `UseExceptionHandler("/error/500")` path, which has no Umbraco equivalent competing for it)
+  both render this custom page correctly — verified live. Fixing the automatic-fallback case
+  properly requires either an `IContentLastChanceFinder` or a real Umbraco content node wired via
+  `Umbraco:CMS:Content:Error404Collection` (environment-specific IDs, doesn't fit this project's
+  git-versioned uSync schema) — deliberately not built for the value it would add versus a site
+  that already returns a correct 404 status with a plain, functional (if unbranded) message.
+- **See `DEVLOG.md`** for the live verification steps and the reasoning trail behind rejecting the
+  controller approach.
+
 ### `PublishedContentNavigationExtensions` (`Extensions/`)
 
 - **What**: extension methods (`ChildrenOf`, `RootOf`) wrapping `IDocumentNavigationQueryService`.
