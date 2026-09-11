@@ -93,13 +93,53 @@ beyond X" where that's the truth) → why.
   `HoneypotField` form key rather than a fixed path, because `Html.BeginUmbracoForm` posts back to
   whatever page rendered it — see the middleware's own doc comment.
 
-### `ErrorPageMiddleware` (`Middleware/`)
+### `ErrorPageContentFinder` (`Services/`) — the 404 page
 
-- **What**: serves the site's 404/500 pages (`MapErrorPages()`, an extension method wiring two
-  `app.Map()` terminal branches) as the re-execute targets for `UseStatusCodePagesWithReExecute`
-  and `UseExceptionHandler` in `Program.cs`.
-- **Pattern**: **not** MVC Controller+View, deliberately — that was the first implementation, and
-  it turned out to be unreachable. Confirmed live: Umbraco's own content-resolution middleware
+- **What**: implements Umbraco's own `IContentLastChanceFinder` extension point (registered via
+  `ErrorPageComposer`'s `builder.SetContentLastChanceFinder<ErrorPageContentFinder>()`) — when
+  nothing else resolves a URL to real content, this looks up the single content node of type
+  `errorPage` and serves it as the 404 response.
+- **Why a real content node, not a hardcoded page**: `CLAUDE.md`'s own stated constraint is "the
+  owner (non-technical) must be able to edit content himself" — a 404 page a visitor might land on
+  at any time is exactly the kind of page that constraint should cover, same as every other page on
+  the site. Randolf corrected an earlier version of this feature that used a hardcoded C# string
+  page specifically *because* it avoided any Umbraco dependency — right instinct for the 500 case
+  (see `ErrorPageMiddleware` below) but wrong for 404, which is a normal, expected case, not
+  evidence Umbraco itself is broken. `ErrorPageSeeder.cs` creates the `errorPage` Document Type
+  (uSync-exported, committed to git — schema, per CLAUDE.md §4a) and a single real content node
+  under Home with placeholder copy (content, NOT uSync-tracked — the owner's own data, same rule
+  every other page's content follows). John edits `heading`/`message` in the backoffice like any
+  other page; no code change needed to update what the 404 page says.
+- **Why `IContentLastChanceFinder`, not `Umbraco:CMS:Content:Error404Collection`**: the config-key
+  approach needs a hardcoded content-node ID/GUID per environment, which doesn't fit this project's
+  git-versioned uSync schema (the ID only exists after the node is created in each environment's own
+  database). Querying by document-type alias at request time (`IPublishedContentQuery.ContentAtRoot()
+  .SelectMany(DescendantsOrSelf()).FirstOrDefault(alias == "errorPage")`) needs no environment-specific
+  config at all — it's Umbraco's own documented mechanism for exactly this case, and it runs *inside*
+  Umbraco's normal content-resolution pipeline, so it doesn't fight the routing-precedence problem
+  the earlier hardcoded-only 404 attempt hit (see `ErrorPageMiddleware`'s own card).
+- **Real gotcha**: `IContentLastChanceFinder` is registered as a **singleton**, but
+  `IPublishedContentQuery` is **scoped** per request — constructor-injecting it directly fails DI
+  validation at startup ("cannot consume scoped service from singleton"), confirmed live. Fixed by
+  injecting `IServiceScopeFactory` and resolving `IPublishedContentQuery` through a fresh scope
+  inside `TryFindContent` itself, rather than at construction time.
+- **Not unit tested, deliberately** — same reasoning as `UmbracoSitemapPageSource`: thin Umbraco-
+  integration glue (tree-walking via `IPublishedContent.DescendantsOrSelf()`, which needs real
+  Umbraco content-cache infrastructure under the hood, not just an interface to mock), not
+  independently testable logic. Verified live instead — see `DEVLOG.md`'s 2026-09-11 entry.
+
+### `ErrorPageMiddleware` (`Middleware/`) — the 500 page only
+
+- **What**: serves the site's 500 page (`MapErrorPages()`, an extension method wiring an
+  `app.Map("/error/500", ...)` terminal branch) as the re-execute target for `UseExceptionHandler`
+  in `Program.cs`. **404 is not handled here** — see `ErrorPageContentFinder` above.
+- **Why 500 stays hardcoded when 404 doesn't**: an unhandled exception can mean Umbraco's own
+  content/view resolution is what's actually broken, so the 500 page must not depend on it being
+  healthy — a real, deliberate exception to "error pages should be CMS-editable," not an oversight.
+  A 404, by contrast, is Umbraco routing working correctly and simply finding nothing — no reason to
+  deny the owner control over that page.
+- **Pattern**: **not** MVC Controller+View. An earlier attempt at *both* pages used one, and it
+  turned out to be unreachable. Confirmed live: Umbraco's own content-resolution middleware
   (`UseWebsite()`) runs ahead of ASP.NET Core's normal endpoint routing/dispatch and short-circuits
   any path it doesn't recognise as real content, before a controller mapped via `MapControllers()`
   is ever dispatched — and forcing early `UseRouting()`/`UseEndpoints()` to compensate broke the
@@ -107,24 +147,11 @@ beyond X" where that's the truth) → why.
   (they're resolved by that same middleware). A plain `app.Map()` branch sidesteps this entirely: it
   terminates the request itself the instant the path matches, before Umbraco's middleware ever runs
   — the same primitive this app already used successfully for its `/qa-test-throw` diagnostic.
-- **Why HTML is inlined as C# string constants, not `.cshtml` views**: once the controller/view
-  approach was abandoned, there was no remaining reason to route through Razor's view engine at
-  all — these pages must render even if Umbraco's own content/view resolution is what's broken, so
-  a compile-time string with zero Umbraco/Razor dependency is more robust, not just simpler.
-- **Known limitation, not yet resolved**: `UseStatusCodePagesWithReExecute`'s automatic re-execute
-  only reaches this middleware for genuinely unmatched non-content paths in the isolated test host.
-  In the real running app, Umbraco's own built-in "Page Not Found" handler (`nonodes.css` view)
-  writes a complete response body for an unmatched *public-site* route before the re-execute
-  condition is ever checked (it only fires when the response body is still empty) — so that
-  generic Umbraco page wins for a mistyped URL, not this one. A direct link to `/error/404` (and
-  the `UseExceptionHandler("/error/500")` path, which has no Umbraco equivalent competing for it)
-  both render this custom page correctly — verified live. Fixing the automatic-fallback case
-  properly requires either an `IContentLastChanceFinder` or a real Umbraco content node wired via
-  `Umbraco:CMS:Content:Error404Collection` (environment-specific IDs, doesn't fit this project's
-  git-versioned uSync schema) — deliberately not built for the value it would add versus a site
-  that already returns a correct 404 status with a plain, functional (if unbranded) message.
-- **See `DEVLOG.md`** for the live verification steps and the reasoning trail behind rejecting the
-  controller approach.
+- **Why HTML is inlined as a C# string constant, not a `.cshtml` view**: this page must render even
+  if Umbraco's own content/view resolution is what's broken, so a compile-time string with zero
+  Umbraco/Razor dependency is more robust, not just simpler.
+- **See `DEVLOG.md`** for the live verification steps and the full reasoning trail, including the
+  first (abandoned) controller-based attempt at both pages.
 
 ### `PublishedContentNavigationExtensions` (`Extensions/`)
 

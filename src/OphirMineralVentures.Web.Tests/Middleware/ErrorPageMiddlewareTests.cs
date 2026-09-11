@@ -8,21 +8,19 @@ using OphirMineralVentures.Web.Middleware;
 namespace OphirMineralVentures.Web.Tests.Middleware;
 
 /// <summary>
-/// Exercises the real Program.cs pipeline wiring - UseStatusCodePagesWithReExecute,
-/// UseExceptionHandler, and ErrorPageMiddleware.MapErrorPages() - in an isolated TestServer
-/// (same approach as SecurityHeadersMiddlewareTests) rather than booting the full Umbraco host.
+/// Exercises the real Program.cs pipeline wiring - UseExceptionHandler + ErrorPageMiddleware's
+/// /error/500 branch - in an isolated TestServer (same approach as SecurityHeadersMiddlewareTests)
+/// rather than booting the full Umbraco host.
 ///
-/// ErrorPageMiddleware.MapErrorPages() is used directly here. An earlier version of this feature
-/// used a plain MVC ErrorController with Views instead, with this test file standing in for it via
-/// app.Map() look-alikes because getting Razor view discovery working in an isolated TestServer
-/// wasn't practical. That controller approach turned out to be unreachable in the real app anyway:
-/// confirmed live that Umbraco's own content-resolution middleware (registered via UseWebsite())
-/// runs ahead of ASP.NET Core's normal endpoint routing/dispatch and short-circuits any path it
-/// doesn't recognise as real content - forcing early UseRouting/UseEndpoints to compensate broke
-/// the real homepage instead (Umbraco's own content routes aren't pre-registered endpoints either;
-/// they're also resolved by that same middleware). ErrorPageMiddleware sidesteps this entirely with
-/// a plain app.Map() terminal branch, which is what this test suite now verifies directly - the
-/// production code under test is no longer a stand-in for something else, it's the real thing.
+/// The 404 case is deliberately NOT covered here - it moved to
+/// <see cref="OphirMineralVentures.Web.Services.ErrorPageContentFinder"/>, a real, backoffice-editable
+/// content node (CLAUDE.md's "the owner must be able to edit content himself" applies to the 404
+/// page too, so it can't be a hardcoded page or route the way 500 still deliberately is). That
+/// finder has no unit test for the same reason UmbracoSitemapPageSource doesn't: it's thin
+/// Umbraco-integration glue (tree-walking via IPublishedContentQuery/IPublishedContent.DescendantsOrSelf(),
+/// which needs real Umbraco infrastructure under the hood, not just an interface to mock) rather than
+/// independently testable logic - see its own doc comment, and 04_ARCHITECTURE_AND_PATTERNS_GUIDE.md's
+/// card, for the reasoning and how it was verified live instead.
 /// </summary>
 public class ErrorPageMiddlewareTests
 {
@@ -40,8 +38,6 @@ public class ErrorPageMiddlewareTests
                             app.UseExceptionHandler("/error/500");
                         }
 
-                        app.UseStatusCodePagesWithReExecute("/error/{0}");
-
                         app.MapErrorPages();
 
                         // A route that always throws, standing in for "any unhandled exception
@@ -56,30 +52,13 @@ public class ErrorPageMiddlewareTests
     }
 
     [Fact]
-    public async Task UnmatchedRoute_Returns404_AndReExecutesToTheCustomErrorPage()
+    public async Task DirectHitToErrorServerErrorPath_Returns500_WithTheCustomPage()
     {
         using var server = await CreateServerAsync(addProductionErrorHandler: false);
-        var response = await server.CreateClient().GetAsync("/this-page-does-not-exist");
+        var response = await server.CreateClient().GetAsync("/error/500");
 
-        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
-        var body = await response.Content.ReadAsStringAsync();
-        Assert.Contains("Page Not Found", body);
-        Assert.Contains("Back to Home", body);
-    }
-
-    [Fact]
-    public async Task DirectHitToErrorNotFoundPath_Returns404_WithTheCustomPage()
-    {
-        // Covers the real app's known limitation: Umbraco's own built-in "no content" handler
-        // pre-empts UseStatusCodePagesWithReExecute for unmatched public-site routes (it writes a
-        // full response body before the re-execute condition is ever checked - see DEVLOG.md) so
-        // the custom page is only guaranteed to render via a direct link to /error/404, not via the
-        // automatic fallback there. This test is what keeps that direct path itself proven working.
-        using var server = await CreateServerAsync(addProductionErrorHandler: false);
-        var response = await server.CreateClient().GetAsync("/error/404");
-
-        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Contains("Page Not Found", await response.Content.ReadAsStringAsync());
+        Assert.Equal(System.Net.HttpStatusCode.InternalServerError, response.StatusCode);
+        Assert.Contains("Something Went Wrong", await response.Content.ReadAsStringAsync());
     }
 
     [Fact]
