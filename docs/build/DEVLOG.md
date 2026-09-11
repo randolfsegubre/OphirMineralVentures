@@ -156,3 +156,68 @@ Verified live in the browser end to end: front end (Home, Products, zh-Hans rout
 **Also did:** Updated `README.md` — it had gone stale (`Code lives in src/ once the Umbraco solution is scaffolded (not yet...)`) despite Phases 0-5 having landed weeks earlier. Added a verified "Running it locally" section with the exact commands (including the flat-key user-secrets gotcha, spelled out so it can't silently recur) and an honest "what's left before test/production" list.
 
 **Next:** Phase 6 — hosting trial & verification, unchanged from the prior entry — still needs Randolf directly for the hosting account signup.
+
+## 2026-09-11 — Portfolio-finalization pass: custom 404/500 error pages
+
+**Did:** Added the site's first real error-handling: `Middleware/ErrorPageMiddleware.cs` maps
+`/error/404` and `/error/500` as plain terminal branches (`app.Map(...)`), used as the re-execute
+targets for `UseStatusCodePagesWithReExecute("/error/{0}")` and `UseExceptionHandler("/error/500")`
+(the latter Production/staging-only, per the existing Development-detailed-exception-page
+convention) in `Program.cs`. Both pages are centered, self-contained HTML reusing `site.css`'s
+existing tokens, with a "Back to Home" link.
+
+**First attempt, abandoned — worth recording so it isn't retried:** the initial implementation was
+a plain MVC `ErrorController` + Razor views. It compiled and unit-tested fine in isolation, but
+turned out to be completely unreachable in the real running app. Root cause, confirmed live: this
+app's `WithEndpoints(u => { u.UseBackOfficeEndpoints(); u.UseWebsiteEndpoints(); })` never calls
+`MapControllers()`, and even after adding that, the controller *still* wasn't reached — because
+Umbraco's own content-resolution middleware (registered via `u.UseWebsite()`) runs ahead of
+ordinary ASP.NET Core endpoint routing/dispatch and short-circuits any path it doesn't recognise as
+real content with its own backoffice SPA shell, before endpoint dispatch is ever reached. Forcing
+early `app.UseRouting()`/`app.UseEndpoints(...)` ahead of `UseUmbraco()` to compensate made things
+worse, not better: it broke the real homepage (confirmed by response body, not just status code —
+it started returning the backoffice shell for `/` too), because Umbraco's own content pages aren't
+pre-registered endpoints either; they're resolved dynamically by that same middleware, so forcing
+routing to resolve earlier just let an unrelated Umbraco backoffice fallback controller
+(`BackOfficeDefaultController.Index`) win the route match for literally everything. Reverted all of
+that and replaced the controller/views with plain `app.Map()` branches instead — the same primitive
+already proven reliable for this app's own `/qa-test-throw` diagnostic — with the HTML inlined as
+C# string constants (no Razor, no Umbraco dependency at all). This is genuinely simpler, not just a
+workaround: an error page has more reason than most code to not depend on Umbraco's own view/content
+resolution being healthy.
+
+**Verified live**, in Production mode against the real seeded SQLite database (`--no-launch-profile`
+strips `appsettings.Development.json`'s connection string, so it was supplied directly via
+`ConnectionStrings__umbracoDbDSN` env vars for this test only — there is no
+`appsettings.Production.json` yet, expected at this pre-Phase-6 stage since real deployment secrets
+are meant to come from host-level config per `CLAUDE.md` §8, not a committed file):
+- Homepage still renders real content correctly (`<title>Ophir Mineral Ventures — ...</title>`,
+  status 200) — confirming the earlier homepage breakage really was the routing experiment, not
+  this feature.
+- A deliberate unhandled exception (`/qa-test-throw`, removed before commit) correctly re-executes
+  to `/error/500`: status 500, the custom "Something Went Wrong" page renders, and the real
+  exception message never appears in the response body.
+- `/error/404` and `/error/500` hit directly both render correctly with the right status codes.
+
+**Known limitation, not fixed — documented rather than silently left, see the new `ErrorPageMiddleware`
+card in `04_ARCHITECTURE_AND_PATTERNS_GUIDE.md` §3 for the full technical reasoning:** a genuinely
+mistyped/unmatched *public-site* URL does not reach the custom 404 page automatically. Umbraco's own
+built-in "Page Not Found" handler writes a complete response body for that case before
+`UseStatusCodePagesWithReExecute`'s re-execute condition is ever checked (it only fires while the
+response body is still empty), so Umbraco's own generic page wins — the visitor still gets a
+correct, real 404 status with a working (if plain/unbranded) message, not a broken response. A
+proper fix exists (`IContentLastChanceFinder`, or a real Umbraco content node wired through
+`Umbraco:CMS:Content:Error404Collection`) but needs environment-specific content-node IDs that
+don't fit this project's git-versioned uSync schema cleanly, and was judged out of proportion to the
+value versus the exception-handler path (the security-relevant one) being fully solved.
+
+**Deviated from plan:** None from `CLAUDE.md` itself — error handling wasn't previously specified in
+detail, and the approach taken (plain middleware, no new document type) is consistent with §3's
+"would plain C# take less effort" test and §4a's rejection of unnecessary abstraction.
+
+**Blocked on:** Nothing new. Same outstanding items as the prior entry (SMTP credentials, 2FA
+enrollment, client Editor-role login, Phase 6 hosting).
+
+**Next:** Phase 6 — hosting trial & verification, unchanged. If the 404 automatic-fallback
+limitation above is ever worth closing properly, `IContentLastChanceFinder` is the more idiomatic
+of the two candidate fixes (no environment-specific content-node ID to manage).
