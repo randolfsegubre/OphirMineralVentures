@@ -26,6 +26,13 @@ QA here is mostly manual verification against real tools for everything else, no
 - [ ] Dark mode: toggling the OS-level `prefers-color-scheme` (browser DevTools → Rendering → emulate CSS prefers-color-scheme) swaps the token palette correctly, no unstyled flash, no hardcoded light-only colors anywhere.
 - [ ] All Media Picker file downloads (spec sheets, certificate PDFs) actually resolve and open.
 
+## Error handling — E2E verified 2026-09-12 (see `DEVLOG.md`'s 2026-09-11/12 entries for the full trail)
+
+- [x] **404 page**: real, backoffice-editable Umbraco content node (`errorPage` Document Type), served via `ErrorPageContentFinder` (`IContentLastChanceFinder`). Verified live against the real seeded database: an actually-unmatched URL returns a genuine 404 status with the editable content (`heading`/`message`), rendered through the site's real `_Layout.cshtml` — confirmed via both `curl` and a real browser session.
+- [x] **500 page**: hardcoded fallback (`ErrorPageMiddleware`, deliberately independent of Umbraco content/view resolution — see its own doc comment for why this is the one deliberate exception to "error pages should be CMS-editable"). Verified live in Production mode against the real database: a deliberate unhandled exception returns status 500 with the custom page, and the real exception message/stack trace never appears in the response body.
+- [x] **"Back to Home" does a real reset, not a soft re-render**: both pages use a plain `<a href="/">` link (full page navigation), not client-side routing — confirmed by inspection, consistent with the same standard applied to error pages across Randolf's other personal projects (ecommerce-ai, BudgetPH, Lakbay.Web).
+- [ ] Not yet done: a live headers/CSP scan specifically against the error pages (should inherit the site-wide `SecurityHeadersMiddleware` automatically, but hasn't been spot-checked in isolation).
+
 ## Security checks (Build Phase 7, against the real staging deployment — not `localhost`)
 
 - [ ] Headers scan (e.g. securityheaders.com, or an equivalent CLI tool if the staging URL isn't yet publicly reachable) confirms every header from `CLAUDE.md` §7 is present with the exact values specified: `Strict-Transport-Security`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, `Content-Security-Policy`.
