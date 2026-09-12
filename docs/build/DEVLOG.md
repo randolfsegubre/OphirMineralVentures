@@ -159,12 +159,13 @@ Verified live in the browser end to end: front end (Home, Products, zh-Hans rout
 
 ## 2026-09-11 — Portfolio-finalization pass: custom 404/500 error pages
 
-**Did:** Added the site's first real error-handling: `Middleware/ErrorPageMiddleware.cs` maps
-`/error/404` and `/error/500` as plain terminal branches (`app.Map(...)`), used as the re-execute
-targets for `UseStatusCodePagesWithReExecute("/error/{0}")` and `UseExceptionHandler("/error/500")`
-(the latter Production/staging-only, per the existing Development-detailed-exception-page
-convention) in `Program.cs`. Both pages are centered, self-contained HTML reusing `site.css`'s
-existing tokens, with a "Back to Home" link.
+**Did:** Added the site's first real error-handling — a 500 page (`Middleware/ErrorPageMiddleware.cs`,
+`app.Map("/error/500", ...)`, used as the re-execute target for `UseExceptionHandler("/error/500")`,
+Production/staging-only per the existing Development-detailed-exception-page convention) and a 404
+page backed by a real, backoffice-editable Umbraco content node (see below — this went through a
+correction mid-session, recorded in full since the reasoning matters for any future error-handling
+work on this or another Umbraco project). Both pages show a centered message and a "Back to Home"
+link that does a real page reload, not a soft re-render.
 
 **First attempt, abandoned — worth recording so it isn't retried:** the initial implementation was
 a plain MVC `ErrorController` + Razor views. It compiled and unit-tested fine in isolation, but
@@ -199,25 +200,71 @@ are meant to come from host-level config per `CLAUDE.md` §8, not a committed fi
   exception message never appears in the response body.
 - `/error/404` and `/error/500` hit directly both render correctly with the right status codes.
 
-**Known limitation, not fixed — documented rather than silently left, see the new `ErrorPageMiddleware`
-card in `04_ARCHITECTURE_AND_PATTERNS_GUIDE.md` §3 for the full technical reasoning:** a genuinely
-mistyped/unmatched *public-site* URL does not reach the custom 404 page automatically. Umbraco's own
-built-in "Page Not Found" handler writes a complete response body for that case before
-`UseStatusCodePagesWithReExecute`'s re-execute condition is ever checked (it only fires while the
-response body is still empty), so Umbraco's own generic page wins — the visitor still gets a
-correct, real 404 status with a working (if plain/unbranded) message, not a broken response. A
-proper fix exists (`IContentLastChanceFinder`, or a real Umbraco content node wired through
-`Umbraco:CMS:Content:Error404Collection`) but needs environment-specific content-node IDs that
-don't fit this project's git-versioned uSync schema cleanly, and was judged out of proportion to the
-value versus the exception-handler path (the security-relevant one) being fully solved.
+**Initial limitation (since fixed, see below):** the first cut of this feature made 404 a second
+hardcoded page too, for the same "must not depend on Umbraco" reasoning as 500 — and separately, the
+automatic re-execute-on-unmatched-route path didn't reach it anyway (Umbraco's own built-in "Page Not
+Found" handler writes a response body before `UseStatusCodePagesWithReExecute`'s re-execute condition
+is ever checked). Randolf corrected the underlying premise directly: **in any Umbraco app, error
+pages should be designed and editable through the CMS itself, the same way Hotelplan's ECMS handles
+error pages** — a hardcoded 404 page defeats the entire point of building on a CMS for a
+non-technical owner, and `CLAUDE.md`'s own "the owner must be able to edit content himself"
+constraint applies to this page as much as any other.
+
+**Fixed the same day**, properly rather than as a patch: `Seed/ErrorPageSeeder.cs` (invoked once via
+`dotnet run -- --seed-error-page`, idempotent) creates a real `errorPage` Document Type — `heading`
+(Textstring) + `message` (Richtext editor), reusing the exact data types already backing
+`legalPage`/`siteSettings` rather than guessing default GUIDs — uSync-exports the schema (committed,
+`uSync/v18/ContentTypes|Templates/errorpage.config`), and creates one real content node under Home
+with placeholder copy (content, deliberately **not** uSync-tracked, same as every other page's
+content — the owner's own data). `Services/ErrorPageContentFinder.cs` implements Umbraco's own
+`IContentLastChanceFinder` extension point, querying `IPublishedContentQuery` for the `errorPage`
+node by document-type alias and serving it with a 404 status — this runs *inside* Umbraco's normal
+content-resolution pipeline, so it doesn't fight the routing-precedence problem the hardcoded
+approach hit; it's the content resolution for this case, not something trying to run around it. No
+`Umbraco:CMS:Content:Error404Collection` config needed (that approach requires an environment-
+specific content-node ID/GUID, which doesn't fit this project's git-versioned schema — querying by
+alias at request time sidesteps that entirely). `Views/ErrorPage.cshtml` renders through the site's
+real `_Layout.cshtml`, so the 404 page now looks like the rest of the site rather than a bare page.
+500 stays exactly as the hardcoded `ErrorPageMiddleware` page described above — a deliberate,
+documented exception: an unhandled exception can mean Umbraco's own content/view resolution is what's
+actually broken, so that page still must not depend on it being healthy.
+
+**Two real bugs hit and fixed while building this:**
+1. `IContentLastChanceFinder` is registered as a singleton, but `IPublishedContentQuery` is scoped
+   per request — constructor-injecting it directly failed DI validation at startup ("cannot consume
+   scoped service from singleton"). Fixed by injecting `IServiceScopeFactory` and resolving the query
+   service through a fresh scope inside `TryFindContent` itself.
+2. The Razor view initially failed to compile (`UmbracoCompilationException`, generic wrapper with
+   no inner detail in the response body) — root cause turned out to be `@Model.Value<string>("heading")`
+   without parentheses around the generic method call; Razor's parser needs `@(Model.Value<string>(...))`
+   the same way `LegalPage.cshtml` already does it. Found by deleting the view down to a one-line
+   `<p>test</p>` body (confirmed the content-finder wiring itself was correct) and adding lines back
+   one at a time until it broke again.
+
+**Verified live** end to end, in both Development mode (real content, real DB) and Production mode
+(exception-handler path, real DB supplied via env vars since there's still no
+`appsettings.Production.json` at this pre-Phase-6 stage): homepage and other real pages unaffected;
+an actually-unmatched URL now returns a genuine 404 status with the real, backoffice-editable content
+(heading "We couldn't find that page", the message paragraph, a working "Back to Home" link),
+rendered through the site's real layout and CSS; the exception-handler path still returns 500 with
+the hardcoded page, and the real exception message still never leaks into the response.
+
+**uSync export side effect, reverted, not committed:** running the seeder's `StartupExportAsync`
+re-exported all 12 handlers (92 changes), which — matching the already-documented 2026-09-07 Umbraco
+18 `CreateTemplateAsync` template-GUID-churn bug — rewrote every *other* content type's/template's
+`AllowedTemplates`/`Template Key` GUID with a freshly-minted one, pure noise with no schema change.
+Confirmed via `git diff` and reverted everything except the two genuinely new `errorpage.config`
+files, same as the established practice from that earlier entry.
 
 **Deviated from plan:** None from `CLAUDE.md` itself — error handling wasn't previously specified in
-detail, and the approach taken (plain middleware, no new document type) is consistent with §3's
-"would plain C# take less effort" test and §4a's rejection of unnecessary abstraction.
+detail. The 404 approach (a real Document Type + content node) is a deliberate, small addition to the
+content model (CLAUDE.md §5 doesn't list it), justified directly by §1's non-technical-owner
+constraint rather than by the general "would plain C# take less effort" test, which pointed the wrong
+way here and was corrected.
 
 **Blocked on:** Nothing new. Same outstanding items as the prior entry (SMTP credentials, 2FA
 enrollment, client Editor-role login, Phase 6 hosting).
 
-**Next:** Phase 6 — hosting trial & verification, unchanged. If the 404 automatic-fallback
-limitation above is ever worth closing properly, `IContentLastChanceFinder` is the more idiomatic
-of the two candidate fixes (no environment-specific content-node ID to manage).
+**Next:** Phase 6 — hosting trial & verification, unchanged. If Lakbay.Cms (the other Umbraco-based
+project) ever gets error-handling work, apply the same CMS-editable-404/hardcoded-500 split rather
+than re-deriving it from scratch.
