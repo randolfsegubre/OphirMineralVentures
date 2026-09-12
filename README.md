@@ -30,6 +30,13 @@ dotnet user-secrets set "Umbraco:CMS:Unattended:UnattendedUserName" "Your Name"
 dotnet user-secrets set "Umbraco:CMS:Unattended:UnattendedUserEmail" "you@example.com"
 dotnet user-secrets set "Umbraco:CMS:Unattended:UnattendedUserPassword" "SomeStrongLocalPassword!1"
 
+# One-time: the image-processing HMAC signing key. The committed appsettings.json
+# deliberately ships this empty — Umbraco's ImageSharp middleware works fine
+# without it locally, but a real value belongs in user-secrets (local) or
+# host-level config (production), never committed. Generate one with:
+#   openssl rand -base64 64
+dotnet user-secrets set "Umbraco:CMS:Imaging:HMACSecretKey" "<a real random value>"
+
 # Trust the HTTPS dev cert if you haven't already (needed for backoffice login):
 dotnet dev-certs https --trust
 
