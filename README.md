@@ -4,13 +4,13 @@ Corporate website for Ophir Mineral Ventures, Inc., a Philippines-based nickel/c
 
 - **Working on the code?** Read [`CLAUDE.md`](./CLAUDE.md) first — it's the full technical spec (stack, content model, security requirements, hosting, deployment).
 - **Looking for the business proposals?** See [`docs/proposals/`](./docs/proposals/) — the plan/architecture, homepage design draft, cost proposal, and the client-facing proposal sent to the owner, as both PDF and editable HTML source.
-- **Code lives in** `src/` — the Umbraco solution is scaffolded and Phases 0-5 are built (content model, templates for both EN/中文 cultures, the contact form, security middleware, SEO plumbing, placeholder content). See `docs/build/DEVLOG.md` for the phase-by-phase history and current status; Phase 6 (hosting trial) is next.
+- **Code lives in** `src/` — the Umbraco solution is scaffolded and Phases 0-5 are built (content model, templates for both EN/中文 cultures, the contact form, security middleware, SEO plumbing, placeholder content), plus a custom 404/500 error-page pass: the 404 page is a real, backoffice-editable content node (not hardcoded) so John can rewrite what it says without a code change, and the 500 page is a deliberate hardcoded fallback for when Umbraco itself might be what's broken. See `docs/build/DEVLOG.md` for the phase-by-phase history and current status; Phase 6 (hosting trial) is next.
 
 Stack: Umbraco CMS on ASP.NET Core (self-hosted). No PHP, no page-builder subscription, no ongoing CMS license fee.
 
 ## Running it locally (clean checkout)
 
-**Verified working end-to-end 2026-09-07** — build clean, 20/20 tests passing, front end renders in both cultures, backoffice login confirmed in a real browser.
+**Verified working end-to-end 2026-09-12** — build clean, 23/23 tests passing, front end renders in both cultures, backoffice login confirmed in a real browser, and both the 404 (real content node) and 500 (hardcoded fallback) error pages confirmed live against the real seeded database.
 
 Prerequisites: .NET SDK 10.0.x, Node 24.11.1+, npm (see `CLAUDE.md` §1 checklist — versions drift, re-verify).
 
@@ -40,6 +40,10 @@ dotnet run --urls "https://localhost:44325;http://localhost:1153"
 # Seed the content model (uSync import) + placeholder content tree — only ever
 # run this against a fresh/empty database, it always creates new nodes:
 dotnet run -- --seed-phase2
+
+# One-time, idempotent: creates the errorPage Document Type + a real 404
+# content node (safe to re-run, skips if it already exists):
+dotnet run -- --seed-error-page
 
 # Normal run from here on:
 dotnet run --urls "https://localhost:44325;http://localhost:1153"
